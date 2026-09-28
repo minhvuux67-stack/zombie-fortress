@@ -168,3 +168,8 @@ reproducible with `node tools/build_min.js`.
 ## Language
 
 English is the default. Vietnamese is available in **Settings -> Language**.
+
+## Optional: play link from GitHub
+
+Enable GitHub Pages (Settings -> Pages, branch `main`, folder `/`) to get
+https://minhvuux67-stack.github.io/zombie-fortress/
