@@ -41,27 +41,30 @@
     <div class="box panel">
       <div class="logo">ZOMBIE FORTRESS<small>PANDEMIC DEFENSE</small></div>
       <div id="dailybanner" class="tease" style="margin-top:18px"></div>
+      <div id="cmdtrack" style="width:100%"></div>
       <div class="menu-grid">
         <button class="btn primary wide lg" data-action="play">&#9654; PLAY</button>
+        <button class="btn relative" data-action="command" id="btn-command">&#127968; Command Center</button>
         <button class="btn" data-action="campaign">&#127981; Campaign</button>
         <button class="btn" data-action="shop">&#9881; Upgrade Shop</button>
         <button class="btn" data-action="collection">&#127993; Collection</button>
         <button class="btn" data-action="achievements">&#127942; Achievements</button>
-        <button class="btn" data-action="heroes">&#129489; Heroes</button>
-        <button class="btn" data-action="relics">&#128142; Relics</button>
-        <button class="btn" data-action="research">&#129514; Research</button>
-        <button class="btn" data-action="camp">&#127957; Camp</button>
-        <button class="btn" data-action="quests">&#128220; Quests</button>
-        <button class="btn" data-action="codex">&#128214; Codex</button>
-        <button class="btn" data-action="battlepass">&#127894; Battle Pass</button>
-        <button class="btn" data-action="prestige">&#11088; Prestige</button>
-        <button class="btn" data-action="season">&#127761; Season</button>
         <button class="btn" data-action="daily">&#128197; Daily Challenge</button>
         <button class="btn" data-action="endless" id="btn-endless">&#8734; Endless Mode</button>
-        <button class="btn" data-action="leaderboard">&#128202; Leaderboard</button>
-        <button class="btn" data-action="settings">&#9881; Settings</button>
-        <button class="btn" data-action="help">&#10067; How to Play</button>
-        <button class="btn" data-action="donate">&#10084; Support the Author</button>
+        <button class="btn" data-action="moremenu" id="btn-more">&#9776; More &hellip;</button>
+        <button class="btn more" data-action="heroes">&#129489; Heroes</button>
+        <button class="btn more" data-action="relics">&#128142; Relics</button>
+        <button class="btn more" data-action="research">&#129514; Research</button>
+        <button class="btn more" data-action="camp">&#127957; Camp</button>
+        <button class="btn more" data-action="quests">&#128220; Quests</button>
+        <button class="btn more" data-action="codex">&#128214; Codex</button>
+        <button class="btn more" data-action="battlepass">&#127894; Battle Pass</button>
+        <button class="btn more" data-action="prestige">&#11088; Prestige</button>
+        <button class="btn more" data-action="season">&#127761; Season</button>
+        <button class="btn more" data-action="leaderboard">&#128202; Leaderboard</button>
+        <button class="btn more" data-action="settings">&#9881; Settings</button>
+        <button class="btn more" data-action="help">&#10067; How to Play</button>
+        <button class="btn more" data-action="donate">&#10084; Support the Author</button>
       </div>
       <div class="statbar" id="menustats"></div>
     </div>
@@ -84,6 +87,7 @@
         <button class="btn primary lg" data-action="retry">&#8635; Retry Now</button>
         <button class="btn" data-action="shop">Upgrade Shop</button>
         <button class="btn" data-action="leaderboard">Leaderboard</button>
+        <button class="btn ghost" data-action="share">&#128257; Share</button>
         <button class="btn ghost" data-action="menu">Main Menu</button>
         <button class="btn ghost" data-action="donate">&#10084; Support</button>
       </div>
@@ -108,6 +112,7 @@
   </div>
 
   <div id="overlay"></div>
+  <div id="levelup" class="hidden"></div>
   <div id="tooltip" class="tip hidden"></div>
   <div id="rotate">&#8635;&nbsp; Rotate your device to landscape</div>
 </div>

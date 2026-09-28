@@ -50,6 +50,8 @@ h1,h2,h3{margin:0}
 .logo small{display:block;font-size:17px;font-weight:700;letter-spacing:6px;color:#8fd3ff;
   -webkit-text-fill-color:#8fd3ff;filter:none;margin-top:8px}
 .menu-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;width:100%;margin-top:22px}
+.menu-grid .more{display:none}
+.menu-grid.secondary-open .more{display:block}
 .menu-grid .btn{padding:13px 10px;font-size:16px}
 .menu-grid .btn.wide{grid-column:span 3}
 .statbar{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin-top:16px}
@@ -213,5 +215,42 @@ table.lb tr.me td{color:var(--accent);font-weight:700}
 .msn .mstars{margin-top:9px;color:#ffce4a;font-size:15px;letter-spacing:1px}
 #btn-speed{min-width:46px;font-weight:800}
 @media (max-width:640px){.msngrid{grid-template-columns:1fr}.campaignbox{width:auto}}
+
+/* ---------- v6 command center ---------- */
+.cmdbig{width:900px}
+.cmdhero{display:flex;gap:14px;align-items:center;background:linear-gradient(90deg,rgba(87,224,138,.12),rgba(74,168,255,.06));
+  border:1px solid rgba(87,224,138,.35);border-radius:14px;padding:14px 16px;margin-bottom:14px}
+.lvbadge{flex:none;width:62px;height:62px;border-radius:50%;display:flex;align-items:center;justify-content:center;
+  font-weight:900;font-size:26px;color:#06140c;background:linear-gradient(180deg,#49d07c,#22854a);
+  box-shadow:0 0 0 4px rgba(87,224,138,.18),0 6px 20px rgba(70,220,130,.35)}
+.cmdsec{background:rgba(255,255,255,.035);border:1px solid var(--panel-line);border-radius:14px;padding:13px 15px;margin-bottom:12px}
+.cmdsec>b,.cmdsec .spread b{font-size:15px}
+.mrow{display:flex;gap:12px;align-items:center;background:rgba(255,255,255,.03);border:1px solid var(--panel-line);
+  border-radius:11px;padding:10px 12px;margin-top:8px}
+.mrow.ok{border-color:rgba(87,224,138,.5);background:rgba(87,224,138,.07)}
+.mrow.chest{border-style:dashed}
+.mrow.chest.hot{border-color:var(--gold);background:rgba(255,206,74,.1);animation:pulseGlow 1.4s infinite}
+.chip.hot{border-color:var(--gold);color:var(--gold);animation:pulseGlow 1.4s infinite}
+@keyframes pulseGlow{0%,100%{box-shadow:0 0 0 0 rgba(255,206,74,.35)}50%{box-shadow:0 0 0 5px rgba(255,206,74,0)}}
+.menubadge{position:absolute;top:-6px;right:-6px;min-width:19px;height:19px;border-radius:999px;
+  background:#ff5566;color:#fff;font-size:11px;font-weight:900;display:flex;align-items:center;justify-content:center;
+  padding:0 5px;box-shadow:0 2px 8px rgba(255,85,102,.6);animation:pulseGlow 1.4s infinite}
+.btn.relative{position:relative;overflow:visible}
+/* level-up celebration */
+#levelup{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;pointer-events:none;z-index:40}
+#levelup .lu{text-align:center;animation:luPop .5s ease}
+#levelup .lu .big{font-size:64px;font-weight:900;letter-spacing:2px;
+  background:linear-gradient(180deg,#fff3c4,#ffce4a,#e0952a);-webkit-background-clip:text;background-clip:text;color:transparent;
+  filter:drop-shadow(0 6px 26px rgba(255,206,74,.6))}
+#levelup .lu .sub{font-size:16px;color:#dfe8f6;letter-spacing:3px;margin-top:4px;text-shadow:0 2px 12px #000}
+@keyframes luPop{0%{transform:scale(.6);opacity:0}60%{transform:scale(1.08)}100%{transform:scale(1);opacity:1}}
+.cmdtrack{margin-top:16px;width:100%;background:linear-gradient(90deg,rgba(87,224,138,.12),rgba(74,168,255,.06));
+  border:1px solid rgba(87,224,138,.3);border-radius:14px;padding:11px 14px;cursor:pointer;transition:filter .12s,border-color .12s}
+.cmdtrack:hover{filter:brightness(1.12);border-color:rgba(87,224,138,.6)}
+.cmdtrack .spread{width:100%;font-size:12.5px}
+.cmdtrack .lvn{font-weight:900;font-size:20px;color:#57e08a;letter-spacing:.5px}
+.cmdtrack .bar{margin-top:7px;height:11px;border-radius:7px;background:rgba(0,0,0,.45);overflow:hidden;border:1px solid var(--panel-line)}
+.cmdtrack .bar>div{height:100%;background:linear-gradient(90deg,#49d07c,#9bf0b6);transition:width .3s}
+@media (max-width:640px){.cmdbig{width:auto}}
 </style>
 </head>
