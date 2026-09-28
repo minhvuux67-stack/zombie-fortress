@@ -139,7 +139,12 @@ const CODEX_ENTRIES = [
   { id: "proto_core", cat: "Protocols", name: "Mutation Protocol", ds: "Between waves the lab offers a choice of permanent run mutations. Stack them to build a broken fortress." },
   { id: "p_rank", cat: "Command", name: "Fortress Ranks", ds: "Rookie to Apocalypse - your career score determines your rank." },
 ];
-const CODEX_CATS = ["Bestiary", "Arsenal", "Protocols", "Weather", "Mutations", "Synergies", "Command"];
+/* relic codex entries are generated from the relic roster so they survive a reload */
+for (const _rid in RELIC_DEFS) {
+  const _r = RELIC_DEFS[_rid];
+  CODEX_ENTRIES.push({ id: "relic_" + _rid, cat: "Relics", name: _r.name, ds: _r.ds });
+}
+const CODEX_CATS = ["Bestiary", "Arsenal", "Protocols", "Relics", "Weather", "Mutations", "Synergies", "Command"];
 
 /* quest pools ---------------------------------------------------------- */
 const QUEST_POOLS = {

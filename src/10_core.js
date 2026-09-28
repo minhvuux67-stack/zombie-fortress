@@ -22,7 +22,7 @@ const SLOT_COLS = [235, 395, 555, 715, 875, 1035]; // 6 build columns
 const MAX_LEVEL = 5;                        // tower level cap per run
 const SPEC_LEVEL = 3;                       // tower level where a spec path is chosen
 const PREP_TIME = 12;                       // seconds of build time before a wave auto-starts
-const VERSION = "6.0.0";
+const VERSION = "6.1.0";
 const DONATE_URL = "https://ko-fi.com/";
 
 /* ---------------------------------------------------------------------
@@ -39,7 +39,11 @@ const nowMs = () => Date.now();
 function fmt(n) {
   n = Math.floor(n);
   if (n >= 1e6) return (n / 1e6).toFixed(n >= 1e7 ? 0 : 1) + "M";
-  if (n >= 1e4) return (n / 1e3).toFixed(n >= 1e5 ? 0 : 1) + "k";
+  if (n >= 1e4) {
+    const k = n / 1e3;
+    if (Math.round(k) >= 1000) return (n / 1e6).toFixed(1) + "M";
+    return k.toFixed(k >= 100 ? 0 : 1) + "k";
+  }
   return "" + n;
 }
 function hhmmss(sec) {
@@ -172,7 +176,7 @@ function normalizeState(data) {
   st.dailyBoard = Object.assign({}, base.dailyBoard, (data && data.dailyBoard) || {});
   st.dailyBoard.tasks = arr(st.dailyBoard.tasks, []);
   st.dailyBoard.claimed = arr(st.dailyBoard.claimed, []);
-  st.dailyBoard.counters = (data && data.dailyBoard && data.dailyBoard.counters) || {};
+  st.dailyBoard.counters = (data && data.dailyBoard && data.dailyBoard.counters && typeof data.dailyBoard.counters === "object" && !Array.isArray(data.dailyBoard.counters)) ? data.dailyBoard.counters : {};
   st.collectionClaimed = arr(data && data.collectionClaimed, []);
   st.starterClaimed = arr(data && data.starterClaimed, []);
   if (typeof st.selectedHero !== "string") st.selectedHero = "commander";
