@@ -61,6 +61,8 @@ const RELIC_DEFS = {
   chrono_capacitor: { id: "chrono_capacitor", name: "Chrono Capacitor", rarity: "legendary", icon: "ui/skill_freeze", ds: "Skill cooldowns -25%, +10% rate.", mod: { cooldown: 0.75, rate: 1.10 } },
   bulwark_charm: { id: "bulwark_charm", name: "Bulwark Charm", rarity: "legendary", icon: "ui/icon_star", ds: "+500 fortress HP, +25% scrap.", mod: { fhp: 500, scrapGain: 1.25 } },
   plague_mask: { id: "plague_mask", name: "Plague Mask", rarity: "epic", icon: "ui/icon_meds", ds: "+2 meds and +1 food per wave.", mod: { waveFood: 1, waveMeds: 2 } },
+  cryo_cell: { id: "cryo_cell", name: "Cryo Cell", rarity: "rare", icon: "ui/skill_freeze", ds: "+8% fire rate, +2 fortress HP/s.", mod: { rate: 1.08, regen: 2 } },
+  splicing_serum: { id: "splicing_serum", name: "Splicing Serum", rarity: "epic", icon: "ui/icon_skull", ds: "+14% damage, +6% crit.", mod: { dmg: 1.14, crit: 0.06 } },
 };
 const RELIC_RARITY_COLOR = { common: "#8fa2c0", rare: "#4aa8ff", epic: "#c08bff", legendary: "#ffb347" };
 
@@ -128,9 +130,16 @@ const CODEX_ENTRIES = [
   { id: "m_frenzy", cat: "Mutations", name: "Frenzy", ds: "Zombies move faster but take more damage." },
   { id: "s_adjacent", cat: "Synergies", name: "Overwatch Net", ds: "Two Gunners side by side gain +15% fire rate." },
   { id: "s_firestorm", cat: "Synergies", name: "Firestorm", ds: "Flamethrower next to a Tesla adds burn to every arc." },
+  { id: "z_splitter", cat: "Bestiary", name: "Splitter", ds: "Bloated carrier. Bursts open into two runners when it dies." },
+  { id: "z_healer", cat: "Bestiary", name: "Mender", ds: "Pulses healing ichor that mends every zombie near it. Kill it first." },
+  { id: "z_colossus", cat: "Bestiary", name: "Hive Colossus", ds: "Living nest. Slams the ground and hatches crawlers while it lives." },
+  { id: "t_mortar", cat: "Arsenal", name: "Mortar", ds: "Lobs explosive shells that splash a whole cluster at long range." },
+  { id: "t_cryo", cat: "Arsenal", name: "Cryo Coil", ds: "Freezing aura that slows and chips every zombie caught inside it." },
+  { id: "t_laser", cat: "Arsenal", name: "Laser Prism", ds: "Piercing beam that cuts through every zombie in a straight line." },
+  { id: "proto_core", cat: "Protocols", name: "Mutation Protocol", ds: "Between waves the lab offers a choice of permanent run mutations. Stack them to build a broken fortress." },
   { id: "p_rank", cat: "Command", name: "Fortress Ranks", ds: "Rookie to Apocalypse - your career score determines your rank." },
 ];
-const CODEX_CATS = ["Bestiary", "Arsenal", "Weather", "Mutations", "Synergies", "Command"];
+const CODEX_CATS = ["Bestiary", "Arsenal", "Protocols", "Weather", "Mutations", "Synergies", "Command"];
 
 /* quest pools ---------------------------------------------------------- */
 const QUEST_POOLS = {

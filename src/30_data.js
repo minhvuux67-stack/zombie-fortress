@@ -44,6 +44,24 @@ const TOWER_DEFS = {
     desc: "Patches the fortress wall back together, second by second.",
     base: { heal: 3.5, radius: 0 },
   },
+  mortar: {
+    id: "mortar", name: "Mortar", glyph: "\u25D0", color: "#c9a24a", accent: "#ffe6a8",
+    cost: 210, unlockCost: 620, kind: "mortar",
+    desc: "Lobs heavy shells that explode, splashing a whole cluster at once.",
+    base: { dmg: 72, rate: 0.55, range: 340, bulletSpeed: 360, aoe: 96 },
+  },
+  cryo: {
+    id: "cryo", name: "Cryo Coil", glyph: "\u2744", color: "#6fd0ff", accent: "#d6f4ff",
+    cost: 240, unlockCost: 880, kind: "cryo",
+    desc: "Freezing aura. Chills and slows every zombie caught inside it.",
+    base: { dps: 14, range: 150, slow: 0.5, slowDur: 1.3 },
+  },
+  laser: {
+    id: "laser", name: "Laser Prism", glyph: "\u25C6", color: "#ff5bd0", accent: "#ffd6f4",
+    cost: 300, unlockCost: 1500, kind: "laser",
+    desc: "A piercing beam that cuts through every zombie in a straight line.",
+    base: { dmg: 40, rate: 2.0, range: 320 },
+  },
 };
 const TOWER_IDS = Object.keys(TOWER_DEFS);
 
@@ -58,6 +76,9 @@ const ZOMBIE_DEFS = {
   brute: { id: "brute", name: "Brute", hp: 520, speed: 34, dmg: 34, rate: 1.1, scrap: 26, armor: 6, r: 26, color: "#c98b5a", score: 44 },
   bomber: { id: "bomber", name: "Bomber", hp: 96, speed: 58, dmg: 12, rate: 1.4, scrap: 14, armor: 1, r: 17, color: "#d8674a", explode: 70, score: 28 },
   shield: { id: "shield", name: "Shield", hp: 210, speed: 40, dmg: 18, rate: 1.0, scrap: 20, armor: 10, frontArmor: true, r: 19, color: "#8fa2c0", score: 32 },
+  splitter: { id: "splitter", name: "Splitter", hp: 150, speed: 46, dmg: 12, rate: 1.0, scrap: 15, armor: 3, r: 18, color: "#c47ad8", split: 2, score: 30 },
+  healer: { id: "healer", name: "Mender", hp: 130, speed: 42, dmg: 8, rate: 1.2, scrap: 17, armor: 2, r: 16, color: "#6fe0c0", heal: 9, healRange: 140, score: 32 },
+  colossus: { id: "colossus", name: "Hive Colossus", hp: 2600, speed: 24, dmg: 60, rate: 1.6, scrap: 260, armor: 18, r: 46, color: "#b06ad8", boss: true, roar: 11, slam: 1, summon: 9, summonType: "crawler", score: 320 },
 };
 
 const UPGRADES = [
@@ -90,6 +111,14 @@ const ACHIEVEMENTS = [
   { id: "streak_7", name: "Week Survivor", icon: "\u{1F4AA}", ds: "Reach a 7-day login streak." },
   { id: "rich", name: "War Profiteer", icon: "\u{1F48E}", ds: "Hold 1,000 gold at once." },
   { id: "endless_30", name: "Apocalypse Now", icon: "\u{1F30B}", ds: "Reach wave 30." },
+  { id: "proto_first", name: "Gene Splicer", icon: "\u{1F9EC}", ds: "Pick your first Mutation Protocol." },
+  { id: "proto_10", name: "Lab Rat", icon: "\u{1F9EA}", ds: "Hold 10 protocols at once in one run." },
+  { id: "proto_all", name: "Perfect Organism", icon: "\u{1F9A0}", ds: "Stack 18 protocols in a single run." },
+  { id: "splitter_kill", name: "Divide and Conquer", icon: "\u2702", ds: "Pop 50 Splitters." },
+  { id: "healer_kill", name: "Field Triage", icon: "\u{1FA79}", ds: "Put down 50 Menders." },
+  { id: "colossus_slay", name: "Hive Breaker", icon: "\u{1F41D}", ds: "Fell a Hive Colossus." },
+  { id: "overdrive", name: "Redline", icon: "\u{1F680}", ds: "Trigger Overdrive for the first time." },
+  { id: "arsenal_v4", name: "Modern Warfare", icon: "\u{1F52C}", ds: "Unlock Mortar, Cryo Coil and Laser Prism." },
 ];
 
 const RANKS = [
@@ -120,6 +149,8 @@ const DAILY_CHALLENGES = [
   { id: "fragile", name: "Paper Walls", ds: "The fortress has 50% HP. Clear wave 10.", target: 10, mods: { fhp: 0.5 } },
   { id: "rich", name: "Armed to the Teeth", ds: "Start with 400 scrap but zombies have +50% HP. Clear wave 12.", target: 12, mods: { startScrapFlat: 400, zombieHp: 1.5 } },
   { id: "purist", name: "No Upgrades", ds: "Towers cannot be upgraded. Clear wave 8.", target: 8, mods: { noTowerUpgrades: true } },
+  { id: "noproto", name: "Baseline Strain", ds: "Mutation Protocols are disabled. Clear wave 9.", target: 9, mods: { noProtocols: true } },
+  { id: "protorush", name: "Splicer Rush", ds: "Pick two protocols each wave, but zombies have +30% HP. Clear wave 10.", target: 10, mods: { doubleDraft: true, zombieHp: 1.3 } },
 ];
 
 function dailyChallengeFor(key) {

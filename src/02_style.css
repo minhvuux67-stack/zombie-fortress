@@ -78,8 +78,8 @@ h1,h2,h3{margin:0}
 .fortressbar .lbl{position:absolute;inset:0;font-size:11px;font-weight:800;text-align:center;line-height:16px;
   text-shadow:0 1px 3px #000}
 
-#toolbar{position:absolute;bottom:10px;left:50%;transform:translateX(-50%);display:flex;gap:8px;align-items:flex-end}
-.tcard{width:86px;background:var(--panel);border:1px solid var(--panel-line);border-radius:12px;padding:6px 5px 5px;
+#toolbar{position:absolute;bottom:10px;left:12px;display:flex;gap:6px;align-items:flex-end;max-width:920px;flex-wrap:wrap}
+.tcard{width:80px;background:var(--panel);border:1px solid var(--panel-line);border-radius:12px;padding:6px 5px 5px;
   text-align:center;cursor:pointer;backdrop-filter:blur(10px);position:relative;transition:transform .1s,border-color .12s}
 .tcard:hover{transform:translateY(-3px)}
 .tcard.sel{border-color:var(--accent);box-shadow:0 0 0 2px rgba(87,224,138,.4),0 6px 22px rgba(0,0,0,.5)}
@@ -184,5 +184,17 @@ table.lb tr.me td{color:var(--accent);font-weight:700}
 #loadscreen .loadbar>div{height:100%;width:0;background:repeating-linear-gradient(90deg,#57e08a 0 10px,#3fb36c 10px 20px);
   transition:width .12s linear}
 #loadscreen .loadpct{margin-top:12px;font-size:12px;letter-spacing:3px;color:#8fa2c0}
+
+/* ---------- v4 protocol draft ---------- */
+.protogrid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+.proto{font:inherit;color:var(--txt);cursor:pointer;text-align:center;background:rgba(255,255,255,.045);
+  border:2px solid var(--panel-line);border-radius:14px;padding:16px 12px;transition:transform .1s,border-color .12s}
+.proto:hover{transform:translateY(-4px);border-color:var(--pc);background:rgba(255,255,255,.07)}
+.proto .pico{font-size:36px;line-height:1}
+.proto .pnm{font-weight:800;font-size:16px;margin-top:8px}
+.proto .prar{font-size:10.5px;text-transform:uppercase;letter-spacing:1px;color:var(--dim);margin-top:3px}
+.proto .pds{font-size:12.5px;color:var(--dim);margin-top:9px;line-height:1.4}
+.draftbox{width:880px;text-align:center}
+@media (max-width:640px){.protogrid{grid-template-columns:1fr}}
 </style>
 </head>

@@ -111,6 +111,15 @@ class Effect {
     } else if (this.type === "flash") {
       ctx.fillStyle = this.color || "#ffe";
       ctx.beginPath(); ctx.arc(this.x, this.y, lerp(this.radius || 10, 2, p), 0, TAU); ctx.fill();
+    } else if (this.type === "beam") {
+      const w = 3 + 10 * a;
+      ctx.strokeStyle = this.color || "#ff5bd0";
+      ctx.shadowColor = this.color || "#ff5bd0"; ctx.shadowBlur = 18;
+      ctx.lineWidth = w; ctx.lineCap = "round";
+      ctx.beginPath(); ctx.moveTo(this.ax, this.ay); ctx.lineTo(this.bx, this.by); ctx.stroke();
+      ctx.strokeStyle = "rgba(255,255,255," + a + ")"; ctx.lineWidth = Math.max(1, w * 0.35);
+      ctx.beginPath(); ctx.moveTo(this.ax, this.ay); ctx.lineTo(this.bx, this.by); ctx.stroke();
+      ctx.shadowBlur = 0;
     }
     ctx.globalAlpha = 1;
   }

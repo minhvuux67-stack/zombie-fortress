@@ -30,11 +30,24 @@ class Tower {
     } else if (this.kind === "heal") {
       this.heal = b.heal * (1 + 0.5 * (this.level - 1)) * sm("dmg");
       this.maxHp = Math.round(260 * (1 + 0.2 * (this.level - 1)));
-    } else if (this.kind === "flame") {
+    } else if (this.kind === "flame" || this.kind === "cryo") {
       this.dmg = b.dps * dm * bonus.dmg;
-      this.rate = 6;
+      this.rate = this.kind === "cryo" ? 6 : 6;
       this.range = b.range * rrm * bonus.range;
-      this.burn = b.burn;
+      if (this.kind === "flame") this.burn = b.burn;
+      if (this.kind === "cryo") { this.slow = b.slow; this.slowDur = b.slowDur; }
+      this.maxHp = Math.round(260 * (1 + 0.2 * (this.level - 1)));
+    } else if (this.kind === "mortar") {
+      this.dmg = b.dmg * dm * bonus.dmg;
+      this.rate = b.rate * rm * bonus.rate;
+      this.range = b.range * rrm * bonus.range;
+      this.aoe = b.aoe * (1 + 0.05 * (this.level - 1));
+      this.bulletSpeed = b.bulletSpeed;
+      this.maxHp = Math.round(260 * (1 + 0.2 * (this.level - 1)));
+    } else if (this.kind === "laser") {
+      this.dmg = b.dmg * dm * bonus.dmg;
+      this.rate = b.rate * rm * bonus.rate;
+      this.range = b.range * rrm * bonus.range;
       this.maxHp = Math.round(260 * (1 + 0.2 * (this.level - 1)));
     } else {
       this.dmg = b.dmg * dm * bonus.dmg;
@@ -106,7 +119,7 @@ class Tower {
       this.angle += diff * Math.min(1, dt * 12);
     }
     this.cd -= dt;
-    if (this.cd <= 0 && target) { this.fire(target, game); this.cd = 1 / this.rate; }
+    if (this.cd <= 0 && target) { this.fire(target, game); this.cd = 1 / (this.rate * (game.overdriveT > 0 ? 1.6 : 1)); }
   }
 
   fire(target, game) {
@@ -115,14 +128,52 @@ class Tower {
     const mx = this.x + Math.cos(ang) * 18, my = this.y + Math.sin(ang) * 18 - 22;
     const b = this.def.base;
     const crit = Math.random() < game.bonus.crit;
-    const dmg = this.dmg * (crit ? 2 : 1);
+    const pf = game.protocolFlags || {};
+    const odMul = game.overdriveT > 0 ? 1.25 : 1;
+    const round = { burn: pf.burn || 0, slow: pf.slow || 0, slowDur: pf.slowDur || 1.4 };
+    const dmg = this.dmg * (crit ? 2 : 1) * odMul;
     if (this.kind === "bullet") {
       game.audio.sfx("shoot");
       game.projectiles.push(new Projectile({
         x: mx, y: my, vx: Math.cos(ang) * b.bulletSpeed, vy: Math.sin(ang) * b.bulletSpeed,
         dmg, radius: 4, color: this.def.accent, crit, speed: b.bulletSpeed,
+        burn: round.burn, slow: round.slow, slowDur: round.slowDur, aoe: pf.aoe || 0,
       }));
       game.effects.push(new Effect("flash", { x: mx, y: my, radius: 12, color: this.def.accent, dur: 0.08 }));
+    } else if (this.kind === "mortar") {
+      game.audio.sfx("shotgun");
+      game.projectiles.push(new Projectile({
+        x: mx, y: my, vx: Math.cos(ang) * b.bulletSpeed, vy: Math.sin(ang) * b.bulletSpeed,
+        dmg: dmg * 1.0, radius: 7, color: this.def.accent, crit, speed: b.bulletSpeed,
+        aoe: (this.aoe || b.aoe), life: 3, kind: "shell",
+      }));
+      game.effects.push(new Effect("flash", { x: mx, y: my, radius: 15, color: "#ffd9a0", dur: 0.12 }));
+    } else if (this.kind === "laser") {
+      game.audio.sfx("sniper");
+      const ex = this.x + Math.cos(ang) * this.range, ey = this.y - 22 + Math.sin(ang) * this.range;
+      game.effects.push(new Effect("beam", { ax: this.x, ay: this.y - 22, bx: ex, by: ey, color: this.def.accent, dur: 0.14 }));
+      const nx = Math.cos(ang), ny = Math.sin(ang);
+      for (const z of game.zombies) {
+        if (z.dead) continue;
+        const rx = z.x - this.x, ry = (z.y - (this.y - 22));
+        const along = rx * nx + ry * ny;
+        if (along < -z.r || along > this.range + z.r) continue;
+        const perp = Math.abs(rx * (-ny) + ry * nx);
+        if (perp > z.r + 6) continue;
+        z.hurt(dmg, game, { crit, burn: round.burn, slow: round.slow, slowDur: round.slowDur, src: "laser" });
+      }
+    } else if (this.kind === "cryo") {
+      game.audio.sfx("freeze");
+      for (const z of game.zombies) {
+        if (z.dead) continue;
+        if (dist(this.x, this.y, z.x, z.y) > this.range + z.r) continue;
+        z.hurt(this.dmg * odMul, game, { slow: this.slow, slowDur: this.slowDur, src: "cryo" });
+      }
+      for (let i = 0; i < 6; i++) {
+        const a = rand(0, TAU), rr = rand(6, this.range);
+        game.emitPfx(this.x + Math.cos(a) * rr, this.y + Math.sin(a) * rr, rand(-10, 10), -rand(10, 40), rand(0.3, 0.7), pick(["#bff0ff", "#8fe4ff", "#e6faff"]), rand(2, 5), -20);
+      }
+      game.effects.push(new Effect("ring", { x: this.x, y: this.y, radius: this.range * 0.7, color: "#8fe4ff", dur: 0.3 }));
     } else if (this.kind === "shotgun") {
       game.audio.sfx("shotgun");
       for (let i = 0; i < b.pellets; i++) {
@@ -131,6 +182,7 @@ class Tower {
         game.projectiles.push(new Projectile({
           x: mx, y: my, vx: Math.cos(a) * sp, vy: Math.sin(a) * sp,
           dmg: dmg / b.pellets * 1.6, radius: 3, color: this.def.accent, crit, life: 0.3, speed: sp,
+          burn: round.burn, slow: round.slow, slowDur: round.slowDur, aoe: pf.aoe || 0,
         }));
       }
     } else if (this.kind === "sniper") {
@@ -138,6 +190,7 @@ class Tower {
       game.projectiles.push(new Projectile({
         x: mx, y: my, vx: Math.cos(ang) * b.bulletSpeed, vy: Math.sin(ang) * b.bulletSpeed,
         dmg, radius: 5, color: this.def.accent, crit, pierce: this.pierce, kind: "sniper",
+        burn: round.burn, slow: round.slow, slowDur: round.slowDur, aoe: pf.aoe || 0,
       }));
       game.effects.push(new Effect("flash", { x: mx, y: my, radius: 16, color: "#efe", dur: 0.1 }));
     } else if (this.kind === "flame") {
@@ -253,6 +306,17 @@ class Tower {
       if (this.kind === "sniper") ctx.fillRect(0, -2.5, 30, 5);
       else if (this.kind === "shotgun") { ctx.fillRect(0, -5, 22, 4); ctx.fillRect(0, 1, 22, 4); }
       else if (this.kind === "flame") { ctx.fillRect(0, -4, 20, 8); ctx.beginPath(); ctx.arc(20, 0, 5, 0, TAU); ctx.fill(); }
+      else if (this.kind === "mortar") { ctx.fillRect(0, -7, 24, 14); ctx.fillRect(20, -5, 10, 10); }
+      else if (this.kind === "cryo") {
+        ctx.beginPath(); ctx.arc(0, 0, 6, 0, TAU); ctx.fill();
+        ctx.strokeStyle = this.def.accent; ctx.lineWidth = 2;
+        for (let i = 0; i < 3; i++) { const a = i * Math.PI / 3; ctx.beginPath(); ctx.moveTo(Math.cos(a) * -8, Math.sin(a) * -8); ctx.lineTo(Math.cos(a) * 8, Math.sin(a) * 8); ctx.stroke(); }
+      }
+      else if (this.kind === "laser") {
+        ctx.fillRect(0, -3, 16, 6);
+        ctx.beginPath(); ctx.arc(18, 0, 5, 0, TAU); ctx.fill();
+        ctx.fillStyle = "#fff"; ctx.beginPath(); ctx.arc(18, 0, 2, 0, TAU); ctx.fill();
+      }
       else if (this.kind === "tesla") {
         ctx.beginPath(); ctx.arc(0, 0, 5, 0, TAU); ctx.fill();
         ctx.strokeStyle = this.def.accent; ctx.lineWidth = 2;

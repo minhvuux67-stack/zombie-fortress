@@ -36,6 +36,7 @@ class Zombie {
     let dmg = amount;
     const armor = this.armored;
     if (armor && opts.src !== "flame" && opts.src !== "burn") dmg = Math.max(1, dmg - armor * 0.5);
+    if (this.def.boss && game.protocolFlags && game.protocolFlags.boss && opts.src !== "burn") dmg *= 1 + game.protocolFlags.boss;
     // shield-bearers angle their cover at the towers: bullet/shotgun/sniper
     // rounds glance off, but fire, lightning and explosions ignore the cover
     if (this.def.frontArmor && opts.src === "projectile") {
@@ -107,7 +108,8 @@ class Zombie {
         this.summonT = this.def.summon;
         game.audio.sfx("growl");
         game.effects.push(new Effect("ring", { x: this.x, y: this.y, radius: 60, color: "#c06fd8", dur: 0.5 }));
-        for (let i = 0; i < 2; i++) game.spawnZombie("walker", randInt(0, LANES.length - 1), { x: this.x + rand(-20, 20), hpMul: 0.9 });
+        const stype = this.def.summonType || "walker";
+        for (let i = 0; i < 2; i++) game.spawnZombie(stype, randInt(0, LANES.length - 1), { x: this.x + rand(-20, 20), hpMul: 0.9 });
       }
     }
     if (this.def.boss && !frozen) {
@@ -118,6 +120,36 @@ class Zombie {
         game.effects.push(new Effect("ring", { x: this.x, y: this.y, radius: 300, color: "#ff5566", dur: 0.7 }));
         for (const z of game.zombies) if (!z.dead && dist(z.x, z.y, this.x, this.y) < 320) z.rageT = 6;
         game.shake = Math.max(game.shake, 0.4);
+      }
+    }
+    // Mender: pulses healing ichor that mends nearby zombies
+    if (this.def.heal && !frozen) {
+      this.healT = (this.healT == null ? 0.5 : this.healT) - dt;
+      if (this.healT <= 0) {
+        this.healT = 0.5;
+        let mended = 0;
+        for (const z of game.zombies) {
+          if (z.dead || z === this || z.hp >= z.maxHp) continue;
+          if (dist(z.x, z.y, this.x, this.y) > this.def.healRange) continue;
+          z.hp = Math.min(z.maxHp, z.hp + this.def.heal * 0.5); mended++;
+        }
+        if (mended) {
+          game.effects.push(new Effect("ring", { x: this.x, y: this.y, radius: this.def.healRange * 0.6, color: "#6fe0c0", dur: 0.4 }));
+          for (let i = 0; i < 4; i++) game.emitPfx(this.x + rand(-20, 20), this.y + rand(-16, 16), rand(-20, 20), -rand(10, 40), 0.6, "#9dffe0", 3, -20);
+        }
+      }
+    }
+    // Hive Colossus: ground slam rocks the whole line
+    if (this.def.slam && !frozen) {
+      this.slamT = (this.slamT == null ? 6 : this.slamT) - dt;
+      if (this.slamT <= 0) {
+        this.slamT = 8;
+        game.audio.sfx("explode");
+        game.shake = Math.max(game.shake, 0.6);
+        game.effects.push(new Effect("ring", { x: this.x, y: this.y, radius: 210, color: "#b06ad8", dur: 0.6 }));
+        game.burst(this.x, this.y, "#b06ad8", 26, 300);
+        for (const t of game.towers) if (!t.dead && dist(this.x, this.y, t.x, t.y) < 190) t.hurt(this.dmg * 0.6);
+        if (dist(this.x, this.y, FORTRESS_X, this.y) < 250) game.fortress.hurt(this.dmg * 0.5, game);
       }
     }
   }
@@ -155,6 +187,8 @@ class Zombie {
       game.audio.sfx("hit");
       game.effects.push(new Effect("flash", { x: FORTRESS_X - 4, y: this.y, radius: 18, color: "#ff8090", dur: 0.2 }));
     }
+    // Razor Wire protocol: attackers cut themselves on the defences
+    if (game.protocolFlags && game.protocolFlags.thorns) this.hurt(game.protocolFlags.thorns, game, { src: "thorns" });
   }
 
   draw(ctx, game) {
