@@ -16,6 +16,7 @@ class UIManager {
       tip: this.$("tooltip"), tutorial: this.$("tutorial"), daily: this.$("dailybanner"),
       menustats: this.$("menustats"), btnMusic: this.$("btn-music"), btnSfx: this.$("btn-sfx"),
       btnEndless: this.$("btn-endless"), btnSpeed: this.$("btn-speed"),
+      btnCommand: this.$("btn-command"), levelup: this.$("levelup"), cmdTrack: this.$("cmdtrack"),
     };
     this.lastToolbarSig = "";
     this.lastSkillSig = "";
@@ -130,6 +131,7 @@ class UIManager {
   }
   buildMenu() {
     const g = this.game, st = g.state;
+    if (g.journey) g.journey.daily.refresh();
     const r = rankFor(g.score());
     this.el.menustats.innerHTML = I18N.tr(
       `<span class="chip rankchip">Rank: <b style="color:${r.color}">${r.name}</b></span>` +
@@ -151,12 +153,65 @@ class UIManager {
       this.el.daily.dataset.action = "daily";
     }
     this.el.btnEndless.style.display = (st.highestWave >= 20 || st.unlockedEndless) ? "" : "none";
+    // command center: level + unclaimed-reward badge
+    if (this.el.btnCommand && g.journey) {
+      const lv = g.journey.commander.c.level;
+      const n = g.journey.badge();
+      this.el.btnCommand.innerHTML = `\u{1F3E0} ${T("Command Center")} \u00b7 Lv ${lv}`;
+      if (n > 0) {
+        const b = document.createElement("span"); b.className = "menubadge"; b.textContent = n > 9 ? "9+" : String(n);
+        this.el.btnCommand.appendChild(b);
+      }
+    }
+    // always-visible account progression + next reward (goal gradient)
+    if (this.el.cmdTrack && g.journey) {
+      const c = g.journey.commander;
+      const need = c.xpFor(c.c.level), px = need > 0 ? c.c.xp / need : 0;
+      const nextR = commanderReward(c.c.level + 1);
+      const pend = c.pendingCount();
+      this.el.cmdTrack.innerHTML = I18N.tr(
+        `<div class="spread"><span class="lvn">Lv ${c.c.level}</span>
+          <span style="color:#8fd3ff;font-weight:700">${I18N.tr(c.title())}</span>
+          <span class="dim">${Math.floor(c.c.xp)}/${need} XP</span></div>
+        <div class="bar"><div style="width:${Math.round(clamp(px, 0, 1) * 100)}%"></div></div>
+        <div class="spread" style="margin-top:6px"><span class="dim">${T("Next reward")}: <b style="color:#ffce4a">${I18N.tr(commanderRewardText(nextR))}</b></span>
+          <span style="color:${pend > 0 ? "#ff5566" : "#57e08a"};font-weight:700">${pend > 0 ? "\u2605 " + pend + " " + T("to claim") : "\u2714 " + T("all claimed")}</span></div>
+        <div class="dim" style="margin-top:5px;font-size:12px">\u{1F3AF} ${T("Next goal")}: <b style="color:#8fd3ff">${I18N.tr(this.nextGoal(g))}</b></div>`);
+      this.el.cmdTrack.dataset.action = "command";
+    }
     this.syncMute();
+  }
+  nextGoal(g) {
+    if (g.campaign) {
+      const m = CAMPAIGN_MISSIONS.find((x) => !g.campaign.isDone(x.id) && g.campaign.isUnlocked(x.id));
+      if (m) return T("Campaign") + ": " + I18N.tr(m.name);
+    }
+    const locked = TOWER_IDS.filter((id) => g.state.unlockedTowers.indexOf(id) < 0);
+    if (locked.length) { const id = locked[0]; return "Unlock " + I18N.tr(TOWER_DEFS[id].name) + " (" + TOWER_DEFS[id].unlockCost + " gold)"; }
+    return "Reach wave " + (g.state.highestWave + 5);
   }
   syncMute() {
     const s = this.game.state.settings;
     this.el.btnMusic.style.opacity = s.musicOn ? "1" : ".4";
     this.el.btnSfx.style.opacity = s.soundOn ? "1" : ".4";
+  }
+  toggleMoreMenu() {
+    const grid = this.el.menu.querySelector(".menu-grid");
+    if (!grid) return;
+    grid.classList.toggle("secondary-open");
+    const b = this.$("btn-more");
+    if (b) b.innerHTML = grid.classList.contains("secondary-open") ? "\u25B2 " + T("Less") : "\u2630 " + T("More") + " \u2026";
+  }
+  levelUp(level) {
+    const el = this.el.levelup;
+    if (!el) return;
+    el.innerHTML = `<div class="lu"><div class="big">${T("LEVEL")} ${level}</div>
+      <div class="sub">${I18N.tr(commanderTitle(level))} \u00b7 ${T("reward ready in Command Center")}</div></div>`;
+    el.classList.remove("hidden");
+    clearTimeout(this._luT);
+    this._luT = setTimeout(() => el.classList.add("hidden"), 1900);
+    try { this.game.audio.sfx("achievement"); } catch (e) {}
+    for (let i = 0; i < 40; i++) this.game.emitPfx(rand(0, W), rand(80, 260), rand(-60, 60), rand(-20, 90), rand(0.8, 1.6), pick(["#57e08a", "#ffce4a", "#4aa8ff", "#fff3c4"]), rand(3, 7), 0);
   }
   openOverlay(html) { this.el.overlay.innerHTML = I18N.tr(html); this.el.overlay.classList.add("hidden"); this.el.overlay.firstElementChild && this.el.overlay.firstElementChild.classList.add("ovl"); }
   closeOverlay() { this.el.overlay.innerHTML = ""; }
@@ -266,6 +321,8 @@ class UIManager {
         <div class="up" style="margin-top:10px"><div class="nm">Skills</div><div class="ds">Airstrike drops a bomb where you tap. Freeze stops every zombie for 3 seconds. Repair heals the fortress. Overdrive overclocks every tower for 8 seconds. They cost food or meds and share cooldowns.</div></div>
         <div class="up" style="margin-top:10px"><div class="nm">Waves</div><div class="ds">Build time counts down automatically; press Next Wave to start early and earn bonus scrap. Bosses arrive every 5 waves, and a Hive Colossus every 10. Survive wave 20 to unlock Endless Mode.</div></div>
         <div class="up" style="margin-top:10px"><div class="nm">New threats</div><div class="ds">Splitters burst into runners when they die. Menders heal the whole horde \u2014 kill them first. The Hive Colossus slams the ground and hatches crawlers.</div></div>
+        <div class="up" style="margin-top:10px"><div class="nm">Command Center</div><div class="ds">Your account level and every reward live here. Play anything to earn Commander XP; each level pays out gold, research and supplies \u2014 claim them from the Command Center. Daily missions reset each day and a full board opens a chest. Collection milestones pay out for filling your Bestiary, arsenal and relic vault.</div></div>
+        <div class="up" style="margin-top:10px"><div class="nm">Bounties</div><div class="ds">Every run posts 3 random bounties. Finish them mid-battle for bonus gold and Commander XP, shown on the left of the field and in the pause menu.</div></div>
         <div class="up" style="margin-top:10px"><div class="nm">Campaign</div><div class="ds">Take on 12 handcrafted missions across 3 chapters from the main menu. Each mission adds its own twist. Lose the fortress without a scratch for 3 stars, and the next mission unlocks when you clear one.</div></div>
         <div class="up" style="margin-top:10px"><div class="nm">Specializations</div><div class="ds">At level 3 a tower can commit to one of two specialization paths, changing how it fights. Max it to level 5 to unlock that path's capstone bonus.</div></div>
         <div class="up" style="margin-top:10px"><div class="nm">Battle speed</div><div class="ds">Tap the speed button in the top bar (or press T) to run the battle at 1x, 2x or 3x. Speed is remembered between runs.</div></div>
@@ -306,6 +363,7 @@ class UIManager {
   pause() {    this.setOverlayContent(`<div class="head"><h2>Paused</h2></div>
       <div class="row" style="flex-wrap:wrap;gap:10px">
         <button class="btn primary" data-action="resume">Resume</button>
+        <button class="btn" data-action="command">Command Center</button>
         <button class="btn" data-action="heroes">Heroes</button>
         <button class="btn" data-action="research">Research</button>
         <button class="btn" data-action="camp">Camp</button>
@@ -339,7 +397,9 @@ class UIManager {
       `<div class="c"><div class="v">${fmt(info.score)}</div><div class="k">${T("Score")}</div></div>` +
       `<div class="c"><div class="v">${fmt(info.kills)}</div><div class="k">${T("Kills")}</div></div>` +
       `<div class="c"><div class="v">${fmt(info.best)}</div><div class="k">${T("Best score")}</div></div>` +
-      `<div class="c"><div class="v">${st.highestWave}</div><div class="k">${T("Best wave")}</div></div>`;
+      `<div class="c"><div class="v">${st.highestWave}</div><div class="k">${T("Best wave")}</div></div>` +
+      (info.bounties != null ? `<div class="c"><div class="v">${info.bounties}/3</div><div class="k">${T("Bounties")}</div></div>` : "") +
+      (info.dailyTotal ? `<div class="c"><div class="v">${info.daily}/${info.dailyTotal}</div><div class="k">${T("Daily done")}</div></div>` : "");
     this.setMusicSafe("gameover");
   }
   setMusicSafe(kind) { try { this.game.setMusic(kind); } catch (e) {} }
