@@ -22,6 +22,7 @@ class Game {
     this.synergy = new SynergySystem(this);
     this.protocols = new ProtocolSystem(this);
     this.campaign = new CampaignSystem(this);
+    this.journey = new JourneyManager(this);
     this.speed = this.state.settings.speed || 1;
     this.overdriveT = 0;
     this.weatherZombieSpeed = 1;
@@ -38,6 +39,7 @@ class Game {
     this.selectedTower = null; this.selectedSkill = null; this.selectedSlot = null;
     this.scrap = 0; this.food = this.state.food || 0; this.meds = this.state.meds || 0;
     this.shake = 0; this.killCombo = 0; this.killComboBest = 0;    this.run = null;
+    this.banner = null; this.hitstop = 0;
     this.mouse = { x: -100, y: -100, on: 0 };
     this.decor = this.makeDecor();
     this.computeBonus();
@@ -152,6 +154,17 @@ class Game {
     this.run.kills++; this.state.totalKills++;
     this.killCombo++; this.killComboBest = Math.max(this.killComboBest, this.killCombo);
     this.run.combo = Math.max(this.run.combo, this.killCombo);
+    if (this.journey) {
+      this.journey.commander.addLiveXp(1);
+      this.journey.event("kills", 1);
+      this.journey.event("combo", this.killCombo);
+      if (this.killCombo > 0 && this.killCombo % 25 === 0) {
+        const b = 20 + Math.floor(this.killCombo / 5);
+        this.addScrap(b);
+        this.damageTexts.push(new DamageText(z.x, z.y - z.r - 34, "COMBO +" + b, "#ffce4a"));
+        this.ui.toast("\u{1F525} Combo x" + this.killCombo + " \u00b7 +" + b + " scrap", "#ffce4a");
+      }
+    }
     const scrap = Math.round(z.scrap * this.bonus.scrapGain);
     this.addScrap(scrap);
     this.damageTexts.push(new DamageText(z.x, z.y - z.r - 18, "+" + scrap, "#8fd3ff"));
@@ -168,12 +181,14 @@ class Game {
     this.audio.sfx("zeath");
     if (z.def.boss) {
       this.run.bossKills++; this.state.bossKills = (this.state.bossKills || 0) + 1;
+      if (this.journey) { this.journey.commander.addLiveXp(30); this.journey.event("bosses", 1); }
       this.shake = Math.max(this.shake, 0.6);
       this.audio.sfx("explode");
       this.ui.toast("\u2620 Boss down! +" + scrap + " scrap", "#ffce4a");
       this.food += 10; this.meds += 8;
       this.effects.push(new Effect("ring", { x: z.x, y: z.y, radius: 260, color: "#ffce4a", dur: 0.8 }));
       if (z.type === "colossus") { this.state.stats.colossusKills = (this.state.stats.colossusKills || 0) + 1; this.unlock("colossus_slay"); }
+      this.hitstop = Math.max(this.hitstop, 0.12);
     }
     // Splitter bursts open into a pair of runners
     if (z.def.split) {
@@ -190,8 +205,8 @@ class Game {
     if (this.protocolFlags && this.protocolFlags.vamp && this.fortress) this.fortress.heal(this.protocolFlags.vamp);
     this.achievements.check();
   }
-  addScrap(n) { this.scrap += n; this.run.scrapEarned += n; }
-  spendScrap(n) { if (this.scrap < n) return false; this.scrap -= n; return true; }
+  addScrap(n) { this.scrap += n; this.run.scrapEarned += n; if (this.journey) this.journey.event("scrapEarned", n); }
+  spendScrap(n) { if (this.scrap < n) return false; this.scrap -= n; if (this.journey) this.journey.event("scrapSpent", n); return true; }
   skillUsable(s) {
     if (this.mods.noSkills) return false;
     if (s.cdLeft > 0) return false;
@@ -203,6 +218,8 @@ class Game {
     if (s.costType === "food") this.food = Math.max(0, this.food - s.cost);
     else this.meds = Math.max(0, this.meds - s.cost);
     s.cdLeft = s.cd * this.bonus.cooldown;
+    this.state.stats.skillsUsed = (this.state.stats.skillsUsed || 0) + 1;
+    if (this.journey) this.journey.event("skills", 1);
   }
 
   /* ---------------- run lifecycle ---------------- */
@@ -237,6 +254,8 @@ class Game {
     this.state.gold += this.bonus.startGold;
     this.run = { kills: 0, wavesCleared: 0, fortressHit: false, combo: 0, bossKills: 0, scrapEarned: 0, builds: 0, protocols: 0, hero: this.state.selectedHero, startTime: nowMs() };
     this.killCombo = 0; this.killComboBest = 0;
+    this.waveHit = false;
+    if (this.journey) this.journey.bounties.roll();
     let startScrap = 200 + this.bonus.startScrap;
     if (this.mods.startScrap) startScrap = Math.round(startScrap * this.mods.startScrap);
     if (this.mods.startScrapFlat) startScrap = this.mods.startScrapFlat;
@@ -275,6 +294,9 @@ class Game {
     const n = this.waves.wave + 1;
     this.mutations.roll(n);
     this.waves.startWave(n);
+    this.waveHit = false;
+    if (n % 10 === 0) this.showBanner("BOSS INCOMING", "#ff5566", 2.4);
+    else if (n > 1) this.showBanner("WAVE " + n, "#8fd3ff", 1.4);
     this.mutations.applyToWave(n, this);
     this.setMusic("battle");
   }
@@ -291,6 +313,13 @@ class Game {
     if (this.bonus.waveMeds) this.meds += this.bonus.waveMeds;
     if (n > this.state.highestWave) { this.state.highestWave = n; }
     if (this.run.kills > 0 && this.killComboBest >= 50) this.unlock("combo_50");
+    if (this.journey) {
+      this.journey.event("waves", 1);
+      this.journey.event("goldEarned", gold);
+      this.journey.commander.addLiveXp(10);
+      if (this.waveHit) this.noHitStreak = 0; else { this.noHitStreak = (this.noHitStreak || 0) + 1; this.journey.event("noHitStreak", this.noHitStreak); }
+    }
+    if (n % 5 === 0) this.showBanner("WAVE " + n + " CLEARED", n >= 20 ? "#ff7d9c" : "#57e08a");
     this.ui.toast("\u2714 Wave " + n + " cleared  \u00b7  +" + gold + " gold", "#57e08a");
     this.audio.sfx("coin");
     this.achievements.check();
@@ -327,6 +356,7 @@ class Game {
     this.state.leaderboard.sort((a, b) => b.score - a.score);
     this.state.leaderboard = this.state.leaderboard.slice(0, 10);
     this.achievements.check();
+    if (this.journey) this.journey.commander.addXp(this.run.wavesCleared * 15 + this.run.bossKills * 50);
     if (this.meta) {
       this.meta.finishRun(this.run, false);
       this.meta.season.noteRank(rankFor(this.score()).name);
@@ -337,7 +367,10 @@ class Game {
     if (score > prevBest) tease = "\u{1F525} New personal best! You beat your old score by " + (score - prevBest) + " points \u2014 go further.";
     else if (this.waves.wave >= this.state.highestWave) tease = "\u{1F525} That ties your best wave. One more wave and you own the record!";
     else tease = "\u{1F525} You were only " + Math.max(1, this.state.highestWave - this.waves.wave) + " wave(s) from your best. One more try?";
-    this.ui.showGameOver({ score, wave: this.waves.wave, kills: this.run.kills, best: this.state.highScore, tease });
+    this.ui.showGameOver({ score, wave: this.waves.wave, kills: this.run.kills, best: this.state.highScore, tease,
+      bounties: this.journey ? this.journey.bounties.done.length : 0,
+      daily: this.journey ? this.journey.daily.completedCount() : 0,
+      dailyTotal: this.journey ? this.journey.daily.tasks().length : 0 });
   }
   /* campaign mission victory - finalise the run, then show the result card */
   winRun(res) {
@@ -355,6 +388,11 @@ class Game {
     this.state.leaderboard.push({ score, wave: this.waves.wave, kills: this.run.kills, date: new Date().toISOString() });
     this.state.leaderboard.sort((a, b) => b.score - a.score);
     this.state.leaderboard = this.state.leaderboard.slice(0, 10);
+    if (this.journey) {
+      this.journey.event("wins", 1);
+      this.journey.event("missions", 1);
+      this.journey.commander.addXp(this.run.wavesCleared * 15 + this.run.bossKills * 50 + 250);
+    }
     if (this.meta) this.meta.finishRun(this.run, true);
     this.achievements.check();
     this.save();
@@ -378,6 +416,8 @@ class Game {
     if (next && this.campaign.isUnlocked(next.id)) this.campaign.start(next.id);
     else this.ui.campaignScreen();
   }
+  onCommanderLevel(level) { if (this.ui) this.ui.levelUp(level); }
+  showBanner(text, color, dur) { this.banner = { text, color: color || "#ffce4a", t: dur || 2.2, max: dur || 2.2 }; }
   quitToMenu() {
     if (this.screen === "play") {
       this.state.totalPlayTime += (nowMs() - (this.run ? this.run.startTime : nowMs())) / 1000;
@@ -569,6 +609,10 @@ class Game {
     if (this.run) this.run.builds = (this.run.builds || 0) + 1;
     this.state.stats.towerUse[id] = (this.state.stats.towerUse[id] || 0) + 1;
     if (this.meta) this.meta.codex.unlock("t_" + id, "Arsenal", def.name, def.desc);
+    if (this.journey) {
+      this.journey.event("builds", 1);
+      this.journey.event("towerCount", this.towers.filter((x) => !x.dead).length);
+    }
     if (this.synergy) this.synergy.recompute();
     if (this.scrap < cost) this.selectedTower = null;
   }
@@ -615,7 +659,7 @@ class Game {
   action(name, data) {
     const st = this.state;
     // opening any informational panel during a run pauses the battle so nothing sneaks past
-    if (["shop", "collection", "achievements", "leaderboard", "settings", "help", "daily", "codex", "quests", "camp", "research", "heroes", "relics", "battlepass", "prestige", "season", "protocols"].indexOf(name) >= 0) {
+    if (["shop", "collection", "achievements", "leaderboard", "settings", "help", "daily", "codex", "quests", "camp", "research", "heroes", "relics", "battlepass", "prestige", "season", "protocols", "command"].indexOf(name) >= 0) {
       if (this.screen === "play" && !this.paused) {
         this.paused = true; this.autoPaused = true; this.setMusic("menu");
       }
@@ -630,6 +674,38 @@ class Game {
       case "play": this.startRun("normal"); break;
       case "endless": this.startRun("endless"); break;
       case "campaign": this.ui.campaignScreen(); break;
+      case "moremenu": this.ui.toggleMoreMenu(); break;
+      case "command": this.ui.commandScreen(); break;
+      case "claimalllevels": {
+        const n = this.journey.commander.claimAll();
+        if (n) { this.showBanner("LEVEL REWARDS CLAIMED", "#57e08a"); this.ui.toast("\u2b06 Claimed " + n + " level reward" + (n === 1 ? "" : "s") + "!", "#ffce4a"); this.ui.commandScreen(); }
+        break;
+      }
+      case "claimlevel": {
+        const r = this.journey.commander.claim(parseInt(data.id, 10));
+        if (r) { this.ui.toast("\u2b06 Level " + r.level + ": " + r.got.join(", "), "#ffce4a"); this.ui.commandScreen(); }
+        break;
+      }
+      case "claimdm": {
+        const r = this.journey.daily.claimTask(data.id);
+        if (r) { this.ui.toast("\u{1F4CB} " + r.m.name + ": " + r.got.join(", "), "#57e08a"); this.ui.commandScreen(); }
+        break;
+      }
+      case "claimchest": {
+        const got = this.journey.daily.claimChest();
+        if (got) { this.showBanner("DAILY CHEST OPENED", "#ffce4a"); this.ui.toast("\u{1F381} Daily Chest: " + got.join(", "), "#ffce4a"); this.ui.commandScreen(); }
+        break;
+      }
+      case "claimcollection": {
+        const got = this.journey.collection.claim(data.id);
+        if (got) { this.ui.toast("\u{1F4DA} Collection reward: " + got.join(", "), "#ffce4a"); this.ui.commandScreen(); }
+        break;
+      }
+      case "claimstarter": {
+        const got = this.journey.starter.claim(data.id);
+        if (got) { this.showBanner("NICE WORK!", "#57e08a", 1.5); this.ui.toast("\u{1F331} " + got.join(", "), "#57e08a"); this.ui.commandScreen(); }
+        break;
+      }
       case "startmission":
         if (this.campaign.start(data.id)) { this.audio.sfx("click"); this.ui.closeOverlay(); }
         else { this.audio.sfx("error"); }
@@ -655,6 +731,17 @@ class Game {
       case "daily": this.ui.dailyScreen(); break;
       case "startdaily": this.startRun("daily"); break;
       case "retry": this.startRun(this.runMode || "normal"); break;
+      case "share": {
+        const s = "I reached wave " + this.waves.wave + " and scored " + fmt(this.score()) + " in Zombie Fortress: Pandemic Defense! \u{1F9DF}\u{1F3F0}";
+        const url = "https://minhvudz404.itch.io/zombie-fortress-pandemic-defense";
+        const copy = () => {
+          try { navigator.clipboard.writeText(s + " " + url); this.ui.toast("\u{1F517} Result copied \u2014 paste it anywhere!", "#8fd3ff"); }
+          catch (e) { this.ui.toast("\u{1F517} " + s, "#8fd3ff"); }
+        };
+        if (navigator.share) navigator.share({ title: "Zombie Fortress", text: s, url }).catch(copy);
+        else copy();
+        break;
+      }
       case "menu": this.quitToMenu(); break;
       case "nextwave": this.nextWave(); break;
       case "pause": if (this.screen === "play") { this.paused = true; this.ui.pause(); this.setMusic("menu"); } break;
@@ -690,6 +777,8 @@ class Game {
           this.weather = new WeatherSystem(this);
           this.synergy = new SynergySystem(this);
           this.protocols = new ProtocolSystem(this);
+          this.campaign = new CampaignSystem(this);
+          this.journey = new JourneyManager(this);
           this.overdriveT = 0;
           this.computeBonus(); this.ui.closeOverlay(); this.ui.showMenu(); this.quitToMenu();
         }
@@ -731,6 +820,7 @@ class Game {
         const t = this.selectedSlot;
         if (t && this.towers.includes(t) && !t.dead) {
           this.addScrap(t.sellValue()); t.dead = true; this.selectedSlot = null;
+          if (this.journey) this.journey.event("sold", 1);
           this.audio.sfx("sell"); this.ui.closeOverlay();
           this.burst(t.x, t.y, "#b9a06a", 12, 150);
           if (this.synergy) this.synergy.recompute();
