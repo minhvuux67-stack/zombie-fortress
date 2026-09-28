@@ -55,6 +55,18 @@ ZOMBIES = {
                    cloth="#2f3a4a", clothD="#1c2430", clothL="#4f5f78",
                    leatherD=P["leather_d"], eye="#c8ff8a",
                    height=38, width=14, headR=6, shoulder=16),
+    "splitter": dict(skin="#b06ad8", skinD="#6d3a8a", skinL="#dba6ef",
+                     cloth="#3a2a4a", clothD="#241830", clothL="#5f4a78",
+                     leatherD=P["leather_d"], eye="#ff9ae0", belly=1.2,
+                     height=38, width=17, headR=6, shoulder=18),
+    "healer": dict(skin="#5fd0b0", skinD="#337c68", skinL="#a6f0dd",
+                   cloth="#2a4a44", clothD="#18302c", clothL="#4a7a70",
+                   leatherD=P["leather_d"], eye="#d6fff0", belly=0.4,
+                   height=37, width=14, headR=6, shoulder=16),
+    "colossus": dict(skin="#a06ac0", skinD="#5f3a7a", skinL="#cf9fe4",
+                     cloth="#2a1a3a", clothD="#180f24", clothL="#4a2a62",
+                     leatherD=P["leather_d"], eye="#f0a6ff", belly=0.9,
+                     height=42, width=25, headR=9, shoulder=25),
 }
 
 EXTRA_ANIMS = {"boss": True}

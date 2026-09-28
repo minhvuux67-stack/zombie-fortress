@@ -20,6 +20,8 @@ class Game {
     this.mutations = new MutationSystem(this);
     this.weather = new WeatherSystem(this);
     this.synergy = new SynergySystem(this);
+    this.protocols = new ProtocolSystem(this);
+    this.overdriveT = 0;
     this.weatherZombieSpeed = 1;
     this.mutationVuln = 1; this.mutationScrap = 1; this.mutationMultiLane = false;
     this.mods = {};
@@ -41,6 +43,7 @@ class Game {
       { id: "airstrike", name: "Strike", icon: "\u{1F4A3}", costType: "food", cost: 25, cd: 45, cdLeft: 0, desc: "Tap the field to call a bombing run (220 damage over a wide area)." },
       { id: "freeze", name: "Freeze", icon: "\u2744", costType: "food", cost: 20, cd: 40, cdLeft: 0, desc: "Freeze every zombie on screen for 3 seconds." },
       { id: "repair", name: "Repair", icon: "\u{1F6E0}", costType: "meds", cost: 20, cd: 60, cdLeft: 0, desc: "Restore 35% of the fortress maximum HP." },
+      { id: "overdrive", name: "Overdrive", icon: "\u{1F680}", costType: "food", cost: 30, cd: 75, cdLeft: 0, desc: "Overclock every tower: +25% damage and +60% fire rate for 8 seconds." },
     ];
     this.setupStage();
     this.bindInput();
@@ -75,6 +78,18 @@ class Game {
       waveFood: add("waveFood"),
       waveMeds: add("waveMeds"),
     };
+    // fold this run's drafted protocols on top (they stack multiplicatively)
+    if (this.protocols) {
+      mergeMods(this.bonus, this.protocols.mods());
+      this.protocolFlags = this.protocols.flags();
+    } else {
+      this.protocolFlags = { burn: 0, aoe: 0, slow: 0, slowDur: 1.4, vamp: 0, thorns: 0, boss: 0 };
+    }
+  }
+  /* apply the current bonus bundle to every tower already on the field */
+  refreshTowers() {
+    for (const t of this.towers) if (!t.dead && t.recompute) t.recompute();
+    if (this.synergy && this.synergy.recompute) this.synergy.recompute();
   }
   towerCost(id) {
     const def = TOWER_DEFS[id];
@@ -156,7 +171,21 @@ class Game {
       this.ui.toast("\u2620 Boss down! +" + scrap + " scrap", "#ffce4a");
       this.food += 10; this.meds += 8;
       this.effects.push(new Effect("ring", { x: z.x, y: z.y, radius: 260, color: "#ffce4a", dur: 0.8 }));
+      if (z.type === "colossus") { this.state.stats.colossusKills = (this.state.stats.colossusKills || 0) + 1; this.unlock("colossus_slay"); }
     }
+    // Splitter bursts open into a pair of runners
+    if (z.def.split) {
+      this.state.stats.splitterKills = (this.state.stats.splitterKills || 0) + 1;
+      this.effects.push(new Effect("ring", { x: z.x, y: z.y, radius: 70, color: "#c47ad8", dur: 0.5 }));
+      for (let i = 0; i < z.def.split; i++) this.spawnZombie("runner", z.lane, { x: z.x + rand(-16, 16), hpMul: 0.75 });
+      if (this.state.stats.splitterKills >= 50) this.unlock("splitter_kill");
+    }
+    if (z.type === "healer") {
+      this.state.stats.healerKills = (this.state.stats.healerKills || 0) + 1;
+      if (this.state.stats.healerKills >= 50) this.unlock("healer_kill");
+    }
+    // Leech Protocol: each kill patches the wall
+    if (this.protocolFlags && this.protocolFlags.vamp && this.fortress) this.fortress.heal(this.protocolFlags.vamp);
     this.achievements.check();
   }
   addScrap(n) { this.scrap += n; this.run.scrapEarned += n; }
@@ -186,6 +215,8 @@ class Game {
     // roll run-wide variety, then fold meta + weather into the bonus bundle
     this.mutations.reset();
     this.synergy.reset();
+    this.protocols.reset();
+    this.overdriveT = 0;
     if (this.meta) this.meta.recompute();
     this.weather.roll();
     this.computeBonus();
@@ -197,7 +228,7 @@ class Game {
     this.weatherZombieSpeed = wm.zombieSpeed || 1;
     this.mutationVuln = 1; this.mutationScrap = 1; this.mutationMultiLane = false;
     this.state.gold += this.bonus.startGold;
-    this.run = { kills: 0, wavesCleared: 0, fortressHit: false, combo: 0, bossKills: 0, scrapEarned: 0, builds: 0, hero: this.state.selectedHero, startTime: nowMs() };
+    this.run = { kills: 0, wavesCleared: 0, fortressHit: false, combo: 0, bossKills: 0, scrapEarned: 0, builds: 0, protocols: 0, hero: this.state.selectedHero, startTime: nowMs() };
     this.killCombo = 0; this.killComboBest = 0;
     let startScrap = 200 + this.bonus.startScrap;
     if (this.mods.startScrap) startScrap = Math.round(startScrap * this.mods.startScrap);
@@ -264,6 +295,8 @@ class Game {
     this.waves.prepTimer = PREP_TIME;
     this.setMusic("menu");
     this.save();
+    // roguelite beat: the lab offers a mutation before the next wave
+    if (this.protocols) this.protocols.offer();
   }
   gameOver() {
     if (this.screen !== "play") return;
@@ -417,6 +450,7 @@ class Game {
       if (k === "q") this.onSkillCard("airstrike");
       if (k === "w") this.onSkillCard("freeze");
       if (k === "e") this.onSkillCard("repair");
+      if (k === "r") this.onSkillCard("overdrive");
       const n = parseInt(k, 10);
       if (n >= 1 && n <= TOWER_IDS.length) this.onTowerCard(TOWER_IDS[n - 1]);
     } else if (this.screen === "over" && k === " ") {
@@ -442,6 +476,7 @@ class Game {
     this.audio.sfx("click");
     if (id === "freeze") this.doFreeze();
     else if (id === "repair") this.doRepair();
+    else if (id === "overdrive") this.doOverdrive();
     else { this.selectedTower = null; this.selectedSkill = this.selectedSkill === id ? null : id; }
     this.ui.lastSkillSig = "";
   }
@@ -512,11 +547,22 @@ class Game {
     for (let i = 0; i < 30; i++) this.emitPfx(rand(10, FIELD_LEFT - 10), rand(120, H - 120), rand(-20, 20), rand(-80, -20), 0.8, "#9dffcf", rand(3, 6), -30);
     this.ui.toast("\u{1F6E0} Fortress repaired", "#57e08a");
   }
+  doOverdrive() {
+    const s = this.skills.find((v) => v.id === "overdrive");
+    if (!this.skillUsable(s)) return;
+    this.paySkill(s);
+    this.overdriveT = 8;
+    this.audio.sfx("upgrade");
+    this.effects.push(new Effect("ring", { x: W / 2, y: H / 2, radius: 0, color: "#ffce4a", dur: 0.6 }));
+    for (let i = 0; i < 40; i++) this.emitPfx(rand(FIELD_LEFT, W), rand(80, H - 60), rand(-30, 30), -rand(40, 140), rand(0.4, 1), pick(["#ffce4a", "#ff9b4a", "#fff2a0"]), rand(2, 5), -10);
+    this.unlock("overdrive");
+    this.ui.toast("\u{1F680} OVERDRIVE \u2014 all towers overclocked for 8s!", "#ffce4a");
+  }
 
   action(name, data) {
     const st = this.state;
     // opening any informational panel during a run pauses the battle so nothing sneaks past
-    if (["shop", "collection", "achievements", "leaderboard", "settings", "help", "daily", "codex", "quests", "camp", "research", "heroes", "relics", "battlepass", "prestige", "season"].indexOf(name) >= 0) {
+    if (["shop", "collection", "achievements", "leaderboard", "settings", "help", "daily", "codex", "quests", "camp", "research", "heroes", "relics", "battlepass", "prestige", "season", "protocols"].indexOf(name) >= 0) {
       if (this.screen === "play" && !this.paused) {
         this.paused = true; this.autoPaused = true; this.setMusic("menu");
       }
@@ -567,6 +613,8 @@ class Game {
           this.mutations = new MutationSystem(this);
           this.weather = new WeatherSystem(this);
           this.synergy = new SynergySystem(this);
+          this.protocols = new ProtocolSystem(this);
+          this.overdriveT = 0;
           this.computeBonus(); this.ui.closeOverlay(); this.ui.showMenu(); this.quitToMenu();
         }
         break;
@@ -617,6 +665,15 @@ class Game {
       /* ---- v3 meta screens ---- */
       case "codex": this.ui.codexScreen(); break;
       case "codexcat": this.ui._codexCat = data.v; this.ui.codexScreen(); break;
+      case "protocols": this.ui.protocolsScreen(); break;
+      case "pickproto": this.protocols.pick(data.id); break;
+      case "skipdraft":
+        this.protocols.pending = 0;
+        this.ui.closeOverlay();
+        this.endAutoPause();
+        this.ui.toast("\u{1F9EC} Skipped the mutation.", "#8fa2c0");
+        break;
+      case "toggledraft": st.settings.draft = !st.settings.draft; SaveSystem.save(st); this.ui.settings(); break;
       case "quests": this.ui.questsScreen(); break;
       case "camp": this.ui.campScreen(); break;
       case "research": this.ui.researchScreen(); break;

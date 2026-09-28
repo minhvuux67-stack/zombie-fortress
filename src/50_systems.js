@@ -25,6 +25,8 @@ class WaveManager {
     if (n >= 6) pool.push(["bomber", Math.min(0.3, 0.04 + n * 0.016)]);
     if (n >= 8) pool.push(["brute", Math.min(0.34, 0.03 + n * 0.018)]);
     if (n >= 11) pool.push(["shield", Math.min(0.3, 0.03 + n * 0.016)]);
+    if (n >= 6) pool.push(["healer", Math.min(0.26, 0.02 + n * 0.014)]);
+    if (n >= 7) pool.push(["splitter", Math.min(0.3, 0.03 + n * 0.016)]);
     const list = [];
     for (let i = 0; i < count; i++) {
       let r = Math.random(), acc = 0, type = "walker";
@@ -33,10 +35,11 @@ class WaveManager {
       list.push(type);
     }
     this.bossWave = this.isBossWave(n);
-    if (this.bossWave) { list.length = Math.max(3, Math.round(list.length * 0.7)); list.push("boss"); }
+    const bossType = (n >= 10 && n % 10 === 0) ? "colossus" : "boss";
+    if (this.bossWave) { list.length = Math.max(3, Math.round(list.length * 0.7)); list.push(bossType); }
     if (mut.elite && !this.bossWave) { list.push("brute"); }
     // shuffle but keep the boss at the end
-    if (this.bossWave) { list.pop(); list.sort(() => Math.random() - 0.5); list.push("boss"); }
+    if (this.bossWave) { list.pop(); list.sort(() => Math.random() - 0.5); list.push(bossType); }
     else list.sort(() => Math.random() - 0.5);
     return list;
   }
@@ -104,6 +107,7 @@ class AchievementSystem {
     if (st.highestWave >= 20) this.unlock("wave_20");
     if (st.highestWave >= 30) this.unlock("endless_30");
     if (st.unlockedTowers.length >= TOWER_IDS.length) this.unlock("all_towers");
+    if (["mortar", "cryo", "laser"].every((t) => st.unlockedTowers.indexOf(t) >= 0)) this.unlock("arsenal_v4");
     if ((run && run.bossKills >= 1) || st.bossKills) this.unlock("boss_slay");
     if (run && run.wavesCleared >= 10 && !run.fortressHit) this.unlock("flawless_10");
     if (run && run.combo >= 50) this.unlock("combo_50");

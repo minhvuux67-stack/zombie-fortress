@@ -21,6 +21,8 @@ TYPES = {
     "barricade":   dict(color="#b9a06a", accent="#ead9a8"),
     "medic":       dict(color="#59e0a0", accent="#c9ffe4"),
     "mortar":      dict(color="#c9a24a", accent="#ffe6a8"),
+    "cryo":        dict(color="#6fd0ff", accent="#d6f4ff"),
+    "laser":       dict(color="#ff5bd0", accent="#ffd6f4"),
 }
 
 
@@ -39,7 +41,6 @@ def mount(d, col):
 
 def draw_turret(tid, col, acc, mode):
     im, d = frame()
-    piv = (24, 24)
     recoil = 2 if mode == "recoil" else 0
     if tid == "tesla":
         # coil: vertical rod with glowing orb
@@ -63,6 +64,27 @@ def draw_turret(tid, col, acc, mode):
         poly(d, [(9, 19 - recoil), (37, 13 - recoil), (39, 19 - recoil), (9, 27 - recoil)], col)
         line(d, [(10, 20 - recoil), (37, 14 - recoil)], acc, 1)
         rect(d, 4, 18 - recoil, 12, 30 - recoil, P["metal_l"])
+    elif tid == "cryo":
+        # coolant tank + radiating frost prongs
+        rect(d, 10, 12, 26, 34, P["ink"])
+        rect(d, 11, 13, 25, 33, P["metal"])
+        rect(d, 12, 14, 24, 23, P["cyan"])
+        ell(d, 20, 2, 30, 15, P["ink"])
+        ell(d, 21, 3, 29, 14, P["cyan"])
+        ell(d, 22, 5, 28, 12, P["white"] if mode in ("flash", "flash2") else col)
+        for i in range(3):
+            a = i * math.pi / 3
+            line(d, [(24 - int(math.cos(a) * 9), 8 - int(math.sin(a) * 9)),
+                     (24 + int(math.cos(a) * 9), 8 + int(math.sin(a) * 9))], acc, 1)
+    elif tid == "laser":
+        # prism barrel with a glowing core
+        line(d, [(8, 23), (36 - recoil, 23)], P["ink"], 6)
+        line(d, [(8, 23), (36 - recoil, 23)], col, 4)
+        line(d, [(9, 21), (35 - recoil, 21)], acc, 1)
+        rect(d, 12, 14, 24, 32, P["ink"])
+        rect(d, 13, 15, 23, 31, P["metal"])
+        ell(d, 16, 17, 28, 29, P["ink"])
+        ell(d, 17, 18, 27, 28, P["white"] if mode in ("flash", "flash2") else col)
     elif tid == "flamethrower":
         # tank + nozzle
         rect(d, 8, 14, 20, 34, P["ink"])
@@ -96,8 +118,8 @@ def draw_turret(tid, col, acc, mode):
         rect(d, 14, 14, 26, 32, P["ink"])
         rect(d, 15, 15, 25, 31, P["metal"])
         rect(d, 16, 16, 24, 21, P["metal_l"])
-    # muzzle flash
-    if mode in ("flash", "flash2"):
+    # muzzle flash (cryo/laser draw their own glow)
+    if mode in ("flash", "flash2") and tid not in ("cryo", "laser"):
         r = 4 if mode == "flash" else 7
         ex = 38 if tid != "mortar" else 40
         ell(d, ex - 1, 24 - r, ex + r * 2, 24 + r, P["orange"])

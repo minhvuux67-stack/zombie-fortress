@@ -32,6 +32,7 @@ Object.assign(Game.prototype, {
   update(dt) {
     if (this.screen !== "play" || this.paused) return;
     for (const s of this.skills) if (s.cdLeft > 0) s.cdLeft = Math.max(0, s.cdLeft - dt);
+    if (this.overdriveT > 0) this.overdriveT = Math.max(0, this.overdriveT - dt);
     this.fortress.update(dt, this);
     if (this.synergy && this.synergy.has && this.synergy.has("hospital")) this.fortress.heal(40 * dt);
     this.waves.update(dt);
@@ -236,6 +237,23 @@ Object.assign(Game.prototype, {
         ctx.textAlign = "left"; ctx.font = "600 13px Segoe UI, sans-serif";
         ctx.fillStyle = "rgba(180,210,255,.82)";
         ctx.fillText(bits.join("   "), 14, 72);
+        ctx.restore();
+      }
+      // mutation protocol count
+      if (this.protocols && this.protocols.taken.length) {
+        ctx.save();
+        ctx.textAlign = "left"; ctx.font = "600 13px Segoe UI, sans-serif";
+        ctx.fillStyle = "rgba(200,150,255,.9)";
+        ctx.fillText("\u{1F9EC} " + this.protocols.taken.length + " " + T("protocols"), 14, this.synergy && this.synergy.active.length ? 90 : 90);
+        ctx.restore();
+      }
+      // overdrive banner
+      if (this.overdriveT > 0) {
+        ctx.save();
+        ctx.textAlign = "center"; ctx.font = "800 15px Segoe UI, sans-serif";
+        ctx.fillStyle = "rgba(255,206,74,.95)";
+        ctx.shadowColor = "#ffce4a"; ctx.shadowBlur = 12;
+        ctx.fillText("\u{1F680} " + T("OVERDRIVE") + " " + Math.ceil(this.overdriveT) + "s", W / 2, 132);
         ctx.restore();
       }
     }

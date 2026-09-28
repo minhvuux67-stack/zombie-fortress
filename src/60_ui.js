@@ -240,6 +240,8 @@ class UIManager {
           <button class="btn sm ${s.soundOn ? "primary" : ""}" data-action="togglesfx">${T(s.soundOn ? "ON" : "OFF")}</button></div>
         <div class="up spread" style="margin-top:10px"><div><div class="nm">\u{1F310} Language</div><div class="ds">Interface language</div></div>
           <div class="row">${langs}</div></div>
+        <div class="up spread" style="margin-top:10px"><div><div class="nm">\u{1F9EC} Mutation Protocols</div><div class="ds">Offer a run mutation after every cleared wave.</div></div>
+          <button class="btn sm ${s.draft ? "primary" : ""}" data-action="toggledraft">${T(s.draft ? "ON" : "OFF")}</button></div>
         <div class="up" style="margin-top:10px"><div class="nm">\u{1F3AE} Difficulty</div>
           <div class="ds">Applies to the next run you start.</div><div class="row">${diffs}</div></div>
         <div class="up" style="margin-top:10px"><div class="nm">\u{1F5D1} Reset Progress</div>
@@ -257,9 +259,11 @@ class UIManager {
         <div class="up" style="margin-top:10px"><div class="nm">Build</div><div class="ds">Tap a tower at the bottom, then tap an empty platform on the field. Towers shoot by themselves \u2014 you never aim.</div></div>
         <div class="up" style="margin-top:10px"><div class="nm">Scrap vs Gold</div><div class="ds">Scrap drops from kills and pays for towers and upgrades during a run. Gold is awarded at the end of each wave and buys permanent upgrades between runs.</div></div>
         <div class="up" style="margin-top:10px"><div class="nm">Upgrade / Sell</div><div class="ds">Tap a built tower on the field to open its panel, then upgrade (up to level 5) or sell it for 60% back.</div></div>
-        <div class="up" style="margin-top:10px"><div class="nm">Skills</div><div class="ds">Airstrike drops a bomb where you tap. Freeze stops every zombie for 3 seconds. Repair heals the fortress. They cost food or meds and share cooldowns.</div></div>
-        <div class="up" style="margin-top:10px"><div class="nm">Waves</div><div class="ds">Build time counts down automatically; press Next Wave to start early and earn bonus scrap. Bosses arrive every 5 waves. Survive wave 20 to unlock Endless Mode.</div></div>
-        <div class="up" style="margin-top:10px"><div class="nm">Keyboard</div><div class="ds">1-7 pick a tower \u00b7 Q/W/E fire skills \u00b7 SPACE starts the next wave \u00b7 P pauses \u00b7 Esc closes panels and deselects.</div></div>
+        <div class="up" style="margin-top:10px"><div class="nm">Mutation Protocols</div><div class="ds">Each time you clear a wave, the lab offers one of three random mutations. Take one (or skip) and it stays for the whole run \u2014 draft the same power twice and it stacks. Build your fortress differently every game.</div></div>
+        <div class="up" style="margin-top:10px"><div class="nm">Skills</div><div class="ds">Airstrike drops a bomb where you tap. Freeze stops every zombie for 3 seconds. Repair heals the fortress. Overdrive overclocks every tower for 8 seconds. They cost food or meds and share cooldowns.</div></div>
+        <div class="up" style="margin-top:10px"><div class="nm">Waves</div><div class="ds">Build time counts down automatically; press Next Wave to start early and earn bonus scrap. Bosses arrive every 5 waves, and a Hive Colossus every 10. Survive wave 20 to unlock Endless Mode.</div></div>
+        <div class="up" style="margin-top:10px"><div class="nm">New threats</div><div class="ds">Splitters burst into runners when they die. Menders heal the whole horde \u2014 kill them first. The Hive Colossus slams the ground and hatches crawlers.</div></div>
+        <div class="up" style="margin-top:10px"><div class="nm">Keyboard</div><div class="ds">1-0 pick a tower \u00b7 Q/W/E/R fire skills \u00b7 SPACE starts the next wave \u00b7 P pauses \u00b7 Esc closes panels and deselects.</div></div>
       </div>`);
   }
   modList(mods) {
@@ -300,6 +304,7 @@ class UIManager {
         <button class="btn" data-action="research">Research</button>
         <button class="btn" data-action="camp">Camp</button>
         <button class="btn" data-action="quests">Quests</button>
+        <button class="btn" data-action="protocols">Protocols</button>
         <button class="btn" data-action="codex">Codex</button>
         <button class="btn" data-action="settings">Settings</button>
         <button class="btn" data-action="help">How to Play</button>
