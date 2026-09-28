@@ -826,6 +826,10 @@ const I18N_PAIRS = [
   ["Reach wave 5.", "Đạt đợt 5."],
   ["NICE WORK!", "LÀM TỐT LẮM!"],
   ["Next goal", "Mục tiêu kế tiếp"],
+  ["Build cost", "Chi phí xây"],
+  ["Unlocked", "Mở khoá"],
+  ["Sell", "Bán"],
+  ["First clear rewards", "Thưởng hoàn thành đầu tiên"],
   ["Share", "Chia sẻ"],
   ["BOSS INCOMING", "TRÙM ĐANG TỚI"],
   ["Cull the Horde", "Tàn sát bầy đàn"],
@@ -911,7 +915,9 @@ const I18N = {
     for (const [en, vi] of list) {
       this._exact[en] = vi;
       const esc = en.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
-      this._list.push({ en, vi, re: new RegExp("(?<![A-Za-z])" + esc + "(?![A-Za-z])", "g") });
+      /* no look-behind: capture the leading boundary instead, so the regex
+         also parses on browsers (older Safari) that lack look-behind support */
+      this._list.push({ en, vi, re: new RegExp("(^|[^A-Za-z])(" + esc + ")(?![A-Za-z])", "g") });
     }
     this.setLang(lang || "en");
   },
@@ -943,7 +949,7 @@ const I18N = {
     if (whole && s === s.trim()) return whole;
     let out = s;
     for (const e of this._list) {
-      if (out.indexOf(e.en) >= 0) out = out.replace(e.re, e.vi);
+      if (out.indexOf(e.en) >= 0) out = out.replace(e.re, (m, lead) => lead + e.vi);
     }
     return out;
   },
