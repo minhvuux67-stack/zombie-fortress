@@ -212,7 +212,22 @@ class SurvivorSystem {
 
 /* ------------------------------------------------------------------ */
 class CodexSystem {
-  constructor(game) { this.game = game; }
+  constructor(game) { this.game = game; this._reconcile(); }
+  /* saved codex ids whose static entry was generated at runtime would
+     otherwise vanish after a reload - restore a placeholder so they show */
+  _reconcile() {
+    const have = new Set(CODEX_ENTRIES.map((e) => e.id));
+    for (const id of (this.game.state.codex.entries || [])) {
+      if (have.has(id)) continue;
+      let cat = "Command", name = String(id).replace(/_/g, " ");
+      if (id.indexOf("relic_") === 0) { cat = "Relics"; name = name.replace(/^relic /, ""); }
+      else if (id.indexOf("proto_") === 0) { cat = "Protocols"; name = name.replace(/^proto /, ""); }
+      else if (id.indexOf("z_") === 0) cat = "Bestiary";
+      else if (id.indexOf("t_") === 0) cat = "Arsenal";
+      CODEX_ENTRIES.push({ id, cat, name, ds: "Recovered record." });
+      have.add(id);
+    }
+  }
   has(id) { return this.game.state.codex.entries.indexOf(id) >= 0; }
   unlock(id, cat, name, ds) {
     if (!id || this.has(id)) return false;
@@ -223,7 +238,7 @@ class CodexSystem {
     }
     this.game.save(); return true;
   }
-  percent() { return Math.round((this.game.state.codex.entries.length / CODEX_ENTRIES.length) * 100); }
+  percent() { return Math.min(100, Math.round((this.game.state.codex.entries.length / CODEX_ENTRIES.length) * 100)); }
   byCat() { const out = {}; for (const c of CODEX_CATS) out[c] = []; for (const e of CODEX_ENTRIES) { (out[e.cat] || (out[e.cat] = [])).push(e); } return out; }
 }
 
@@ -247,7 +262,11 @@ function grantQuestReward(game, reward) {
   if (reward.research) { st.research.points += reward.research; got.push("+" + reward.research + " research"); }
   if (reward.scrap) { st.scrap += reward.scrap; got.push("+" + reward.scrap + " scrap"); }
   if (reward.material) { st.camp.materials.metal = (st.camp.materials.metal || 0) + reward.material; got.push("+" + reward.material + " metal"); }
-  if (reward.relic) { game.meta.relics.granted(reward.relic); }
+  if (reward.relic) {
+    /* a string names a specific relic; `true` means "grant a random one" */
+    if (typeof reward.relic === "string") game.meta.relics.granted(reward.relic);
+    else game.meta.relics.grantRandom();
+  }
   return got;
 }
 class QuestSystem {
