@@ -255,6 +255,7 @@ class Game {
     this.run = { kills: 0, wavesCleared: 0, fortressHit: false, combo: 0, bossKills: 0, scrapEarned: 0, builds: 0, protocols: 0, hero: this.state.selectedHero, startTime: nowMs() };
     this.killCombo = 0; this.killComboBest = 0;
     this.waveHit = false;
+    this._bestWaveAtStart = this.state.highestWave;
     if (this.journey) this.journey.bounties.roll();
     let startScrap = 200 + this.bonus.startScrap;
     if (this.mods.startScrap) startScrap = Math.round(startScrap * this.mods.startScrap);
@@ -363,11 +364,13 @@ class Game {
     }
     this.save();
     // "one more wave" tease
+    const prevBestWave = this._bestWaveAtStart != null ? this._bestWaveAtStart : 0;
     let tease;
     if (score > prevBest) tease = "\u{1F525} New personal best! You beat your old score by " + (score - prevBest) + " points \u2014 go further.";
-    else if (this.waves.wave >= this.state.highestWave) tease = "\u{1F525} That ties your best wave. One more wave and you own the record!";
-    else tease = "\u{1F525} You were only " + Math.max(1, this.state.highestWave - this.waves.wave) + " wave(s) from your best. One more try?";
-    this.ui.showGameOver({ score, wave: this.waves.wave, kills: this.run.kills, best: this.state.highScore, tease,
+    else if (this.waves.wave > prevBestWave) tease = "\u{1F525} New best wave! You pushed past your record \u2014 go further.";
+    else if (this.waves.wave === prevBestWave && this.waves.wave > 0) tease = "\u{1F525} That ties your best wave. One more wave and you own the record!";
+    else tease = "\u{1F525} You were only " + Math.max(1, prevBestWave - this.waves.wave) + " wave(s) from your best. One more try?";
+    this.ui.showGameOver({ score, wave: this.waves.wave, kills: this.run.kills, best: this.state.highScore, tease, record: score > prevBest,
       bounties: this.journey ? this.journey.bounties.done.length : 0,
       daily: this.journey ? this.journey.daily.completedCount() : 0,
       dailyTotal: this.journey ? this.journey.daily.tasks().length : 0 });
@@ -732,14 +735,18 @@ class Game {
       case "startdaily": this.startRun("daily"); break;
       case "retry": this.startRun(this.runMode || "normal"); break;
       case "share": {
-        const s = "I reached wave " + this.waves.wave + " and scored " + fmt(this.score()) + " in Zombie Fortress: Pandemic Defense! \u{1F9DF}\u{1F3F0}";
+        const runScore = this.run ? (this.run.wavesCleared * 120 + this.run.kills * 2) : this.score();
+        const s = "I reached wave " + this.waves.wave + " and scored " + fmt(runScore) + " in Zombie Fortress: Pandemic Defense! \u{1F9DF}\u{1F3F0}";
         const url = "https://minhvudz404.itch.io/zombie-fortress-pandemic-defense";
-        const copy = () => {
-          try { navigator.clipboard.writeText(s + " " + url); this.ui.toast("\u{1F517} Result copied \u2014 paste it anywhere!", "#8fd3ff"); }
-          catch (e) { this.ui.toast("\u{1F517} " + s, "#8fd3ff"); }
+        const fallback = () => {
+          try {
+            const p = navigator.clipboard && navigator.clipboard.writeText(s + " " + url);
+            if (p && p.then) p.then(() => this.ui.toast("\u{1F517} Result copied \u2014 paste it anywhere!", "#8fd3ff")).catch(() => this.ui.toast("\u{1F517} " + s, "#8fd3ff"));
+            else this.ui.toast("\u{1F517} " + s, "#8fd3ff");
+          } catch (e) { this.ui.toast("\u{1F517} " + s, "#8fd3ff"); }
         };
-        if (navigator.share) navigator.share({ title: "Zombie Fortress", text: s, url }).catch(copy);
-        else copy();
+        if (navigator.share) navigator.share({ title: "Zombie Fortress", text: s, url }).catch(fallback);
+        else fallback();
         break;
       }
       case "menu": this.quitToMenu(); break;
