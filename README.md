@@ -4,8 +4,13 @@ A complete HTML5 tower-defense survival game with hand-generated **pixel-art**
 graphics, animated sprite sheets, synthesized music/SFX and a 16:9 responsive
 canvas UI. Free to play, donations only — no ads, no paywall, no IAP.
 
-Current version: **3.0.0** (v3 adds a full meta-progression layer and per-run
-variety on top of the v2 pixel-art upgrade).
+Current version: **6.1.0** (v6 adds the "Commander's Journey" retention layer,
+on top of the v5 campaign + tower specializations + battle speed, the v4
+mutation protocols, and the v3 meta-progression / per-run variety layer).
+
+History: v2 pixel-art upgrade, v3 meta progression, v4 protocols & arsenal,
+v5 campaign/specs/speed, v6 Commander's Journey (Commander levels, Daily Board,
+per-run bounties, collection milestones, starter tasks), v6.1 bug-fix & polish pass.
 
 ---
 
@@ -144,32 +149,3 @@ the OGG audio set.
   private-browsing mode still works.
 - 60 FPS target on Chrome / Firefox / Safari; the renderer picks
   `imageSmoothingEnabled = false` for crisp pixel art at any zoom.
-
-## Play the game
-
-- **Itch.io (recommended, one click):** https://minhvudz404.itch.io/zombie-fortress-pandemic-defense
-- **From a clone:** open `index.html` in a browser (it loads `assets/`).
-
-## Note on large files
-
-GitHub's file API caps a single commit file at ~4 MB, so a handful of very large
-source masters and WAV audio masters are not committed through the automation used
-for the first push:
-
-- `assets/audio/master/*.wav` (menu, gameover, gameplay, boss) - lossless audio masters
-- `assets/source/audio/*.wav` - workspace-only theme masters (never loaded by the game)
-- `assets/source/concept/*_poster.png` - HD concept plates (never loaded by the game)
-- `dist/index.min.html` - single-file build (regenerate with `node tools/build_min.js`)
-
-None of these are required to run the game: the runtime audio is the OGG set in
-`assets/audio/{sfx,music}/`, which is fully committed, and `dist/index.min.html` is
-reproducible with `node tools/build_min.js`.
-
-## Language
-
-English is the default. Vietnamese is available in **Settings -> Language**.
-
-## Optional: play link from GitHub
-
-Enable GitHub Pages (Settings -> Pages, branch `main`, folder `/`) to get
-https://minhvuux67-stack.github.io/zombie-fortress/
