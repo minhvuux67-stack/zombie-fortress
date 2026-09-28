@@ -36,6 +36,7 @@ Object.assign(Game.prototype, {
     for (let i = 0; i < steps; i++) this.step(dt);
   },
   step(dt) {
+    if (this.hitstop > 0) { this.hitstop -= dt; return; }
     for (const s of this.skills) if (s.cdLeft > 0) s.cdLeft = Math.max(0, s.cdLeft - dt);
     if (this.overdriveT > 0) this.overdriveT = Math.max(0, this.overdriveT - dt);
     this.fortress.update(dt, this);
@@ -63,6 +64,7 @@ Object.assign(Game.prototype, {
     for (const d of this.damageTexts) d.update(dt);
     this.damageTexts = this.damageTexts.filter((d) => !d.dead);
     this.shake = Math.max(0, this.shake - dt * 2);
+    if (this.banner) { this.banner.t -= dt; if (this.banner.t <= 0) this.banner = null; }
     if (this.waves.active && this.waves.doneSpawning && this.zombies.length === 0) this.waveCleared();
     this.saveTimer += dt;
     if (this.saveTimer > 10) { this.saveTimer = 0; this.save(); }
@@ -266,10 +268,51 @@ Object.assign(Game.prototype, {
     if (this.killCombo >= 5) {
       ctx.save();
       ctx.textAlign = "center";
-      ctx.font = "800 26px Segoe UI, sans-serif";
-      ctx.fillStyle = "rgba(255,206,74,.92)";
-      ctx.shadowColor = "#ffce4a"; ctx.shadowBlur = 16;
+      const tier = this.killCombo >= 100 ? "#ff7d9c" : this.killCombo >= 50 ? "#ffce4a" : "#ffd98a";
+      const fs = Math.min(40, 24 + this.killCombo * 0.08);
+      ctx.font = "800 " + fs.toFixed(0) + "px Segoe UI, sans-serif";
+      ctx.fillStyle = tier;
+      ctx.shadowColor = tier; ctx.shadowBlur = 18;
       ctx.fillText(T("COMBO x") + this.killCombo, W / 2, 104);
+      if (this.killComboBest > 5) {
+        ctx.font = "700 12px Segoe UI, sans-serif"; ctx.shadowBlur = 6;
+        ctx.fillStyle = "rgba(223,232,246,.65)";
+        ctx.fillText(T("best") + " x" + this.killComboBest, W / 2, 124);
+      }
+      ctx.restore();
+    }
+    // active bounties tracker
+    if (this.journey && this.screen === "play" && this.journey.bounties.all().length) {
+      const bs = this.journey.bounties.all();
+      const bx = 14, by0 = 116, bw = 210, bh = 14 + bs.length * 17;
+      ctx.save();
+      ctx.fillStyle = "rgba(8,12,22,.55)";
+      ctx.beginPath(); ctx.roundRect(bx - 6, by0 - 15, bw, bh, 9); ctx.fill();
+      ctx.strokeStyle = "rgba(120,160,220,.2)"; ctx.lineWidth = 1; ctx.stroke();
+      ctx.textAlign = "left"; ctx.font = "700 12px Segoe UI, sans-serif";
+      let by = by0;
+      for (const b of bs) {
+        const def = this.journey.bounties.def(b.id);
+        ctx.fillStyle = b.done ? "rgba(87,224,138,.95)" : "rgba(143,211,255,.92)";
+        ctx.fillText((b.done ? "\u2714 " : "\u{1F3AF} ") + T(def.name), bx, by);
+        ctx.fillStyle = b.done ? "rgba(87,224,138,.8)" : "rgba(223,232,246,.6)";
+        ctx.textAlign = "right"; ctx.fillText(this.journey.bounties.progressText(b), bx + bw - 12, by);
+        ctx.textAlign = "left";
+        by += 17;
+      }
+      ctx.restore();
+    }
+    // centered announcement banner
+    if (this.banner) {
+      const a = Math.min(1, this.banner.t / 0.5);
+      ctx.save();
+      ctx.globalAlpha = a;
+      ctx.textAlign = "center";
+      ctx.font = "900 46px Segoe UI, sans-serif";
+      ctx.fillStyle = this.banner.color;
+      ctx.shadowColor = this.banner.color; ctx.shadowBlur = 26;
+      const y = H / 2 - 90 - (1 - Math.min(1, this.banner.t / this.banner.max)) * 0;
+      ctx.fillText(T(this.banner.text), W / 2, y);
       ctx.restore();
     }
     // airstrike targeting
