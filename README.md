@@ -1,12 +1,146 @@
 # Zombie Fortress: Pandemic Defense
 
-Free HTML5 tower-defense survival game. English / Tiếng Việt.
+A complete HTML5 tower-defense survival game with hand-generated **pixel-art**
+graphics, animated sprite sheets, synthesized music/SFX and a 16:9 responsive
+canvas UI. Free to play, donations only — no ads, no paywall, no IAP.
 
-- `index.html` - full build (loads `assets/`)
-- `dist/index.min.html` - single-file build (all assets embedded)
-- `src/` - source parts, assembled by `build.mjs`
-- `tools/` - Python asset + audio generation pipeline
+Current version: **3.0.0** (v3 adds a full meta-progression layer and per-run
+variety on top of the v2 pixel-art upgrade).
 
-Build: `node build.mjs` then `node tools/build_min.js`.
+---
 
-Play: https://minhvudz404.itch.io/zombie-fortress-pandemic-defense
+## What's new in v3
+
+- **Meta progression:** heroes (5), relics (16, equip 3), a 13-node research
+  tree, a 6-building survivor camp with idle materials, recruitable survivors
+  (8), a codex, daily/weekly/story quests, a 10-tier battle pass, prestige
+  (6 permanent perks) and rotating seasons.
+- **Per-run variety:** a wave **mutation** rolled every wave (horde surge,
+  frenzy, hardened, swarm, bounty, elite guard), run-wide **weather**
+  (acid rain, ash fog, blood storm, nightfall) and tower **synergies** for
+  adjacent pairs.
+- **New enemies:** crawler, brute, bomber (explodes on death) and shield.
+- **Performance:** object-pooled particles (capped at 1400), off-screen culling
+  and a hard cap on live particles so 500+ entities stay smooth.
+- **Save safety:** the save is validated and deep-merged over defaults, and a
+  rolling backup (`localStorage["zombieFortressBackup"]`, every 10 min) is used
+  if the main slot is ever corrupt.
+
+---
+
+## What's in the box
+
+```
+index.html            full build (loads assets/ with relative paths)
+assets/
+  sprites/zombies/    10 zombie sprite sheets (idle/walk/attack/hurt/death/spawn)
+  sprites/towers/     base + rotating turret sheets for 7 tower types
+  sprites/fortress/   seamless wall tile, bloodied wall, gate
+  effects/            explosion, muzzle, blood, smoke, fire, ice, lightning, fog, rain
+  ui/                 panel, buttons, bars, resource/skill icons, cursor
+  tiles/              seamless ground / grass / blood terrain tiles
+  backgrounds/        sky, city, fence parallax layers + 3840x2160 menu splash
+  audio/
+    sfx/              38 OGG sound effects
+    music/            4 OGG music tracks (menu / gameplay / boss / gameover)
+    master/           lossless 44.1 kHz WAV masters (full-build only)
+  source/             v3 HD sprite masters, concept plates and long WAV masters
+                      (SIZE ONLY - never loaded by the game, excluded from zips)
+tools/
+  pixel_art.py        shared pixel-art drawing helpers + 32-colour palette
+  generate_zombies.py generate_towers.py generate_fortress.py
+  generate_backgrounds.py generate_effects.py generate_ui.py
+  generate_audio.py   generate_sprites_v2.py  package_itch.py
+  build_manifest.py   build_min.js
+data/                 towers / zombies / achievements / upgrades / levels JSON
+src/                  split source (NN_*.html|css|js) assembled by build.mjs
+build.mjs             assembles src -> index.html
+dist/index.min.html   single-file build, every asset embedded as a data URI
+```
+
+### Regenerating everything
+
+```bash
+cd tools
+python3 generate_zombies.py
+python3 generate_towers.py
+python3 generate_fortress.py
+python3 generate_backgrounds.py
+python3 generate_effects.py
+python3 generate_ui.py
+python3 generate_audio.py       # needs numpy + soundfile (libsndfile)
+python3 generate_sprites_v2.py  # v3 HD/concept/audio source masters (>70 MB total)
+python3 build_manifest.py       # writes ../asset_manifest.json
+cd .. && node build.mjs && node tools/build_min.js
+```
+
+Total `assets/` size: **~97 MB** including the v3 `assets/source/` masters
+(HD sprite sheets, concept plates, long lossless music). The runtime set that the
+game actually loads — and that ships in the full zip — is ~54 MB, dominated by
+the four eager WAV masters; the in-game OGG set is only ~3.4 MB.
+
+---
+
+## Controls
+
+| Action | Desktop | Mobile |
+| --- | --- | --- |
+| Select tower | click build-bar card, keys `1`–`8` | tap card |
+| Place tower | click a slot | tap a slot |
+| Use skill | `Q` / `W` / `E` | tap skill button |
+| Next wave | `Space` | Next Wave button |
+| Pause | `P` | pause button |
+
+---
+
+## Uploading to itch.io (full build)
+
+```bash
+python3 tools/package_itch.py          # -> ../outputs/zombie-fortress-full-itch.zip (~45 MB)
+```
+
+The packer ships `index.html` + all runtime assets + audio masters, skips
+`assets/source/**` (so the zip stays under the browser upload bridge limit) and
+deflates two masters to stay well clear of the ceiling.
+
+1. On the project's **Edit game** page choose *Upload files* and upload the zip.
+2. Set **Kind of project → HTML**, tick **This file will be played in the browser**.
+3. Embed size `1280 x 720`, **mobile friendly** on.
+4. Pricing: *"$0 or donate"*. Release status *Released*, visibility *Public*.
+5. Set the AI disclosure to **Yes** (the art and audio are generated by scripts).
+6. The in-game "Support the Author" button uses `DONATE_URL` in `src/10_core.js`
+   (currently a placeholder `https://ko-fi.com/`). Replace it with your Ko-fi /
+   PayPal link before uploading.
+
+Prefer the `butler` CLI? `butler push . user/zombie-fortress:html`.
+
+## Building the single-file version (Poki / CrazyGames)
+
+```bash
+cd zombie-fortress
+node tools/build_min.js     # -> dist/index.min.html  (~4.6 MB, all embedded)
+```
+
+`index.min.html` has **zero external requests**, works from `file://` and in
+incognito, and is 16:9. Upload it directly.
+
+- Poki: ≤ 50 MB initial download, no external requests, incognito support — OK.
+- CrazyGames: ≤ 50 MB initial download, ≤ 250 MB total — OK.
+
+Note the tension between the "≥ 50 MB assets" brief and Poki's limit; this repo
+ships **two builds**: the full multi-file build for itch.io, and the compact
+single-file build for portals. The single-file build embeds downsampled art and
+the OGG audio set.
+
+---
+
+## Notes
+
+- All artwork is generated programmatically by the Python scripts in `tools/`
+  (no third-party assets, no external requests at runtime).
+- All music and SFX are synthesized with numpy and encoded to OGG Vorbis.
+- Progress saves to `localStorage["zombieFortressSave"]` with a rolling
+  `localStorage["zombieFortressBackup"]` fallback, wrapped in try/catch so
+  private-browsing mode still works.
+- 60 FPS target on Chrome / Firefox / Safari; the renderer picks
+  `imageSmoothingEnabled = false` for crisp pixel art at any zoom.

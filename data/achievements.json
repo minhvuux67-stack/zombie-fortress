@@ -1,0 +1,98 @@
+[
+  {
+    "id": "first_blood",
+    "name": "First Blood",
+    "icon": "🩸",
+    "ds": "Kill your first zombie."
+  },
+  {
+    "id": "kills_100",
+    "name": "Cleanup Crew",
+    "icon": "🧹",
+    "ds": "Kill 100 zombies."
+  },
+  {
+    "id": "kills_1000",
+    "name": "Exterminator",
+    "icon": "🔫",
+    "ds": "Kill 1,000 zombies."
+  },
+  {
+    "id": "kills_10000",
+    "name": "Pandemic Ended",
+    "icon": "☠",
+    "ds": "Kill 10,000 zombies."
+  },
+  {
+    "id": "wave_5",
+    "name": "Holding On",
+    "icon": "🛡",
+    "ds": "Survive to wave 5."
+  },
+  {
+    "id": "wave_10",
+    "name": "Last Commander",
+    "icon": "⚔",
+    "ds": "Survive to wave 10."
+  },
+  {
+    "id": "wave_20",
+    "name": "Endless Horizon",
+    "icon": "🌌",
+    "ds": "Survive to wave 20 and unlock Endless Mode."
+  },
+  {
+    "id": "boss_slay",
+    "name": "Behemoth Slayer",
+    "icon": "👑",
+    "ds": "Take down your first boss."
+  },
+  {
+    "id": "flawless_10",
+    "name": "Not a Scratch",
+    "icon": "✨",
+    "ds": "Clear 10 waves without the fortress being hit."
+  },
+  {
+    "id": "all_towers",
+    "name": "Full Arsenal",
+    "icon": "🏰",
+    "ds": "Unlock every tower."
+  },
+  {
+    "id": "combo_50",
+    "name": "Untouchable",
+    "icon": "🔥",
+    "ds": "50 kills in a row before the fortress is touched."
+  },
+  {
+    "id": "rank_legend",
+    "name": "Living Legend",
+    "icon": "🌟",
+    "ds": "Reach the Legend rank."
+  },
+  {
+    "id": "daily_done",
+    "name": "Daily Duty",
+    "icon": "📅",
+    "ds": "Complete a Daily Challenge."
+  },
+  {
+    "id": "streak_7",
+    "name": "Week Survivor",
+    "icon": "💪",
+    "ds": "Reach a 7-day login streak."
+  },
+  {
+    "id": "rich",
+    "name": "War Profiteer",
+    "icon": "💎",
+    "ds": "Hold 1,000 gold at once."
+  },
+  {
+    "id": "endless_30",
+    "name": "Apocalypse Now",
+    "icon": "🌋",
+    "ds": "Reach wave 30."
+  }
+]

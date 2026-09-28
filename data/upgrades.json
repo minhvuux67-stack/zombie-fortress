@@ -1,0 +1,82 @@
+[
+  {
+    "id": "damage",
+    "name": "Ballistics",
+    "icon": "💥",
+    "ds": "+6% tower damage",
+    "max": 10,
+    "cost": "(level)=>number"
+  },
+  {
+    "id": "firerate",
+    "name": "Trigger Servos",
+    "icon": "🎯",
+    "ds": "+4% tower fire rate",
+    "max": 10,
+    "cost": "(level)=>number"
+  },
+  {
+    "id": "range",
+    "name": "Optic Arrays",
+    "icon": "🔭",
+    "ds": "+5% tower range",
+    "max": 8,
+    "cost": "(level)=>number"
+  },
+  {
+    "id": "fhp",
+    "name": "Reinforced Walls",
+    "icon": "🛡",
+    "ds": "+60 fortress max HP",
+    "max": 10,
+    "cost": "(level)=>number"
+  },
+  {
+    "id": "scrap",
+    "name": "Scavenger Crew",
+    "icon": "♻",
+    "ds": "+25 starting scrap",
+    "max": 8,
+    "cost": "(level)=>number"
+  },
+  {
+    "id": "scrapgain",
+    "name": "Recycling Rig",
+    "icon": "📦",
+    "ds": "+7% scrap from kills",
+    "max": 8,
+    "cost": "(level)=>number"
+  },
+  {
+    "id": "gold",
+    "name": "War Chest",
+    "icon": "💰",
+    "ds": "+12 starting gold",
+    "max": 5,
+    "cost": "(level)=>number"
+  },
+  {
+    "id": "cooldown",
+    "name": "Command Uplink",
+    "icon": "📡",
+    "ds": "-6% skill cooldown",
+    "max": 6,
+    "cost": "(level)=>number"
+  },
+  {
+    "id": "regen",
+    "name": "Field Medics",
+    "icon": "💉",
+    "ds": "+0.8 fortress HP/s",
+    "max": 5,
+    "cost": "(level)=>number"
+  },
+  {
+    "id": "crit",
+    "name": "Weak-Point Scans",
+    "icon": "💀",
+    "ds": "+3% crit chance (x2 dmg)",
+    "max": 6,
+    "cost": "(level)=>number"
+  }
+]

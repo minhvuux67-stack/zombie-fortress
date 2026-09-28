@@ -1,0 +1,11 @@
+{
+  "baseHp": 42,
+  "hpPerWave": 1.18,
+  "speedPerWave": 1.015,
+  "countBase": 6,
+  "countPerWave": 1.35,
+  "bossEvery": 5,
+  "endlessAfter": 20,
+  "prepTime": 12,
+  "startScrap": 200
+}

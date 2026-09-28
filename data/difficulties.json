@@ -1,0 +1,129 @@
+{
+  "ranks": [
+    {
+      "name": "Rookie",
+      "min": 0,
+      "color": "#8fa2c0"
+    },
+    {
+      "name": "Ace",
+      "min": 2500,
+      "color": "#57e08a"
+    },
+    {
+      "name": "Veteran",
+      "min": 8000,
+      "color": "#4aa8ff"
+    },
+    {
+      "name": "Legend",
+      "min": 20000,
+      "color": "#c08bff"
+    },
+    {
+      "name": "Apocalypse",
+      "min": 45000,
+      "color": "#ffb347"
+    }
+  ],
+  "difficulties": {
+    "easy": {
+      "name": "Easy",
+      "hp": 0.8,
+      "speed": 0.92,
+      "count": 0.85,
+      "reward": 0.9
+    },
+    "normal": {
+      "name": "Normal",
+      "hp": 1,
+      "speed": 1,
+      "count": 1,
+      "reward": 1
+    },
+    "hard": {
+      "name": "Hard",
+      "hp": 1.25,
+      "speed": 1.08,
+      "count": 1.15,
+      "reward": 1.25
+    },
+    "nightmare": {
+      "name": "Nightmare",
+      "hp": 1.6,
+      "speed": 1.16,
+      "count": 1.3,
+      "reward": 1.6
+    }
+  },
+  "dailyChallenges": [
+    {
+      "id": "gunner_only",
+      "name": "Iron Wall",
+      "ds": "Clear wave 10 using only Gunners and Barricades.",
+      "target": 10,
+      "mods": {
+        "towers": [
+          "gunner",
+          "barricade"
+        ]
+      }
+    },
+    {
+      "id": "sprint",
+      "name": "Outbreak Sprint",
+      "ds": "Zombies move 35% faster. Clear wave 10.",
+      "target": 10,
+      "mods": {
+        "zombieSpeed": 1.35
+      }
+    },
+    {
+      "id": "poverty",
+      "name": "Scrap Poverty",
+      "ds": "Start with half scrap and no skills. Clear wave 8.",
+      "target": 8,
+      "mods": {
+        "startScrap": 0.5,
+        "noSkills": true
+      }
+    },
+    {
+      "id": "bossrush",
+      "name": "Behemoth Parade",
+      "ds": "A boss joins every wave. Clear wave 8.",
+      "target": 8,
+      "mods": {
+        "bossEvery": 1
+      }
+    },
+    {
+      "id": "fragile",
+      "name": "Paper Walls",
+      "ds": "The fortress has 50% HP. Clear wave 10.",
+      "target": 10,
+      "mods": {
+        "fhp": 0.5
+      }
+    },
+    {
+      "id": "rich",
+      "name": "Armed to the Teeth",
+      "ds": "Start with 400 scrap but zombies have +50% HP. Clear wave 12.",
+      "target": 12,
+      "mods": {
+        "startScrapFlat": 400,
+        "zombieHp": 1.5
+      }
+    },
+    {
+      "id": "purist",
+      "name": "No Upgrades",
+      "ds": "Towers cannot be upgraded. Clear wave 8.",
+      "target": 8,
+      "mods": {
+        "noTowerUpgrades": true
+      }
+    }
+  ]
+}

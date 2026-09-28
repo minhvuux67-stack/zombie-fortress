@@ -1,0 +1,120 @@
+{
+  "gunner": {
+    "id": "gunner",
+    "name": "Gunner",
+    "glyph": "⚙",
+    "color": "#5b8cff",
+    "accent": "#cfe0ff",
+    "cost": 50,
+    "unlockCost": 0,
+    "kind": "bullet",
+    "desc": "Rapid single-target fire. Cheap, dependable, never wasted.",
+    "base": {
+      "dmg": 7,
+      "rate": 2.7,
+      "range": 160,
+      "bulletSpeed": 640
+    }
+  },
+  "shotgun": {
+    "id": "shotgun",
+    "name": "Shotgun",
+    "glyph": "⧉",
+    "color": "#ff9b4a",
+    "accent": "#ffd9b0",
+    "cost": 90,
+    "unlockCost": 120,
+    "kind": "shotgun",
+    "desc": "Short range, heavy spread. Shreds tight packs of walkers.",
+    "base": {
+      "dmg": 19,
+      "rate": 1.35,
+      "range": 125,
+      "bulletSpeed": 560,
+      "pellets": 5
+    }
+  },
+  "sniper": {
+    "id": "sniper",
+    "name": "Sniper",
+    "glyph": "⌖",
+    "color": "#9d7bff",
+    "accent": "#e0d4ff",
+    "cost": 140,
+    "unlockCost": 260,
+    "kind": "sniper",
+    "desc": "Extreme range, huge single hits, pierces a whole lane.",
+    "base": {
+      "dmg": 95,
+      "rate": 0.5,
+      "range": 470,
+      "bulletSpeed": 1500,
+      "pierce": 3
+    }
+  },
+  "flamethrower": {
+    "id": "flamethrower",
+    "name": "Flamethrower",
+    "glyph": "⚑",
+    "color": "#ff6a3d",
+    "accent": "#ffc27a",
+    "cost": 170,
+    "unlockCost": 480,
+    "kind": "flame",
+    "desc": "Torches everything in a cone and leaves them burning.",
+    "base": {
+      "dps": 30,
+      "range": 140,
+      "burn": 5
+    }
+  },
+  "tesla": {
+    "id": "tesla",
+    "name": "Tesla Coil",
+    "glyph": "⚡",
+    "color": "#4ae0ff",
+    "accent": "#c8f7ff",
+    "cost": 200,
+    "unlockCost": 760,
+    "kind": "tesla",
+    "desc": "Chain lightning that arcs between zombies and slows them.",
+    "base": {
+      "dmg": 26,
+      "rate": 1.2,
+      "range": 195,
+      "chain": 4,
+      "slow": 0.45,
+      "slowDur": 1.6
+    }
+  },
+  "barricade": {
+    "id": "barricade",
+    "name": "Barricade",
+    "glyph": "▬",
+    "color": "#b9a06a",
+    "accent": "#ead9a8",
+    "cost": 40,
+    "unlockCost": 0,
+    "kind": "block",
+    "desc": "No gun. Zombies nearby stop to smash it instead of your wall.",
+    "base": {
+      "hp": 420,
+      "taunt": 120
+    }
+  },
+  "medic": {
+    "id": "medic",
+    "name": "Medic Tent",
+    "glyph": "✚",
+    "color": "#59e0a0",
+    "accent": "#c9ffe4",
+    "cost": 220,
+    "unlockCost": 1000,
+    "kind": "heal",
+    "desc": "Patches the fortress wall back together, second by second.",
+    "base": {
+      "heal": 3.5,
+      "radius": 0
+    }
+  }
+}
