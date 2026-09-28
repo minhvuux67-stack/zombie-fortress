@@ -243,7 +243,7 @@ Object.assign(Game.prototype, {
         ctx.save();
         ctx.textAlign = "left"; ctx.font = "600 13px Segoe UI, sans-serif";
         ctx.fillStyle = "rgba(180,210,255,.82)";
-        ctx.fillText(bits.join("   "), 14, 72);
+        ctx.fillText(bits.join("   "), 14, 100);
         ctx.restore();
       }
       // mutation protocol count
@@ -251,7 +251,7 @@ Object.assign(Game.prototype, {
         ctx.save();
         ctx.textAlign = "left"; ctx.font = "600 13px Segoe UI, sans-serif";
         ctx.fillStyle = "rgba(200,150,255,.9)";
-        ctx.fillText("\u{1F9EC} " + this.protocols.taken.length + " " + T("protocols"), 14, this.synergy && this.synergy.active.length ? 90 : 90);
+        ctx.fillText("\u{1F9EC} " + this.protocols.taken.length + " " + T("protocols"), 14, 118);
         ctx.restore();
       }
       // overdrive banner
@@ -284,7 +284,12 @@ Object.assign(Game.prototype, {
     // active bounties tracker
     if (this.journey && this.screen === "play" && this.journey.bounties.all().length) {
       const bs = this.journey.bounties.all();
-      const bx = 14, by0 = 116, bw = 210, bh = 14 + bs.length * 17;
+      const hasStatus = (this.weather && this.weather.def && this.weather.def.id !== "clear") ||
+        (this.mutations && this.mutations.current && this.mutations.current.id !== "none") ||
+        (this.synergy && this.synergy.active.length) ||
+        (this.protocols && this.protocols.taken.length);
+      const by0 = hasStatus ? 152 : 116;
+      const bx = 14, bw = 210, bh = 14 + bs.length * 17;
       ctx.save();
       ctx.fillStyle = "rgba(8,12,22,.55)";
       ctx.beginPath(); ctx.roundRect(bx - 6, by0 - 15, bw, bh, 9); ctx.fill();
@@ -332,7 +337,7 @@ Object.assign(Game.prototype, {
     }
     if (this.mods && this.mods.noSkills) {
       ctx.save(); ctx.textAlign = "right"; ctx.font = "600 13px Segoe UI, sans-serif";
-      ctx.fillStyle = "rgba(255,179,71,.85)"; ctx.fillText("\u{1F4C5} " + T("Daily challenge active \u2014 skills disabled"), W - 16, 74);
+      ctx.fillStyle = "rgba(255,179,71,.85)"; ctx.fillText("\u{1F4C5} " + T("Daily challenge active \u2014 skills disabled"), W - 16, 100);
       ctx.restore();
     }
     // low fortress warning
