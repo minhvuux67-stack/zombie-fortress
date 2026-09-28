@@ -89,8 +89,8 @@ h1,h2,h3{margin:0}
 .fortressbar .lbl{position:absolute;inset:0;font-size:11px;font-weight:800;text-align:center;line-height:16px;
   text-shadow:0 1px 3px #000}
 
-#toolbar{position:absolute;bottom:10px;left:50%;transform:translateX(-50%);display:flex;gap:8px;align-items:flex-end}
-.tcard{width:86px;background:var(--panel);border:1px solid var(--panel-line);border-radius:12px;padding:6px 5px 5px;
+#toolbar{position:absolute;bottom:10px;left:12px;display:flex;gap:6px;align-items:flex-end;max-width:920px;flex-wrap:wrap}
+.tcard{width:80px;background:var(--panel);border:1px solid var(--panel-line);border-radius:12px;padding:6px 5px 5px;
   text-align:center;cursor:pointer;backdrop-filter:blur(10px);position:relative;transition:transform .1s,border-color .12s}
 .tcard:hover{transform:translateY(-3px)}
 .tcard.sel{border-color:var(--accent);box-shadow:0 0 0 2px rgba(87,224,138,.4),0 6px 22px rgba(0,0,0,.5)}
@@ -195,6 +195,18 @@ table.lb tr.me td{color:var(--accent);font-weight:700}
 #loadscreen .loadbar>div{height:100%;width:0;background:repeating-linear-gradient(90deg,#57e08a 0 10px,#3fb36c 10px 20px);
   transition:width .12s linear}
 #loadscreen .loadpct{margin-top:12px;font-size:12px;letter-spacing:3px;color:#8fa2c0}
+
+/* ---------- v4 protocol draft ---------- */
+.protogrid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+.proto{font:inherit;color:var(--txt);cursor:pointer;text-align:center;background:rgba(255,255,255,.045);
+  border:2px solid var(--panel-line);border-radius:14px;padding:16px 12px;transition:transform .1s,border-color .12s}
+.proto:hover{transform:translateY(-4px);border-color:var(--pc);background:rgba(255,255,255,.07)}
+.proto .pico{font-size:36px;line-height:1}
+.proto .pnm{font-weight:800;font-size:16px;margin-top:8px}
+.proto .prar{font-size:10.5px;text-transform:uppercase;letter-spacing:1px;color:var(--dim);margin-top:3px}
+.proto .pds{font-size:12.5px;color:var(--dim);margin-top:9px;line-height:1.4}
+.draftbox{width:880px;text-align:center}
+@media (max-width:640px){.protogrid{grid-template-columns:1fr}}
 </style>
 </head>
 
@@ -294,7 +306,7 @@ table.lb tr.me td{color:var(--accent);font-weight:700}
 </div>
 
 <script>
-const ASSET_MANIFEST = {"bg/city_far":"assets/backgrounds/city_far.png","bg/city_mid":"assets/backgrounds/city_mid.png","bg/fence_near":"assets/backgrounds/fence_near.png","bg/sky":"assets/backgrounds/sky.png","bg/splash":"assets/backgrounds/splash.png","fortress/gate":"assets/sprites/fortress/gate.png","fortress/wall":"assets/sprites/fortress/wall.png","fortress/wall_blood":"assets/sprites/fortress/wall_blood.png","fx/blood":"assets/effects/blood.png","fx/explosion":"assets/effects/explosion.png","fx/explosion_big":"assets/effects/explosion_big.png","fx/fire":"assets/effects/fire.png","fx/fog":"assets/effects/fog.png","fx/ice":"assets/effects/ice.png","fx/lightning":"assets/effects/lightning.png","fx/muzzle":"assets/effects/muzzle.png","fx/rain":"assets/effects/rain.png","fx/smoke":"assets/effects/smoke.png","fx/spark":"assets/effects/spark.png","music/boss":"assets/audio/music/boss.ogg","music/gameover":"assets/audio/music/gameover.ogg","music/gameplay":"assets/audio/music/gameplay.ogg","music/menu":"assets/audio/music/menu.ogg","sfx/achievement":"assets/audio/sfx/achievement.ogg","sfx/acid":"assets/audio/sfx/acid.ogg","sfx/airstrike":"assets/audio/sfx/airstrike.ogg","sfx/ambient_city":"assets/audio/sfx/ambient_city.ogg","sfx/boss":"assets/audio/sfx/boss.ogg","sfx/buy":"assets/audio/sfx/buy.ogg","sfx/click":"assets/audio/sfx/click.ogg","sfx/coin":"assets/audio/sfx/coin.ogg","sfx/donate":"assets/audio/sfx/donate.ogg","sfx/error":"assets/audio/sfx/error.ogg","sfx/explode":"assets/audio/sfx/explode.ogg","sfx/flame":"assets/audio/sfx/flame.ogg","sfx/freeze":"assets/audio/sfx/freeze.ogg","sfx/grenade":"assets/audio/sfx/grenade.ogg","sfx/growl":"assets/audio/sfx/growl.ogg","sfx/growl2":"assets/audio/sfx/growl2.ogg","sfx/growl3":"assets/audio/sfx/growl3.ogg","sfx/heal":"assets/audio/sfx/heal.ogg","sfx/hit":"assets/audio/sfx/hit.ogg","sfx/hover":"assets/audio/sfx/hover.ogg","sfx/hurt":"assets/audio/sfx/hurt.ogg","sfx/levelup":"assets/audio/sfx/levelup.ogg","sfx/place":"assets/audio/sfx/place.ogg","sfx/rain":"assets/audio/sfx/rain.ogg","sfx/reload":"assets/audio/sfx/reload.ogg","sfx/sell":"assets/audio/sfx/sell.ogg","sfx/shield":"assets/audio/sfx/shield.ogg","sfx/shoot":"assets/audio/sfx/shoot.ogg","sfx/shoot2":"assets/audio/sfx/shoot2.ogg","sfx/shotgun":"assets/audio/sfx/shotgun.ogg","sfx/sniper":"assets/audio/sfx/sniper.ogg","sfx/spit":"assets/audio/sfx/spit.ogg","sfx/tesla":"assets/audio/sfx/tesla.ogg","sfx/thunder":"assets/audio/sfx/thunder.ogg","sfx/upgrade":"assets/audio/sfx/upgrade.ogg","sfx/wave":"assets/audio/sfx/wave.ogg","sfx/wind":"assets/audio/sfx/wind.ogg","sfx/zombie_die":"assets/audio/sfx/zombie_die.ogg","tile/grass":"assets/tiles/grass.png","tile/ground":"assets/tiles/ground.png","tile/ground_blood":"assets/tiles/ground_blood.png","tower/barricade_base":"assets/sprites/towers/barricade_base.png","tower/flamethrower_base":"assets/sprites/towers/flamethrower_base.png","tower/flamethrower_turret":"assets/sprites/towers/flamethrower_turret.png","tower/gunner_base":"assets/sprites/towers/gunner_base.png","tower/gunner_turret":"assets/sprites/towers/gunner_turret.png","tower/medic_base":"assets/sprites/towers/medic_base.png","tower/mortar_base":"assets/sprites/towers/mortar_base.png","tower/mortar_turret":"assets/sprites/towers/mortar_turret.png","tower/shotgun_base":"assets/sprites/towers/shotgun_base.png","tower/shotgun_turret":"assets/sprites/towers/shotgun_turret.png","tower/sniper_base":"assets/sprites/towers/sniper_base.png","tower/sniper_turret":"assets/sprites/towers/sniper_turret.png","tower/tesla_base":"assets/sprites/towers/tesla_base.png","tower/tesla_turret":"assets/sprites/towers/tesla_turret.png","ui/bar":"assets/ui/bar.png","ui/button":"assets/ui/button.png","ui/cursor":"assets/ui/cursor.png","ui/icon_food":"assets/ui/icon_food.png","ui/icon_gold":"assets/ui/icon_gold.png","ui/icon_lock":"assets/ui/icon_lock.png","ui/icon_meds":"assets/ui/icon_meds.png","ui/icon_scrap":"assets/ui/icon_scrap.png","ui/icon_skull":"assets/ui/icon_skull.png","ui/icon_star":"assets/ui/icon_star.png","ui/panel":"assets/ui/panel.png","ui/skill_airstrike":"assets/ui/skill_airstrike.png","ui/skill_freeze":"assets/ui/skill_freeze.png","ui/skill_medkit":"assets/ui/skill_medkit.png","ui/skill_rage":"assets/ui/skill_rage.png","ui/skill_repair":"assets/ui/skill_repair.png","zombie/bomber":"assets/sprites/zombies/bomber.png","zombie/boss":"assets/sprites/zombies/boss.png","zombie/brute":"assets/sprites/zombies/brute.png","zombie/crawler":"assets/sprites/zombies/crawler.png","zombie/runner":"assets/sprites/zombies/runner.png","zombie/screamer":"assets/sprites/zombies/screamer.png","zombie/shield":"assets/sprites/zombies/shield.png","zombie/spitter":"assets/sprites/zombies/spitter.png","zombie/tank":"assets/sprites/zombies/tank.png","zombie/walker":"assets/sprites/zombies/walker.png"};
+const ASSET_MANIFEST = {"bg/city_far":"assets/backgrounds/city_far.png","bg/city_mid":"assets/backgrounds/city_mid.png","bg/fence_near":"assets/backgrounds/fence_near.png","bg/sky":"assets/backgrounds/sky.png","bg/splash":"assets/backgrounds/splash.png","fortress/gate":"assets/sprites/fortress/gate.png","fortress/wall":"assets/sprites/fortress/wall.png","fortress/wall_blood":"assets/sprites/fortress/wall_blood.png","fx/blood":"assets/effects/blood.png","fx/explosion":"assets/effects/explosion.png","fx/explosion_big":"assets/effects/explosion_big.png","fx/fire":"assets/effects/fire.png","fx/fog":"assets/effects/fog.png","fx/ice":"assets/effects/ice.png","fx/lightning":"assets/effects/lightning.png","fx/muzzle":"assets/effects/muzzle.png","fx/rain":"assets/effects/rain.png","fx/smoke":"assets/effects/smoke.png","fx/spark":"assets/effects/spark.png","music/boss":"assets/audio/music/boss.ogg","music/gameover":"assets/audio/music/gameover.ogg","music/gameplay":"assets/audio/music/gameplay.ogg","music/menu":"assets/audio/music/menu.ogg","sfx/achievement":"assets/audio/sfx/achievement.ogg","sfx/acid":"assets/audio/sfx/acid.ogg","sfx/airstrike":"assets/audio/sfx/airstrike.ogg","sfx/ambient_city":"assets/audio/sfx/ambient_city.ogg","sfx/boss":"assets/audio/sfx/boss.ogg","sfx/buy":"assets/audio/sfx/buy.ogg","sfx/click":"assets/audio/sfx/click.ogg","sfx/coin":"assets/audio/sfx/coin.ogg","sfx/donate":"assets/audio/sfx/donate.ogg","sfx/error":"assets/audio/sfx/error.ogg","sfx/explode":"assets/audio/sfx/explode.ogg","sfx/flame":"assets/audio/sfx/flame.ogg","sfx/freeze":"assets/audio/sfx/freeze.ogg","sfx/grenade":"assets/audio/sfx/grenade.ogg","sfx/growl":"assets/audio/sfx/growl.ogg","sfx/growl2":"assets/audio/sfx/growl2.ogg","sfx/growl3":"assets/audio/sfx/growl3.ogg","sfx/heal":"assets/audio/sfx/heal.ogg","sfx/hit":"assets/audio/sfx/hit.ogg","sfx/hover":"assets/audio/sfx/hover.ogg","sfx/hurt":"assets/audio/sfx/hurt.ogg","sfx/levelup":"assets/audio/sfx/levelup.ogg","sfx/place":"assets/audio/sfx/place.ogg","sfx/rain":"assets/audio/sfx/rain.ogg","sfx/reload":"assets/audio/sfx/reload.ogg","sfx/sell":"assets/audio/sfx/sell.ogg","sfx/shield":"assets/audio/sfx/shield.ogg","sfx/shoot":"assets/audio/sfx/shoot.ogg","sfx/shoot2":"assets/audio/sfx/shoot2.ogg","sfx/shotgun":"assets/audio/sfx/shotgun.ogg","sfx/sniper":"assets/audio/sfx/sniper.ogg","sfx/spit":"assets/audio/sfx/spit.ogg","sfx/tesla":"assets/audio/sfx/tesla.ogg","sfx/thunder":"assets/audio/sfx/thunder.ogg","sfx/upgrade":"assets/audio/sfx/upgrade.ogg","sfx/wave":"assets/audio/sfx/wave.ogg","sfx/wind":"assets/audio/sfx/wind.ogg","sfx/zombie_die":"assets/audio/sfx/zombie_die.ogg","tile/grass":"assets/tiles/grass.png","tile/ground":"assets/tiles/ground.png","tile/ground_blood":"assets/tiles/ground_blood.png","tower/barricade_base":"assets/sprites/towers/barricade_base.png","tower/cryo_base":"assets/sprites/towers/cryo_base.png","tower/cryo_turret":"assets/sprites/towers/cryo_turret.png","tower/flamethrower_base":"assets/sprites/towers/flamethrower_base.png","tower/flamethrower_turret":"assets/sprites/towers/flamethrower_turret.png","tower/gunner_base":"assets/sprites/towers/gunner_base.png","tower/gunner_turret":"assets/sprites/towers/gunner_turret.png","tower/laser_base":"assets/sprites/towers/laser_base.png","tower/laser_turret":"assets/sprites/towers/laser_turret.png","tower/medic_base":"assets/sprites/towers/medic_base.png","tower/mortar_base":"assets/sprites/towers/mortar_base.png","tower/mortar_turret":"assets/sprites/towers/mortar_turret.png","tower/shotgun_base":"assets/sprites/towers/shotgun_base.png","tower/shotgun_turret":"assets/sprites/towers/shotgun_turret.png","tower/sniper_base":"assets/sprites/towers/sniper_base.png","tower/sniper_turret":"assets/sprites/towers/sniper_turret.png","tower/tesla_base":"assets/sprites/towers/tesla_base.png","tower/tesla_turret":"assets/sprites/towers/tesla_turret.png","ui/bar":"assets/ui/bar.png","ui/button":"assets/ui/button.png","ui/cursor":"assets/ui/cursor.png","ui/icon_food":"assets/ui/icon_food.png","ui/icon_gold":"assets/ui/icon_gold.png","ui/icon_lock":"assets/ui/icon_lock.png","ui/icon_meds":"assets/ui/icon_meds.png","ui/icon_scrap":"assets/ui/icon_scrap.png","ui/icon_skull":"assets/ui/icon_skull.png","ui/icon_star":"assets/ui/icon_star.png","ui/panel":"assets/ui/panel.png","ui/skill_airstrike":"assets/ui/skill_airstrike.png","ui/skill_freeze":"assets/ui/skill_freeze.png","ui/skill_medkit":"assets/ui/skill_medkit.png","ui/skill_rage":"assets/ui/skill_rage.png","ui/skill_repair":"assets/ui/skill_repair.png","zombie/bomber":"assets/sprites/zombies/bomber.png","zombie/boss":"assets/sprites/zombies/boss.png","zombie/brute":"assets/sprites/zombies/brute.png","zombie/colossus":"assets/sprites/zombies/colossus.png","zombie/crawler":"assets/sprites/zombies/crawler.png","zombie/healer":"assets/sprites/zombies/healer.png","zombie/runner":"assets/sprites/zombies/runner.png","zombie/screamer":"assets/sprites/zombies/screamer.png","zombie/shield":"assets/sprites/zombies/shield.png","zombie/spitter":"assets/sprites/zombies/spitter.png","zombie/splitter":"assets/sprites/zombies/splitter.png","zombie/tank":"assets/sprites/zombies/tank.png","zombie/walker":"assets/sprites/zombies/walker.png"};
 
 
 /* =====================================================================
@@ -930,6 +942,86 @@ const I18N_PAIRS = [
   [" synergy", " cộng hưởng"],
   ["Daily challenge active \u2014 skills disabled", "Thử thách hằng ngày đang bật \u2014 kỹ năng bị vô hiệu"],
   ["early", "sớm"],
+  ["OVERDRIVE", "TĂNG TỐC"],
+
+  /* ---- v4: mutation protocols ---- */
+  ["Mutation Protocol", "Đột biến Protocol"],
+  ["Mutation Protocols", "Đột biến Protocol"],
+  ["Protocols", "Protocol"],
+  ["Protocol", "Protocol"],
+  ["The lab offers one permanent mutation for this run. Choose carefully \u2014 it stacks with everything you already carry.", "Phòng thí nghiệm cho một đột biến vĩnh viễn cho lượt chơi này. Chọn kỹ \u2014 nó cộng dồn với mọi thứ bạn đang có."],
+  ["Skip \u00b7 no mutation", "Bỏ qua \u00b7 không đột biến"],
+  ["Run mutations drafted from the lab. They reset when the run ends.", "Các đột biến nhận từ phòng thí nghiệm. Sẽ đặt lại khi lượt chơi kết thúc."],
+  ["Active", "Đang bật"],
+  ["Active effects", "Hiệu ứng đang bật"],
+  ["owned", "đã có"],
+  ["cleared", "đã xong"],
+  ["picks", "lượt chọn"],
+  ["Offer a run mutation after every cleared wave.", "Đề xuất đột biến sau mỗi đợt đã dọn sạch."],
+  ["common", "thường"],
+  ["rare", "hiếm"],
+  ["epic", "sử thi"],
+  ["Hollow Points", "Đạn rỗng"],
+  ["+12% tower damage.", "+12% sát thương trụ."],
+  ["Trigger Tuning", "Tinh chỉnh cò"],
+  ["+10% tower fire rate.", "+10% tốc độ bắn."],
+  ["Spotter Drone", "Drone trinh sát"],
+  ["+10% tower range.", "+10% tầm bắn."],
+  ["Scrap Magnet", "Nam châm sắt vụn"],
+  ["+15% scrap from kills.", "+15% sắt vụn từ hạ gục."],
+  ["Weak-Point Map", "Bản đồ điểm yếu"],
+  ["+5% crit chance.", "+5% tỉ lệ chí mạng."],
+  ["Concrete Mix", "Hỗn hợp bê tông"],
+  ["+180 fortress HP.", "+180 máu pháo đài."],
+  ["Auto-Medics", "Y tế tự động"],
+  ["+1.5 fortress HP/s.", "+1.5 máu/giây."],
+  ["Command Relay", "Trạm chỉ huy"],
+  ["-12% skill cooldowns.", "-12% hồi chiêu kỹ năng."],
+  ["Requisition", "Trưng dụng"],
+  ["Towers cost 8% less.", "Trụ rẻ hơn 8%."],
+  ["Ration Cache", "Kho lương"],
+  ["+1 food and +1 med per wave.", "+1 thực phẩm và +1 thuốc mỗi đợt."],
+  ["Incendiary Rounds", "Đạn cháy"],
+  ["Bullets set zombies on fire.", "Đạn đốt cháy zombie."],
+  ["Explosive Tips", "Đầu nổ"],
+  ["Bullets explode on impact.", "Đạn nổ khi trúng."],
+  ["Static Rounds", "Đạn tĩnh điện"],
+  ["Bullets slow what they hit.", "Đạn làm chậm mục tiêu."],
+  ["Leech Protocol", "Protocol hút máu"],
+  ["Each kill restores 2 fortress HP.", "Mỗi hạ gục hồi 2 máu pháo đài."],
+  ["Razor Wire", "Dây thép gai"],
+  ["Zombies that strike your wall take 25 damage.", "Zombie đánh vào tường nhận 25 sát thương."],
+  ["Titan Slayer", "Sát thủ khổng lồ"],
+  ["+35% damage against bosses.", "+35% sát thương lên trùm."],
+  ["War Bonds", "Trái phiếu chiến tranh"],
+  ["+120 starting scrap.", "+120 sắt vụn khởi đầu."],
+  ["Berserker Strain", "Chủng cuồng nộ"],
+  ["+30% damage, -250 fortress HP.", "+30% sát thương, -250 máu pháo đài."],
+  ["Twin Barrels", "Nòng đôi"],
+  ["+28% fire rate, -12% range.", "+28% tốc độ bắn, -12% tầm bắn."],
+  ["Aegis Protocol", "Protocol khiên thần"],
+  ["+500 fortress HP, +3 HP/s.", "+500 máu pháo đài, +3 máu/giây."],
+  ["Total Salvage", "Tận thu toàn bộ"],
+  ["+30% scrap, +10% fire rate.", "+30% sắt vụn, +10% tốc độ bắn."],
+
+  /* ---- v4: towers / zombies / skills ---- */
+  ["Mortar", "Súng cối"],
+  ["Lobs heavy shells that explode, splashing a whole cluster at once.", "Bắn đạn nặng phát nổ, sát thương cả cụm."],
+  ["Cryo Coil", "Cuộn đông lạnh"],
+  ["Freezing aura. Chills and slows every zombie caught inside it.", "Vùng đóng băng. Làm chậm mọi zombie bên trong."],
+  ["Laser Prism", "Lăng kính laser"],
+  ["A piercing beam that cuts through every zombie in a straight line.", "Chùm tia xuyên qua mọi zombie trên một đường thẳng."],
+  ["Splitter", "Kẻ phân thân"],
+  ["Bloated carrier. Bursts open into two runners when it dies.", "Xác trương. Khi chết tách thành hai zombie chạy nhanh."],
+  ["Mender", "Kẻ hồi phục"],
+  ["Pulses healing ichor that mends every zombie near it. Kill it first.", "Phát dịch hồi máu cho mọi zombie gần đó. Hãy giết nó trước."],
+  ["Hive Colossus", "Tổ ong khổng lồ"],
+  ["Living nest. Slams the ground and hatches crawlers while it lives.", "Tổ sống. Đập đất và nở ra zombie bò trong khi còn sống."],
+  ["Overdrive", "Tăng tốc"],
+  ["Overclock every tower: +25% damage and +60% fire rate for 8 seconds.", "Ép xung mọi trụ: +25% sát thương và +60% tốc độ bắn trong 8 giây."],
+  ["Overlord", "Chúa tể"],
+  ["Splitters burst into runners when they die. Menders heal the whole horde \u2014 kill them first. The Hive Colossus slams the ground and hatches crawlers.", "Kẻ phân thân tách thành zombie nhanh khi chết. Kẻ hồi phục chữa cho cả bầy \u2014 giết trước. Tổ ong khổng lồ đập đất và nở ra zombie bò."],
+  ["Each time you clear a wave, the lab offers one of three random mutations. Take one (or skip) and it stays for the whole run \u2014 draft the same power twice and it stacks. Build your fortress differently every game.", "Mỗi khi dọn sạch một đợt, phòng thí nghiệm cho chọn 1 trong 3 đột biến ngẫu nhiên. Nhận (hoặc bỏ qua) và nó giữ suốt lượt chơi \u2014 chọn trùng sẽ cộng dồn. Mỗi ván xây pháo đài một kiểu."],
 ];
 
 /* short all-caps states replaced only when the whole node matches */
@@ -1164,7 +1256,7 @@ const SLOT_ROWS = [120, 240, 360, 480, 600]; // build rows (between lanes + edge
 const SLOT_COLS = [235, 395, 555, 715, 875, 1035]; // 6 build columns
 const MAX_LEVEL = 5;                        // tower level cap per run
 const PREP_TIME = 12;                       // seconds of build time before a wave auto-starts
-const VERSION = "3.0.0";
+const VERSION = "4.0.0";
 const DONATE_URL = "https://ko-fi.com/";
 
 /* ---------------------------------------------------------------------
@@ -1238,7 +1330,7 @@ function defaultState() {
     dailyChallengeCompleted: "",
     dailyChallengeDate: "",
     leaderboard: [],                   // [{score, wave, kills, date}]
-    settings: { soundOn: true, musicOn: true, difficulty: "normal", lang: "en" },
+    settings: { soundOn: true, musicOn: true, difficulty: "normal", lang: "en", draft: true },
     seenTutorial: false,
     /* ---- v3 meta progression ---- */
     heroProgress: {},                  // { heroId: {level, xp, unlocked} }
@@ -1252,7 +1344,7 @@ function defaultState() {
     battlePass: { xp: 0, tier: 0, claimed: [], season: 1 },
     prestige: { level: 0, points: 0, mods: [] },
     season: { id: 1, bestRank: 0 },
-    stats: { towerUse: {}, bosses: 0, relicsFound: 0, runsByHero: {} },
+    stats: { towerUse: {}, bosses: 0, relicsFound: 0, runsByHero: {}, protocolsPicked: 0, bestDraft: 0, colossusKills: 0, splitterKills: 0, healerKills: 0 },
   };
 }
 
@@ -1263,6 +1355,7 @@ function normalizeState(data) {
   st.settings = Object.assign(defaultState().settings, (data && data.settings) || {});
   // English is always the default; only keep Vietnamese when it was chosen in Settings
   if (st.settings.lang !== "vi") st.settings.lang = "en";
+  if (typeof st.settings.draft !== "boolean") st.settings.draft = true;
   const arr = (v, fb) => (Array.isArray(v) ? v : fb);
   st.unlockedTowers = Array.isArray(data && data.unlockedTowers) && data.unlockedTowers.length ? data.unlockedTowers : base.unlockedTowers;
   st.achievements = arr(data && data.achievements, []);
@@ -1608,6 +1701,24 @@ const TOWER_DEFS = {
     desc: "Patches the fortress wall back together, second by second.",
     base: { heal: 3.5, radius: 0 },
   },
+  mortar: {
+    id: "mortar", name: "Mortar", glyph: "\u25D0", color: "#c9a24a", accent: "#ffe6a8",
+    cost: 210, unlockCost: 620, kind: "mortar",
+    desc: "Lobs heavy shells that explode, splashing a whole cluster at once.",
+    base: { dmg: 72, rate: 0.55, range: 340, bulletSpeed: 360, aoe: 96 },
+  },
+  cryo: {
+    id: "cryo", name: "Cryo Coil", glyph: "\u2744", color: "#6fd0ff", accent: "#d6f4ff",
+    cost: 240, unlockCost: 880, kind: "cryo",
+    desc: "Freezing aura. Chills and slows every zombie caught inside it.",
+    base: { dps: 14, range: 150, slow: 0.5, slowDur: 1.3 },
+  },
+  laser: {
+    id: "laser", name: "Laser Prism", glyph: "\u25C6", color: "#ff5bd0", accent: "#ffd6f4",
+    cost: 300, unlockCost: 1500, kind: "laser",
+    desc: "A piercing beam that cuts through every zombie in a straight line.",
+    base: { dmg: 40, rate: 2.0, range: 320 },
+  },
 };
 const TOWER_IDS = Object.keys(TOWER_DEFS);
 
@@ -1622,6 +1733,9 @@ const ZOMBIE_DEFS = {
   brute: { id: "brute", name: "Brute", hp: 520, speed: 34, dmg: 34, rate: 1.1, scrap: 26, armor: 6, r: 26, color: "#c98b5a", score: 44 },
   bomber: { id: "bomber", name: "Bomber", hp: 96, speed: 58, dmg: 12, rate: 1.4, scrap: 14, armor: 1, r: 17, color: "#d8674a", explode: 70, score: 28 },
   shield: { id: "shield", name: "Shield", hp: 210, speed: 40, dmg: 18, rate: 1.0, scrap: 20, armor: 10, frontArmor: true, r: 19, color: "#8fa2c0", score: 32 },
+  splitter: { id: "splitter", name: "Splitter", hp: 150, speed: 46, dmg: 12, rate: 1.0, scrap: 15, armor: 3, r: 18, color: "#c47ad8", split: 2, score: 30 },
+  healer: { id: "healer", name: "Mender", hp: 130, speed: 42, dmg: 8, rate: 1.2, scrap: 17, armor: 2, r: 16, color: "#6fe0c0", heal: 9, healRange: 140, score: 32 },
+  colossus: { id: "colossus", name: "Hive Colossus", hp: 2600, speed: 24, dmg: 60, rate: 1.6, scrap: 260, armor: 18, r: 46, color: "#b06ad8", boss: true, roar: 11, slam: 1, summon: 9, summonType: "crawler", score: 320 },
 };
 
 const UPGRADES = [
@@ -1654,6 +1768,14 @@ const ACHIEVEMENTS = [
   { id: "streak_7", name: "Week Survivor", icon: "\u{1F4AA}", ds: "Reach a 7-day login streak." },
   { id: "rich", name: "War Profiteer", icon: "\u{1F48E}", ds: "Hold 1,000 gold at once." },
   { id: "endless_30", name: "Apocalypse Now", icon: "\u{1F30B}", ds: "Reach wave 30." },
+  { id: "proto_first", name: "Gene Splicer", icon: "\u{1F9EC}", ds: "Pick your first Mutation Protocol." },
+  { id: "proto_10", name: "Lab Rat", icon: "\u{1F9EA}", ds: "Hold 10 protocols at once in one run." },
+  { id: "proto_all", name: "Perfect Organism", icon: "\u{1F9A0}", ds: "Stack 18 protocols in a single run." },
+  { id: "splitter_kill", name: "Divide and Conquer", icon: "\u2702", ds: "Pop 50 Splitters." },
+  { id: "healer_kill", name: "Field Triage", icon: "\u{1FA79}", ds: "Put down 50 Menders." },
+  { id: "colossus_slay", name: "Hive Breaker", icon: "\u{1F41D}", ds: "Fell a Hive Colossus." },
+  { id: "overdrive", name: "Redline", icon: "\u{1F680}", ds: "Trigger Overdrive for the first time." },
+  { id: "arsenal_v4", name: "Modern Warfare", icon: "\u{1F52C}", ds: "Unlock Mortar, Cryo Coil and Laser Prism." },
 ];
 
 const RANKS = [
@@ -1684,6 +1806,8 @@ const DAILY_CHALLENGES = [
   { id: "fragile", name: "Paper Walls", ds: "The fortress has 50% HP. Clear wave 10.", target: 10, mods: { fhp: 0.5 } },
   { id: "rich", name: "Armed to the Teeth", ds: "Start with 400 scrap but zombies have +50% HP. Clear wave 12.", target: 12, mods: { startScrapFlat: 400, zombieHp: 1.5 } },
   { id: "purist", name: "No Upgrades", ds: "Towers cannot be upgraded. Clear wave 8.", target: 8, mods: { noTowerUpgrades: true } },
+  { id: "noproto", name: "Baseline Strain", ds: "Mutation Protocols are disabled. Clear wave 9.", target: 9, mods: { noProtocols: true } },
+  { id: "protorush", name: "Splicer Rush", ds: "Pick two protocols each wave, but zombies have +30% HP. Clear wave 10.", target: 10, mods: { doubleDraft: true, zombieHp: 1.3 } },
 ];
 
 function dailyChallengeFor(key) {
@@ -1753,6 +1877,8 @@ const RELIC_DEFS = {
   chrono_capacitor: { id: "chrono_capacitor", name: "Chrono Capacitor", rarity: "legendary", icon: "ui/skill_freeze", ds: "Skill cooldowns -25%, +10% rate.", mod: { cooldown: 0.75, rate: 1.10 } },
   bulwark_charm: { id: "bulwark_charm", name: "Bulwark Charm", rarity: "legendary", icon: "ui/icon_star", ds: "+500 fortress HP, +25% scrap.", mod: { fhp: 500, scrapGain: 1.25 } },
   plague_mask: { id: "plague_mask", name: "Plague Mask", rarity: "epic", icon: "ui/icon_meds", ds: "+2 meds and +1 food per wave.", mod: { waveFood: 1, waveMeds: 2 } },
+  cryo_cell: { id: "cryo_cell", name: "Cryo Cell", rarity: "rare", icon: "ui/skill_freeze", ds: "+8% fire rate, +2 fortress HP/s.", mod: { rate: 1.08, regen: 2 } },
+  splicing_serum: { id: "splicing_serum", name: "Splicing Serum", rarity: "epic", icon: "ui/icon_skull", ds: "+14% damage, +6% crit.", mod: { dmg: 1.14, crit: 0.06 } },
 };
 const RELIC_RARITY_COLOR = { common: "#8fa2c0", rare: "#4aa8ff", epic: "#c08bff", legendary: "#ffb347" };
 
@@ -1820,9 +1946,16 @@ const CODEX_ENTRIES = [
   { id: "m_frenzy", cat: "Mutations", name: "Frenzy", ds: "Zombies move faster but take more damage." },
   { id: "s_adjacent", cat: "Synergies", name: "Overwatch Net", ds: "Two Gunners side by side gain +15% fire rate." },
   { id: "s_firestorm", cat: "Synergies", name: "Firestorm", ds: "Flamethrower next to a Tesla adds burn to every arc." },
+  { id: "z_splitter", cat: "Bestiary", name: "Splitter", ds: "Bloated carrier. Bursts open into two runners when it dies." },
+  { id: "z_healer", cat: "Bestiary", name: "Mender", ds: "Pulses healing ichor that mends every zombie near it. Kill it first." },
+  { id: "z_colossus", cat: "Bestiary", name: "Hive Colossus", ds: "Living nest. Slams the ground and hatches crawlers while it lives." },
+  { id: "t_mortar", cat: "Arsenal", name: "Mortar", ds: "Lobs explosive shells that splash a whole cluster at long range." },
+  { id: "t_cryo", cat: "Arsenal", name: "Cryo Coil", ds: "Freezing aura that slows and chips every zombie caught inside it." },
+  { id: "t_laser", cat: "Arsenal", name: "Laser Prism", ds: "Piercing beam that cuts through every zombie in a straight line." },
+  { id: "proto_core", cat: "Protocols", name: "Mutation Protocol", ds: "Between waves the lab offers a choice of permanent run mutations. Stack them to build a broken fortress." },
   { id: "p_rank", cat: "Command", name: "Fortress Ranks", ds: "Rookie to Apocalypse - your career score determines your rank." },
 ];
-const CODEX_CATS = ["Bestiary", "Arsenal", "Weather", "Mutations", "Synergies", "Command"];
+const CODEX_CATS = ["Bestiary", "Arsenal", "Protocols", "Weather", "Mutations", "Synergies", "Command"];
 
 /* quest pools ---------------------------------------------------------- */
 const QUEST_POOLS = {
@@ -2025,6 +2158,15 @@ class Effect {
     } else if (this.type === "flash") {
       ctx.fillStyle = this.color || "#ffe";
       ctx.beginPath(); ctx.arc(this.x, this.y, lerp(this.radius || 10, 2, p), 0, TAU); ctx.fill();
+    } else if (this.type === "beam") {
+      const w = 3 + 10 * a;
+      ctx.strokeStyle = this.color || "#ff5bd0";
+      ctx.shadowColor = this.color || "#ff5bd0"; ctx.shadowBlur = 18;
+      ctx.lineWidth = w; ctx.lineCap = "round";
+      ctx.beginPath(); ctx.moveTo(this.ax, this.ay); ctx.lineTo(this.bx, this.by); ctx.stroke();
+      ctx.strokeStyle = "rgba(255,255,255," + a + ")"; ctx.lineWidth = Math.max(1, w * 0.35);
+      ctx.beginPath(); ctx.moveTo(this.ax, this.ay); ctx.lineTo(this.bx, this.by); ctx.stroke();
+      ctx.shadowBlur = 0;
     }
     ctx.globalAlpha = 1;
   }
@@ -2216,11 +2358,24 @@ class Tower {
     } else if (this.kind === "heal") {
       this.heal = b.heal * (1 + 0.5 * (this.level - 1)) * sm("dmg");
       this.maxHp = Math.round(260 * (1 + 0.2 * (this.level - 1)));
-    } else if (this.kind === "flame") {
+    } else if (this.kind === "flame" || this.kind === "cryo") {
       this.dmg = b.dps * dm * bonus.dmg;
-      this.rate = 6;
+      this.rate = this.kind === "cryo" ? 6 : 6;
       this.range = b.range * rrm * bonus.range;
-      this.burn = b.burn;
+      if (this.kind === "flame") this.burn = b.burn;
+      if (this.kind === "cryo") { this.slow = b.slow; this.slowDur = b.slowDur; }
+      this.maxHp = Math.round(260 * (1 + 0.2 * (this.level - 1)));
+    } else if (this.kind === "mortar") {
+      this.dmg = b.dmg * dm * bonus.dmg;
+      this.rate = b.rate * rm * bonus.rate;
+      this.range = b.range * rrm * bonus.range;
+      this.aoe = b.aoe * (1 + 0.05 * (this.level - 1));
+      this.bulletSpeed = b.bulletSpeed;
+      this.maxHp = Math.round(260 * (1 + 0.2 * (this.level - 1)));
+    } else if (this.kind === "laser") {
+      this.dmg = b.dmg * dm * bonus.dmg;
+      this.rate = b.rate * rm * bonus.rate;
+      this.range = b.range * rrm * bonus.range;
       this.maxHp = Math.round(260 * (1 + 0.2 * (this.level - 1)));
     } else {
       this.dmg = b.dmg * dm * bonus.dmg;
@@ -2292,7 +2447,7 @@ class Tower {
       this.angle += diff * Math.min(1, dt * 12);
     }
     this.cd -= dt;
-    if (this.cd <= 0 && target) { this.fire(target, game); this.cd = 1 / this.rate; }
+    if (this.cd <= 0 && target) { this.fire(target, game); this.cd = 1 / (this.rate * (game.overdriveT > 0 ? 1.6 : 1)); }
   }
 
   fire(target, game) {
@@ -2301,14 +2456,52 @@ class Tower {
     const mx = this.x + Math.cos(ang) * 18, my = this.y + Math.sin(ang) * 18 - 22;
     const b = this.def.base;
     const crit = Math.random() < game.bonus.crit;
-    const dmg = this.dmg * (crit ? 2 : 1);
+    const pf = game.protocolFlags || {};
+    const odMul = game.overdriveT > 0 ? 1.25 : 1;
+    const round = { burn: pf.burn || 0, slow: pf.slow || 0, slowDur: pf.slowDur || 1.4 };
+    const dmg = this.dmg * (crit ? 2 : 1) * odMul;
     if (this.kind === "bullet") {
       game.audio.sfx("shoot");
       game.projectiles.push(new Projectile({
         x: mx, y: my, vx: Math.cos(ang) * b.bulletSpeed, vy: Math.sin(ang) * b.bulletSpeed,
         dmg, radius: 4, color: this.def.accent, crit, speed: b.bulletSpeed,
+        burn: round.burn, slow: round.slow, slowDur: round.slowDur, aoe: pf.aoe || 0,
       }));
       game.effects.push(new Effect("flash", { x: mx, y: my, radius: 12, color: this.def.accent, dur: 0.08 }));
+    } else if (this.kind === "mortar") {
+      game.audio.sfx("shotgun");
+      game.projectiles.push(new Projectile({
+        x: mx, y: my, vx: Math.cos(ang) * b.bulletSpeed, vy: Math.sin(ang) * b.bulletSpeed,
+        dmg: dmg * 1.0, radius: 7, color: this.def.accent, crit, speed: b.bulletSpeed,
+        aoe: (this.aoe || b.aoe), life: 3, kind: "shell",
+      }));
+      game.effects.push(new Effect("flash", { x: mx, y: my, radius: 15, color: "#ffd9a0", dur: 0.12 }));
+    } else if (this.kind === "laser") {
+      game.audio.sfx("sniper");
+      const ex = this.x + Math.cos(ang) * this.range, ey = this.y - 22 + Math.sin(ang) * this.range;
+      game.effects.push(new Effect("beam", { ax: this.x, ay: this.y - 22, bx: ex, by: ey, color: this.def.accent, dur: 0.14 }));
+      const nx = Math.cos(ang), ny = Math.sin(ang);
+      for (const z of game.zombies) {
+        if (z.dead) continue;
+        const rx = z.x - this.x, ry = (z.y - (this.y - 22));
+        const along = rx * nx + ry * ny;
+        if (along < -z.r || along > this.range + z.r) continue;
+        const perp = Math.abs(rx * (-ny) + ry * nx);
+        if (perp > z.r + 6) continue;
+        z.hurt(dmg, game, { crit, burn: round.burn, slow: round.slow, slowDur: round.slowDur, src: "laser" });
+      }
+    } else if (this.kind === "cryo") {
+      game.audio.sfx("freeze");
+      for (const z of game.zombies) {
+        if (z.dead) continue;
+        if (dist(this.x, this.y, z.x, z.y) > this.range + z.r) continue;
+        z.hurt(this.dmg * odMul, game, { slow: this.slow, slowDur: this.slowDur, src: "cryo" });
+      }
+      for (let i = 0; i < 6; i++) {
+        const a = rand(0, TAU), rr = rand(6, this.range);
+        game.emitPfx(this.x + Math.cos(a) * rr, this.y + Math.sin(a) * rr, rand(-10, 10), -rand(10, 40), rand(0.3, 0.7), pick(["#bff0ff", "#8fe4ff", "#e6faff"]), rand(2, 5), -20);
+      }
+      game.effects.push(new Effect("ring", { x: this.x, y: this.y, radius: this.range * 0.7, color: "#8fe4ff", dur: 0.3 }));
     } else if (this.kind === "shotgun") {
       game.audio.sfx("shotgun");
       for (let i = 0; i < b.pellets; i++) {
@@ -2317,6 +2510,7 @@ class Tower {
         game.projectiles.push(new Projectile({
           x: mx, y: my, vx: Math.cos(a) * sp, vy: Math.sin(a) * sp,
           dmg: dmg / b.pellets * 1.6, radius: 3, color: this.def.accent, crit, life: 0.3, speed: sp,
+          burn: round.burn, slow: round.slow, slowDur: round.slowDur, aoe: pf.aoe || 0,
         }));
       }
     } else if (this.kind === "sniper") {
@@ -2324,6 +2518,7 @@ class Tower {
       game.projectiles.push(new Projectile({
         x: mx, y: my, vx: Math.cos(ang) * b.bulletSpeed, vy: Math.sin(ang) * b.bulletSpeed,
         dmg, radius: 5, color: this.def.accent, crit, pierce: this.pierce, kind: "sniper",
+        burn: round.burn, slow: round.slow, slowDur: round.slowDur, aoe: pf.aoe || 0,
       }));
       game.effects.push(new Effect("flash", { x: mx, y: my, radius: 16, color: "#efe", dur: 0.1 }));
     } else if (this.kind === "flame") {
@@ -2439,6 +2634,17 @@ class Tower {
       if (this.kind === "sniper") ctx.fillRect(0, -2.5, 30, 5);
       else if (this.kind === "shotgun") { ctx.fillRect(0, -5, 22, 4); ctx.fillRect(0, 1, 22, 4); }
       else if (this.kind === "flame") { ctx.fillRect(0, -4, 20, 8); ctx.beginPath(); ctx.arc(20, 0, 5, 0, TAU); ctx.fill(); }
+      else if (this.kind === "mortar") { ctx.fillRect(0, -7, 24, 14); ctx.fillRect(20, -5, 10, 10); }
+      else if (this.kind === "cryo") {
+        ctx.beginPath(); ctx.arc(0, 0, 6, 0, TAU); ctx.fill();
+        ctx.strokeStyle = this.def.accent; ctx.lineWidth = 2;
+        for (let i = 0; i < 3; i++) { const a = i * Math.PI / 3; ctx.beginPath(); ctx.moveTo(Math.cos(a) * -8, Math.sin(a) * -8); ctx.lineTo(Math.cos(a) * 8, Math.sin(a) * 8); ctx.stroke(); }
+      }
+      else if (this.kind === "laser") {
+        ctx.fillRect(0, -3, 16, 6);
+        ctx.beginPath(); ctx.arc(18, 0, 5, 0, TAU); ctx.fill();
+        ctx.fillStyle = "#fff"; ctx.beginPath(); ctx.arc(18, 0, 2, 0, TAU); ctx.fill();
+      }
       else if (this.kind === "tesla") {
         ctx.beginPath(); ctx.arc(0, 0, 5, 0, TAU); ctx.fill();
         ctx.strokeStyle = this.def.accent; ctx.lineWidth = 2;
@@ -2559,6 +2765,7 @@ class Zombie {
     let dmg = amount;
     const armor = this.armored;
     if (armor && opts.src !== "flame" && opts.src !== "burn") dmg = Math.max(1, dmg - armor * 0.5);
+    if (this.def.boss && game.protocolFlags && game.protocolFlags.boss && opts.src !== "burn") dmg *= 1 + game.protocolFlags.boss;
     // shield-bearers angle their cover at the towers: bullet/shotgun/sniper
     // rounds glance off, but fire, lightning and explosions ignore the cover
     if (this.def.frontArmor && opts.src === "projectile") {
@@ -2630,7 +2837,8 @@ class Zombie {
         this.summonT = this.def.summon;
         game.audio.sfx("growl");
         game.effects.push(new Effect("ring", { x: this.x, y: this.y, radius: 60, color: "#c06fd8", dur: 0.5 }));
-        for (let i = 0; i < 2; i++) game.spawnZombie("walker", randInt(0, LANES.length - 1), { x: this.x + rand(-20, 20), hpMul: 0.9 });
+        const stype = this.def.summonType || "walker";
+        for (let i = 0; i < 2; i++) game.spawnZombie(stype, randInt(0, LANES.length - 1), { x: this.x + rand(-20, 20), hpMul: 0.9 });
       }
     }
     if (this.def.boss && !frozen) {
@@ -2641,6 +2849,36 @@ class Zombie {
         game.effects.push(new Effect("ring", { x: this.x, y: this.y, radius: 300, color: "#ff5566", dur: 0.7 }));
         for (const z of game.zombies) if (!z.dead && dist(z.x, z.y, this.x, this.y) < 320) z.rageT = 6;
         game.shake = Math.max(game.shake, 0.4);
+      }
+    }
+    // Mender: pulses healing ichor that mends nearby zombies
+    if (this.def.heal && !frozen) {
+      this.healT = (this.healT == null ? 0.5 : this.healT) - dt;
+      if (this.healT <= 0) {
+        this.healT = 0.5;
+        let mended = 0;
+        for (const z of game.zombies) {
+          if (z.dead || z === this || z.hp >= z.maxHp) continue;
+          if (dist(z.x, z.y, this.x, this.y) > this.def.healRange) continue;
+          z.hp = Math.min(z.maxHp, z.hp + this.def.heal * 0.5); mended++;
+        }
+        if (mended) {
+          game.effects.push(new Effect("ring", { x: this.x, y: this.y, radius: this.def.healRange * 0.6, color: "#6fe0c0", dur: 0.4 }));
+          for (let i = 0; i < 4; i++) game.emitPfx(this.x + rand(-20, 20), this.y + rand(-16, 16), rand(-20, 20), -rand(10, 40), 0.6, "#9dffe0", 3, -20);
+        }
+      }
+    }
+    // Hive Colossus: ground slam rocks the whole line
+    if (this.def.slam && !frozen) {
+      this.slamT = (this.slamT == null ? 6 : this.slamT) - dt;
+      if (this.slamT <= 0) {
+        this.slamT = 8;
+        game.audio.sfx("explode");
+        game.shake = Math.max(game.shake, 0.6);
+        game.effects.push(new Effect("ring", { x: this.x, y: this.y, radius: 210, color: "#b06ad8", dur: 0.6 }));
+        game.burst(this.x, this.y, "#b06ad8", 26, 300);
+        for (const t of game.towers) if (!t.dead && dist(this.x, this.y, t.x, t.y) < 190) t.hurt(this.dmg * 0.6);
+        if (dist(this.x, this.y, FORTRESS_X, this.y) < 250) game.fortress.hurt(this.dmg * 0.5, game);
       }
     }
   }
@@ -2678,6 +2916,8 @@ class Zombie {
       game.audio.sfx("hit");
       game.effects.push(new Effect("flash", { x: FORTRESS_X - 4, y: this.y, radius: 18, color: "#ff8090", dur: 0.2 }));
     }
+    // Razor Wire protocol: attackers cut themselves on the defences
+    if (game.protocolFlags && game.protocolFlags.thorns) this.hurt(game.protocolFlags.thorns, game, { src: "thorns" });
   }
 
   draw(ctx, game) {
@@ -2820,6 +3060,8 @@ class WaveManager {
     if (n >= 6) pool.push(["bomber", Math.min(0.3, 0.04 + n * 0.016)]);
     if (n >= 8) pool.push(["brute", Math.min(0.34, 0.03 + n * 0.018)]);
     if (n >= 11) pool.push(["shield", Math.min(0.3, 0.03 + n * 0.016)]);
+    if (n >= 6) pool.push(["healer", Math.min(0.26, 0.02 + n * 0.014)]);
+    if (n >= 7) pool.push(["splitter", Math.min(0.3, 0.03 + n * 0.016)]);
     const list = [];
     for (let i = 0; i < count; i++) {
       let r = Math.random(), acc = 0, type = "walker";
@@ -2828,10 +3070,11 @@ class WaveManager {
       list.push(type);
     }
     this.bossWave = this.isBossWave(n);
-    if (this.bossWave) { list.length = Math.max(3, Math.round(list.length * 0.7)); list.push("boss"); }
+    const bossType = (n >= 10 && n % 10 === 0) ? "colossus" : "boss";
+    if (this.bossWave) { list.length = Math.max(3, Math.round(list.length * 0.7)); list.push(bossType); }
     if (mut.elite && !this.bossWave) { list.push("brute"); }
     // shuffle but keep the boss at the end
-    if (this.bossWave) { list.pop(); list.sort(() => Math.random() - 0.5); list.push("boss"); }
+    if (this.bossWave) { list.pop(); list.sort(() => Math.random() - 0.5); list.push(bossType); }
     else list.sort(() => Math.random() - 0.5);
     return list;
   }
@@ -2899,6 +3142,7 @@ class AchievementSystem {
     if (st.highestWave >= 20) this.unlock("wave_20");
     if (st.highestWave >= 30) this.unlock("endless_30");
     if (st.unlockedTowers.length >= TOWER_IDS.length) this.unlock("all_towers");
+    if (["mortar", "cryo", "laser"].every((t) => st.unlockedTowers.indexOf(t) >= 0)) this.unlock("arsenal_v4");
     if ((run && run.bossKills >= 1) || st.bossKills) this.unlock("boss_slay");
     if (run && run.wavesCleared >= 10 && !run.fortressHit) this.unlock("flawless_10");
     if (run && run.combo >= 50) this.unlock("combo_50");
@@ -3485,6 +3729,136 @@ class SynergySystem {
   has(id) { return this.active.some((a) => a.def.id === id); }
 }
 
+/* =====================================================================
+   RUN PROTOCOLS (v4) - the roguelite draft.
+   After every cleared wave the lab offers a choice of run mutations.
+   Each pick is permanent for that run and stacks, so no two runs build
+   the same fortress.  Mods reuse the shared vocabulary consumed by
+   Game.computeBonus(); the handful of behaviour flags are exposed as
+   `protocolFlags()` and read by towers, zombies and projectiles.
+   ===================================================================== */
+
+const PROTO_RARITY = { common: "#8fa2c0", rare: "#4aa8ff", epic: "#c08bff" };
+const PROTO_RARITY_W = { common: 58, rare: 30, epic: 12 };
+
+const PROTOCOLS = [
+  /* --- common: clean, always-useful stat lines --- */
+  { id: "p_dmg",   name: "Hollow Points",   icon: "\u{1F4A5}", rarity: "common", max: 5, ds: "+12% tower damage.", mod: { dmg: 1.12 } },
+  { id: "p_rate",  name: "Trigger Tuning",  icon: "\u{1F3AF}", rarity: "common", max: 5, ds: "+10% tower fire rate.", mod: { rate: 1.10 } },
+  { id: "p_range", name: "Spotter Drone",   icon: "\u{1F52D}", rarity: "common", max: 4, ds: "+10% tower range.", mod: { range: 1.10 } },
+  { id: "p_scrap", name: "Scrap Magnet",    icon: "\u{1F9F2}", rarity: "common", max: 5, ds: "+15% scrap from kills.", mod: { scrapGain: 1.15 } },
+  { id: "p_crit",  name: "Weak-Point Map",  icon: "\u{1F480}", rarity: "common", max: 4, ds: "+5% crit chance.", mod: { crit: 0.05 } },
+  { id: "p_fhp",   name: "Concrete Mix",    icon: "\u{1F9F1}", rarity: "common", max: 5, ds: "+180 fortress HP.", mod: { fhp: 180 } },
+  { id: "p_regen", name: "Auto-Medics",     icon: "\u{1FA79}", rarity: "common", max: 4, ds: "+1.5 fortress HP/s.", mod: { regen: 1.5 } },
+  { id: "p_cd",    name: "Command Relay",   icon: "\u{1F4E1}", rarity: "common", max: 3, ds: "-12% skill cooldowns.", mod: { cooldown: 0.88 } },
+  { id: "p_cost",  name: "Requisition",     icon: "\u{1F4E6}", rarity: "common", max: 3, ds: "Towers cost 8% less.", mod: { costMul: 0.92 } },
+  { id: "p_food",  name: "Ration Cache",    icon: "\u{1F35E}", rarity: "common", max: 4, ds: "+1 food and +1 med per wave.", mod: { waveFood: 1, waveMeds: 1 } },
+
+  /* --- rare: new behaviour you can feel --- */
+  { id: "p_burn",   name: "Incendiary Rounds", icon: "\u{1F525}", rarity: "rare", max: 2, ds: "Bullets set zombies on fire.", mod: {}, flag: "burn" },
+  { id: "p_boom",   name: "Explosive Tips",    icon: "\u{1F4A3}", rarity: "rare", max: 2, ds: "Bullets explode on impact.", mod: {}, flag: "boom" },
+  { id: "p_static", name: "Static Rounds",     icon: "\u26A1",    rarity: "rare", max: 2, ds: "Bullets slow what they hit.", mod: {}, flag: "static" },
+  { id: "p_vamp",   name: "Leech Protocol",    icon: "\u{1FA78}", rarity: "rare", max: 3, ds: "Each kill restores 2 fortress HP.", mod: {}, flag: "vamp" },
+  { id: "p_thorns", name: "Razor Wire",        icon: "\u{1F529}", rarity: "rare", max: 2, ds: "Zombies that strike your wall take 25 damage.", mod: {}, flag: "thorns" },
+  { id: "p_boss",   name: "Titan Slayer",      icon: "\u{1F451}", rarity: "rare", max: 2, ds: "+35% damage against bosses.", mod: {}, flag: "boss" },
+  { id: "p_greed",  name: "War Bonds",         icon: "\u{1F4B0}", rarity: "rare", max: 3, ds: "+120 starting scrap.", mod: { startScrap: 120 } },
+
+  /* --- epic: run-defining --- */
+  { id: "p_berserk",  name: "Berserker Strain", icon: "\u{1F9AC}", rarity: "epic", max: 1, ds: "+30% damage, -250 fortress HP.", mod: { dmg: 1.30, fhp: -250 } },
+  { id: "p_twin",     name: "Twin Barrels",     icon: "\u{1F52B}", rarity: "epic", max: 1, ds: "+28% fire rate, -12% range.", mod: { rate: 1.28, range: 0.88 } },
+  { id: "p_aegis",    name: "Aegis Protocol",   icon: "\u{1F6E1}", rarity: "epic", max: 1, ds: "+500 fortress HP, +3 HP/s.", mod: { fhp: 500, regen: 3 } },
+  { id: "p_scavenge", name: "Total Salvage",    icon: "\u267B",    rarity: "epic", max: 1, ds: "+30% scrap, +10% fire rate.", mod: { scrapGain: 1.30, rate: 1.10 } },
+];
+const PROTOCOL_BY_ID = {};
+for (const p of PROTOCOLS) PROTOCOL_BY_ID[p.id] = p;
+
+class ProtocolSystem {
+  constructor(game) { this.game = game; this.taken = []; this.pending = 0; this.current = []; }
+  reset() { this.taken = []; this.pending = 0; this.current = []; }
+  count(id) { let n = 0; for (const t of this.taken) if (t === id) n++; return n; }
+  list() { return this.taken.slice(); }
+  has(id) { return this.taken.indexOf(id) >= 0; }
+  maxed(id) { const d = PROTOCOL_BY_ID[id]; return !!d && this.count(id) >= d.max; }
+
+  /* aggregate every taken protocol into one modifier bundle */
+  mods() { const out = {}; for (const id of this.taken) { const d = PROTOCOL_BY_ID[id]; if (d) mergeMods(out, d.mod); } return out; }
+  /* behaviour flags read by the combat code */
+  flags() {
+    const f = { burn: 0, aoe: 0, slow: 0, slowDur: 1.4, vamp: 0, thorns: 0, boss: 0 };
+    for (const id of this.taken) {
+      const d = PROTOCOL_BY_ID[id]; if (!d || !d.flag) continue;
+      if (d.flag === "burn") f.burn = 4;
+      else if (d.flag === "boom") f.aoe = 62;
+      else if (d.flag === "static") f.slow = Math.min(0.6, f.slow + 0.38);
+      else if (d.flag === "vamp") f.vamp += 2;
+      else if (d.flag === "thorns") f.thorns += 25;
+      else if (d.flag === "boss") f.boss += 0.35;
+    }
+    return f;
+  }
+  picksPerWave() { return this.game.mods && this.game.mods.doubleDraft ? 2 : 1; }
+
+  /* roll a fresh offer: distinct, not maxed, weighted toward lower rarity */
+  roll() {
+    const pool = PROTOCOLS.filter((p) => !this.maxed(p.id) && !this.current.some((c) => c.id === p.id));
+    const out = [];
+    const bag = pool.slice();
+    while (out.length < 3 && bag.length) {
+      let total = 0; for (const p of bag) total += PROTO_RARITY_W[p.rarity] || 10;
+      let r = Math.random() * total, chosen = bag[0];
+      for (const p of bag) { r -= PROTO_RARITY_W[p.rarity] || 10; if (r <= 0) { chosen = p; break; } }
+      out.push(chosen);
+      bag.splice(bag.indexOf(chosen), 1);
+    }
+    return out;
+  }
+
+  /* called by Game.waveCleared - opens the draft and pauses the battle */
+  offer() {
+    const g = this.game;
+    if (!g.state.settings.draft) return false;
+    if (g.mods && g.mods.noProtocols) return false;
+    if (g.screen !== "play") return false;
+    this.pending = this.picksPerWave();
+    return this.show();
+  }
+  show() {
+    if (this.pending <= 0) return false;
+    const g = this.game;
+    this.current = this.roll();
+    if (!this.current.length) { this.pending = 0; return false; }
+    if (!g.paused) { g.paused = true; g.autoPaused = true; g.setMusic("menu"); }
+    g.ui.draftScreen(this.current, this.pending);
+    return true;
+  }
+  pick(id) {
+    const g = this.game;
+    const d = PROTOCOL_BY_ID[id];
+    if (!d || !this.current.some((c) => c.id === id) || this.maxed(id)) return false;
+    this.taken.push(id);
+    g.state.stats.protocolsPicked = (g.state.stats.protocolsPicked || 0) + 1;
+    if (this.taken.length > (g.state.stats.bestDraft || 0)) g.state.stats.bestDraft = this.taken.length;
+    if (g.run) g.run.protocols = this.taken.length;
+    g.meta.codex.unlock("proto_core", "Protocols", "Mutation Protocol", "");
+    g.meta.codex.unlock("proto_" + id, "Protocols", d.name, d.ds);
+    g.burst(W / 2, H / 2, PROTO_RARITY[d.rarity], 26, 300);
+    g.audio.sfx("upgrade");
+    if (this.taken.length >= 10) g.unlock("proto_10");
+    if (this.taken.length >= 18) g.unlock("proto_all");
+    if (this.taken.length === 1) g.unlock("proto_first");
+    // fold the new mutation into the run and refresh every built tower
+    g.computeBonus();
+    g.refreshTowers();
+    this.pending--;
+    if (this.pending > 0) { this.show(); return true; }
+    g.ui.closeOverlay();
+    g.endAutoPause();
+    g.ui.toast("\u{1F9EC} Protocol online: " + d.name, PROTO_RARITY[d.rarity]);
+    g.save();
+    return true;
+  }
+}
+
 /* ---------------------------------------------------------------------
    UIMANAGER - all DOM screens, the HUD and tooltips
    --------------------------------------------------------------------- */
@@ -3727,6 +4101,8 @@ class UIManager {
           <button class="btn sm ${s.soundOn ? "primary" : ""}" data-action="togglesfx">${T(s.soundOn ? "ON" : "OFF")}</button></div>
         <div class="up spread" style="margin-top:10px"><div><div class="nm">\u{1F310} Language</div><div class="ds">Interface language</div></div>
           <div class="row">${langs}</div></div>
+        <div class="up spread" style="margin-top:10px"><div><div class="nm">\u{1F9EC} Mutation Protocols</div><div class="ds">Offer a run mutation after every cleared wave.</div></div>
+          <button class="btn sm ${s.draft ? "primary" : ""}" data-action="toggledraft">${T(s.draft ? "ON" : "OFF")}</button></div>
         <div class="up" style="margin-top:10px"><div class="nm">\u{1F3AE} Difficulty</div>
           <div class="ds">Applies to the next run you start.</div><div class="row">${diffs}</div></div>
         <div class="up" style="margin-top:10px"><div class="nm">\u{1F5D1} Reset Progress</div>
@@ -3744,9 +4120,11 @@ class UIManager {
         <div class="up" style="margin-top:10px"><div class="nm">Build</div><div class="ds">Tap a tower at the bottom, then tap an empty platform on the field. Towers shoot by themselves \u2014 you never aim.</div></div>
         <div class="up" style="margin-top:10px"><div class="nm">Scrap vs Gold</div><div class="ds">Scrap drops from kills and pays for towers and upgrades during a run. Gold is awarded at the end of each wave and buys permanent upgrades between runs.</div></div>
         <div class="up" style="margin-top:10px"><div class="nm">Upgrade / Sell</div><div class="ds">Tap a built tower on the field to open its panel, then upgrade (up to level 5) or sell it for 60% back.</div></div>
-        <div class="up" style="margin-top:10px"><div class="nm">Skills</div><div class="ds">Airstrike drops a bomb where you tap. Freeze stops every zombie for 3 seconds. Repair heals the fortress. They cost food or meds and share cooldowns.</div></div>
-        <div class="up" style="margin-top:10px"><div class="nm">Waves</div><div class="ds">Build time counts down automatically; press Next Wave to start early and earn bonus scrap. Bosses arrive every 5 waves. Survive wave 20 to unlock Endless Mode.</div></div>
-        <div class="up" style="margin-top:10px"><div class="nm">Keyboard</div><div class="ds">1-7 pick a tower \u00b7 Q/W/E fire skills \u00b7 SPACE starts the next wave \u00b7 P pauses \u00b7 Esc closes panels and deselects.</div></div>
+        <div class="up" style="margin-top:10px"><div class="nm">Mutation Protocols</div><div class="ds">Each time you clear a wave, the lab offers one of three random mutations. Take one (or skip) and it stays for the whole run \u2014 draft the same power twice and it stacks. Build your fortress differently every game.</div></div>
+        <div class="up" style="margin-top:10px"><div class="nm">Skills</div><div class="ds">Airstrike drops a bomb where you tap. Freeze stops every zombie for 3 seconds. Repair heals the fortress. Overdrive overclocks every tower for 8 seconds. They cost food or meds and share cooldowns.</div></div>
+        <div class="up" style="margin-top:10px"><div class="nm">Waves</div><div class="ds">Build time counts down automatically; press Next Wave to start early and earn bonus scrap. Bosses arrive every 5 waves, and a Hive Colossus every 10. Survive wave 20 to unlock Endless Mode.</div></div>
+        <div class="up" style="margin-top:10px"><div class="nm">New threats</div><div class="ds">Splitters burst into runners when they die. Menders heal the whole horde \u2014 kill them first. The Hive Colossus slams the ground and hatches crawlers.</div></div>
+        <div class="up" style="margin-top:10px"><div class="nm">Keyboard</div><div class="ds">1-0 pick a tower \u00b7 Q/W/E/R fire skills \u00b7 SPACE starts the next wave \u00b7 P pauses \u00b7 Esc closes panels and deselects.</div></div>
       </div>`);
   }
   modList(mods) {
@@ -3787,6 +4165,7 @@ class UIManager {
         <button class="btn" data-action="research">Research</button>
         <button class="btn" data-action="camp">Camp</button>
         <button class="btn" data-action="quests">Quests</button>
+        <button class="btn" data-action="protocols">Protocols</button>
         <button class="btn" data-action="codex">Codex</button>
         <button class="btn" data-action="settings">Settings</button>
         <button class="btn" data-action="help">How to Play</button>
@@ -4056,6 +4435,64 @@ Object.assign(UIManager.prototype, {
   },
 });
 
+/* =====================================================================
+   UI - v4 protocol draft + protocol roster. Attached to UIManager.
+   ===================================================================== */
+Object.assign(UIManager.prototype, {
+  /* the between-wave choice. `pending` shows how many picks are left this wave */
+  draftScreen(cards, pending) {
+    const g = this.game;
+    let html = "";
+    for (const p of cards) {
+      const stacks = g.protocols.count(p.id);
+      const col = PROTO_RARITY[p.rarity] || "#8fa2c0";
+      html += `<button class="proto" data-action="pickproto" data-id="${p.id}" style="--pc:${col}">
+        <div class="pico">${p.icon}</div>
+        <div class="pnm" style="color:${col}">${T(p.name)}</div>
+        <div class="prar">${T(p.rarity)}${stacks ? " \u00b7 " + T("owned") + " " + stacks : ""}</div>
+        <div class="pds">${T(p.ds)}</div>
+      </button>`;
+    }
+    this.el.overlay.innerHTML = I18N.tr(
+      `<div class="ovl"><div class="box panel draftbox">
+        <div class="head"><h2>\u{1F9EC} ${T("Mutation Protocol")}</h2>
+          <span class="chip">${T("Wave")} ${g.waves.wave} ${T("cleared")}${pending > 1 ? " \u00b7 " + pending + " " + T("picks") : ""}</span></div>
+        <div class="dim" style="margin-bottom:14px">${T("The lab offers one permanent mutation for this run. Choose carefully \u2014 it stacks with everything you already carry.")}</div>
+        <div class="protogrid">${html}</div>
+        <div class="row" style="justify-content:center;margin-top:14px">
+          <button class="btn ghost" data-action="skipdraft">${T("Skip \u00b7 no mutation")}</button>
+        </div>
+      </div></div>`);
+  },
+
+  /* browsable roster of everything drafted this run */
+  protocolsScreen() {
+    const g = this.game, ps = g.protocols;
+    let cards = "";
+    for (const id of ps.list()) {
+      const p = PROTOCOL_BY_ID[id];
+      if (!p) continue;
+      const col = PROTO_RARITY[p.rarity] || "#8fa2c0";
+      cards += `<div class="up on">
+        <div class="spread"><div class="nm" style="color:${col}">${p.icon} ${p.name}</div><div class="lv">x${ps.count(id)}</div></div>
+        <div class="ds">${p.ds}</div></div>`;
+    }
+    if (!cards) cards = `<div class="dim">No protocols yet \u2014 clear a wave and the lab will offer you one.</div>`;
+    const f = ps.flags();
+    const fx = [];
+    if (f.burn) fx.push("Incendiary rounds");
+    if (f.aoe) fx.push("Explosive rounds");
+    if (f.slow) fx.push("Slowing rounds");
+    if (f.vamp) fx.push("+ " + f.vamp + " HP per kill");
+    if (f.thorns) fx.push(f.thorns + " thorns damage");
+    if (f.boss) fx.push("+" + Math.round(f.boss * 100) + "% boss damage");
+    this.setOverlayContent(this.metaHeader("\u{1F9EC} " + T("Protocols"), `<span class="chip">${T("Active")} <b>${ps.taken.length}</b></span>`) +
+      `<div class="dim" style="margin-bottom:10px">${T("Run mutations drafted from the lab. They reset when the run ends.")}</div>
+      ${fx.length ? `<div class="up"><div class="nm">${T("Active effects")}</div><div class="ds">${fx.join(" \u00b7 ")}</div></div>` : ""}
+      <div class="scroll grid2">${cards}</div>`);
+  },
+});
+
 /* ---------------------------------------------------------------------
    GAME - the main loop, run lifecycle, economy and input
    --------------------------------------------------------------------- */
@@ -4078,6 +4515,8 @@ class Game {
     this.mutations = new MutationSystem(this);
     this.weather = new WeatherSystem(this);
     this.synergy = new SynergySystem(this);
+    this.protocols = new ProtocolSystem(this);
+    this.overdriveT = 0;
     this.weatherZombieSpeed = 1;
     this.mutationVuln = 1; this.mutationScrap = 1; this.mutationMultiLane = false;
     this.mods = {};
@@ -4099,6 +4538,7 @@ class Game {
       { id: "airstrike", name: "Strike", icon: "\u{1F4A3}", costType: "food", cost: 25, cd: 45, cdLeft: 0, desc: "Tap the field to call a bombing run (220 damage over a wide area)." },
       { id: "freeze", name: "Freeze", icon: "\u2744", costType: "food", cost: 20, cd: 40, cdLeft: 0, desc: "Freeze every zombie on screen for 3 seconds." },
       { id: "repair", name: "Repair", icon: "\u{1F6E0}", costType: "meds", cost: 20, cd: 60, cdLeft: 0, desc: "Restore 35% of the fortress maximum HP." },
+      { id: "overdrive", name: "Overdrive", icon: "\u{1F680}", costType: "food", cost: 30, cd: 75, cdLeft: 0, desc: "Overclock every tower: +25% damage and +60% fire rate for 8 seconds." },
     ];
     this.setupStage();
     this.bindInput();
@@ -4133,6 +4573,18 @@ class Game {
       waveFood: add("waveFood"),
       waveMeds: add("waveMeds"),
     };
+    // fold this run's drafted protocols on top (they stack multiplicatively)
+    if (this.protocols) {
+      mergeMods(this.bonus, this.protocols.mods());
+      this.protocolFlags = this.protocols.flags();
+    } else {
+      this.protocolFlags = { burn: 0, aoe: 0, slow: 0, slowDur: 1.4, vamp: 0, thorns: 0, boss: 0 };
+    }
+  }
+  /* apply the current bonus bundle to every tower already on the field */
+  refreshTowers() {
+    for (const t of this.towers) if (!t.dead && t.recompute) t.recompute();
+    if (this.synergy && this.synergy.recompute) this.synergy.recompute();
   }
   towerCost(id) {
     const def = TOWER_DEFS[id];
@@ -4214,7 +4666,21 @@ class Game {
       this.ui.toast("\u2620 Boss down! +" + scrap + " scrap", "#ffce4a");
       this.food += 10; this.meds += 8;
       this.effects.push(new Effect("ring", { x: z.x, y: z.y, radius: 260, color: "#ffce4a", dur: 0.8 }));
+      if (z.type === "colossus") { this.state.stats.colossusKills = (this.state.stats.colossusKills || 0) + 1; this.unlock("colossus_slay"); }
     }
+    // Splitter bursts open into a pair of runners
+    if (z.def.split) {
+      this.state.stats.splitterKills = (this.state.stats.splitterKills || 0) + 1;
+      this.effects.push(new Effect("ring", { x: z.x, y: z.y, radius: 70, color: "#c47ad8", dur: 0.5 }));
+      for (let i = 0; i < z.def.split; i++) this.spawnZombie("runner", z.lane, { x: z.x + rand(-16, 16), hpMul: 0.75 });
+      if (this.state.stats.splitterKills >= 50) this.unlock("splitter_kill");
+    }
+    if (z.type === "healer") {
+      this.state.stats.healerKills = (this.state.stats.healerKills || 0) + 1;
+      if (this.state.stats.healerKills >= 50) this.unlock("healer_kill");
+    }
+    // Leech Protocol: each kill patches the wall
+    if (this.protocolFlags && this.protocolFlags.vamp && this.fortress) this.fortress.heal(this.protocolFlags.vamp);
     this.achievements.check();
   }
   addScrap(n) { this.scrap += n; this.run.scrapEarned += n; }
@@ -4244,6 +4710,8 @@ class Game {
     // roll run-wide variety, then fold meta + weather into the bonus bundle
     this.mutations.reset();
     this.synergy.reset();
+    this.protocols.reset();
+    this.overdriveT = 0;
     if (this.meta) this.meta.recompute();
     this.weather.roll();
     this.computeBonus();
@@ -4255,7 +4723,7 @@ class Game {
     this.weatherZombieSpeed = wm.zombieSpeed || 1;
     this.mutationVuln = 1; this.mutationScrap = 1; this.mutationMultiLane = false;
     this.state.gold += this.bonus.startGold;
-    this.run = { kills: 0, wavesCleared: 0, fortressHit: false, combo: 0, bossKills: 0, scrapEarned: 0, builds: 0, hero: this.state.selectedHero, startTime: nowMs() };
+    this.run = { kills: 0, wavesCleared: 0, fortressHit: false, combo: 0, bossKills: 0, scrapEarned: 0, builds: 0, protocols: 0, hero: this.state.selectedHero, startTime: nowMs() };
     this.killCombo = 0; this.killComboBest = 0;
     let startScrap = 200 + this.bonus.startScrap;
     if (this.mods.startScrap) startScrap = Math.round(startScrap * this.mods.startScrap);
@@ -4322,6 +4790,8 @@ class Game {
     this.waves.prepTimer = PREP_TIME;
     this.setMusic("menu");
     this.save();
+    // roguelite beat: the lab offers a mutation before the next wave
+    if (this.protocols) this.protocols.offer();
   }
   gameOver() {
     if (this.screen !== "play") return;
@@ -4475,6 +4945,7 @@ class Game {
       if (k === "q") this.onSkillCard("airstrike");
       if (k === "w") this.onSkillCard("freeze");
       if (k === "e") this.onSkillCard("repair");
+      if (k === "r") this.onSkillCard("overdrive");
       const n = parseInt(k, 10);
       if (n >= 1 && n <= TOWER_IDS.length) this.onTowerCard(TOWER_IDS[n - 1]);
     } else if (this.screen === "over" && k === " ") {
@@ -4500,6 +4971,7 @@ class Game {
     this.audio.sfx("click");
     if (id === "freeze") this.doFreeze();
     else if (id === "repair") this.doRepair();
+    else if (id === "overdrive") this.doOverdrive();
     else { this.selectedTower = null; this.selectedSkill = this.selectedSkill === id ? null : id; }
     this.ui.lastSkillSig = "";
   }
@@ -4570,11 +5042,22 @@ class Game {
     for (let i = 0; i < 30; i++) this.emitPfx(rand(10, FIELD_LEFT - 10), rand(120, H - 120), rand(-20, 20), rand(-80, -20), 0.8, "#9dffcf", rand(3, 6), -30);
     this.ui.toast("\u{1F6E0} Fortress repaired", "#57e08a");
   }
+  doOverdrive() {
+    const s = this.skills.find((v) => v.id === "overdrive");
+    if (!this.skillUsable(s)) return;
+    this.paySkill(s);
+    this.overdriveT = 8;
+    this.audio.sfx("upgrade");
+    this.effects.push(new Effect("ring", { x: W / 2, y: H / 2, radius: 0, color: "#ffce4a", dur: 0.6 }));
+    for (let i = 0; i < 40; i++) this.emitPfx(rand(FIELD_LEFT, W), rand(80, H - 60), rand(-30, 30), -rand(40, 140), rand(0.4, 1), pick(["#ffce4a", "#ff9b4a", "#fff2a0"]), rand(2, 5), -10);
+    this.unlock("overdrive");
+    this.ui.toast("\u{1F680} OVERDRIVE \u2014 all towers overclocked for 8s!", "#ffce4a");
+  }
 
   action(name, data) {
     const st = this.state;
     // opening any informational panel during a run pauses the battle so nothing sneaks past
-    if (["shop", "collection", "achievements", "leaderboard", "settings", "help", "daily", "codex", "quests", "camp", "research", "heroes", "relics", "battlepass", "prestige", "season"].indexOf(name) >= 0) {
+    if (["shop", "collection", "achievements", "leaderboard", "settings", "help", "daily", "codex", "quests", "camp", "research", "heroes", "relics", "battlepass", "prestige", "season", "protocols"].indexOf(name) >= 0) {
       if (this.screen === "play" && !this.paused) {
         this.paused = true; this.autoPaused = true; this.setMusic("menu");
       }
@@ -4625,6 +5108,8 @@ class Game {
           this.mutations = new MutationSystem(this);
           this.weather = new WeatherSystem(this);
           this.synergy = new SynergySystem(this);
+          this.protocols = new ProtocolSystem(this);
+          this.overdriveT = 0;
           this.computeBonus(); this.ui.closeOverlay(); this.ui.showMenu(); this.quitToMenu();
         }
         break;
@@ -4675,6 +5160,15 @@ class Game {
       /* ---- v3 meta screens ---- */
       case "codex": this.ui.codexScreen(); break;
       case "codexcat": this.ui._codexCat = data.v; this.ui.codexScreen(); break;
+      case "protocols": this.ui.protocolsScreen(); break;
+      case "pickproto": this.protocols.pick(data.id); break;
+      case "skipdraft":
+        this.protocols.pending = 0;
+        this.ui.closeOverlay();
+        this.endAutoPause();
+        this.ui.toast("\u{1F9EC} Skipped the mutation.", "#8fa2c0");
+        break;
+      case "toggledraft": st.settings.draft = !st.settings.draft; SaveSystem.save(st); this.ui.settings(); break;
       case "quests": this.ui.questsScreen(); break;
       case "camp": this.ui.campScreen(); break;
       case "research": this.ui.researchScreen(); break;
@@ -4787,6 +5281,7 @@ Object.assign(Game.prototype, {
   update(dt) {
     if (this.screen !== "play" || this.paused) return;
     for (const s of this.skills) if (s.cdLeft > 0) s.cdLeft = Math.max(0, s.cdLeft - dt);
+    if (this.overdriveT > 0) this.overdriveT = Math.max(0, this.overdriveT - dt);
     this.fortress.update(dt, this);
     if (this.synergy && this.synergy.has && this.synergy.has("hospital")) this.fortress.heal(40 * dt);
     this.waves.update(dt);
@@ -4991,6 +5486,23 @@ Object.assign(Game.prototype, {
         ctx.textAlign = "left"; ctx.font = "600 13px Segoe UI, sans-serif";
         ctx.fillStyle = "rgba(180,210,255,.82)";
         ctx.fillText(bits.join("   "), 14, 72);
+        ctx.restore();
+      }
+      // mutation protocol count
+      if (this.protocols && this.protocols.taken.length) {
+        ctx.save();
+        ctx.textAlign = "left"; ctx.font = "600 13px Segoe UI, sans-serif";
+        ctx.fillStyle = "rgba(200,150,255,.9)";
+        ctx.fillText("\u{1F9EC} " + this.protocols.taken.length + " " + T("protocols"), 14, this.synergy && this.synergy.active.length ? 90 : 90);
+        ctx.restore();
+      }
+      // overdrive banner
+      if (this.overdriveT > 0) {
+        ctx.save();
+        ctx.textAlign = "center"; ctx.font = "800 15px Segoe UI, sans-serif";
+        ctx.fillStyle = "rgba(255,206,74,.95)";
+        ctx.shadowColor = "#ffce4a"; ctx.shadowBlur = 12;
+        ctx.fillText("\u{1F680} " + T("OVERDRIVE") + " " + Math.ceil(this.overdriveT) + "s", W / 2, 132);
         ctx.restore();
       }
     }
