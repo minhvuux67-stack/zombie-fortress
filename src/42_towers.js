@@ -82,7 +82,13 @@ class Tower {
   }
   applySpec() {
     this.thorns = 0;
-    if (this.spec && this.level >= MAX_LEVEL && this.specTier < 2) this.specTier = 2;
+    if (this.spec && this.level >= MAX_LEVEL && this.specTier < 2) {
+      /* reaching max level with a chosen path masters it - count it once */
+      this.specTier = 2;
+      const st = this.game.state.stats;
+      st.masters = (st.masters || 0) + 1;
+      if (this.game.achievements) this.game.achievements.check();
+    }
     const sp = this.specMods();
     if (!sp) return;
     const M = (k) => (typeof sp[k] === "number" ? sp[k] : 1);
