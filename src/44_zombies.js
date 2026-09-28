@@ -182,6 +182,10 @@ class Zombie {
       tower.hurt(this.dmg);
       game.effects.push(new Effect("flash", { x: tower.x - 14, y: tower.y, radius: 14, color: "#ffd0d0", dur: 0.16 }));
       game.emitPfx(tower.x - 12, tower.y, -rand(20, 90), rand(-40, 40), 0.4, "#d9c06a", 4, 200);
+      if (tower.thorns) {
+        this.hurt(tower.thorns, game, { src: "thorns" });
+        game.emitPfx(this.x, this.y, rand(-60, 60), -rand(20, 70), 0.4, "#ff9a9a", 4, -30);
+      }
     } else {
       game.fortress.hurt(this.dmg, game);
       game.audio.sfx("hit");

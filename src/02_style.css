@@ -196,5 +196,22 @@ table.lb tr.me td{color:var(--accent);font-weight:700}
 .proto .pds{font-size:12.5px;color:var(--dim);margin-top:9px;line-height:1.4}
 .draftbox{width:880px;text-align:center}
 @media (max-width:640px){.protogrid{grid-template-columns:1fr}}
+
+/* ---------- v5 campaign + specializations ---------- */
+.campaignbox{width:960px;max-height:88vh;overflow:auto}
+.campaignlist{display:flex;flex-direction:column;gap:16px}
+.chhead{display:flex;align-items:center;justify-content:space-between;gap:12px;
+  border-bottom:1px solid var(--panel-line);padding-bottom:7px}
+.msngrid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-top:4px}
+.msn{font:inherit;color:var(--txt);cursor:pointer;text-align:left;background:rgba(255,255,255,.045);
+  border:2px solid var(--panel-line);border-radius:12px;padding:12px 14px;transition:transform .1s,border-color .12s}
+.msn:hover:not(.locked){transform:translateY(-3px);border-color:var(--accent2);background:rgba(255,255,255,.075)}
+.msn.locked{opacity:.5;cursor:not-allowed}
+.msn .spread{display:flex;align-items:center;justify-content:space-between;gap:8px}
+.msn .nm{font-weight:800;font-size:15px}
+.msn .dms{font-size:12.5px;color:var(--dim);margin-top:6px;line-height:1.4}
+.msn .mstars{margin-top:9px;color:#ffce4a;font-size:15px;letter-spacing:1px}
+#btn-speed{min-width:46px;font-weight:800}
+@media (max-width:640px){.msngrid{grid-template-columns:1fr}.campaignbox{width:auto}}
 </style>
 </head>

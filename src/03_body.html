@@ -19,6 +19,7 @@
         <div id="hud-wave">Wave 1</div>
         <div id="hud-waveinfo">Get ready</div>
       </div>
+      <button class="btn ghost clickable" data-action="speed" id="btn-speed" title="Battle speed (T)">1&#215;</button>
       <button class="btn ghost clickable" data-action="pause" title="Pause (P)">II</button>
       <button class="btn ghost clickable" data-action="help" title="How to play">?</button>
     </div>
@@ -42,6 +43,7 @@
       <div id="dailybanner" class="tease" style="margin-top:18px"></div>
       <div class="menu-grid">
         <button class="btn primary wide lg" data-action="play">&#9654; PLAY</button>
+        <button class="btn" data-action="campaign">&#127981; Campaign</button>
         <button class="btn" data-action="shop">&#9881; Upgrade Shop</button>
         <button class="btn" data-action="collection">&#127993; Collection</button>
         <button class="btn" data-action="achievements">&#127942; Achievements</button>
@@ -84,6 +86,23 @@
         <button class="btn" data-action="leaderboard">Leaderboard</button>
         <button class="btn ghost" data-action="menu">Main Menu</button>
         <button class="btn ghost" data-action="donate">&#10084; Support</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============ CAMPAIGN MISSION RESULT ============ -->
+  <div id="screen-mission" class="screen hidden">
+    <div class="box panel">
+      <h2>MISSION COMPLETE</h2>
+      <div class="dim" id="msn-name">Mission</div>
+      <div class="bignum" id="msn-stars" style="color:#ffce4a">&#9733;&#9733;&#9733;</div>
+      <div class="tease" id="msn-reward"></div>
+      <div class="kv" id="msn-kv"></div>
+      <div class="row" style="gap:10px;flex-wrap:wrap;justify-content:center">
+        <button class="btn primary lg" data-action="nextmission">&#9654; Next Mission</button>
+        <button class="btn" data-action="campaign">Mission Select</button>
+        <button class="btn" data-action="replaymission">&#8635; Replay</button>
+        <button class="btn ghost" data-action="menu">Main Menu</button>
       </div>
     </div>
   </div>

@@ -31,6 +31,11 @@ Object.assign(Game.prototype, {
 
   update(dt) {
     if (this.screen !== "play" || this.paused) return;
+    // speed control runs the simulation in 1x-length sub-steps so collisions stay accurate
+    const steps = Math.max(1, Math.min(3, this.speed || 1));
+    for (let i = 0; i < steps; i++) this.step(dt);
+  },
+  step(dt) {
     for (const s of this.skills) if (s.cdLeft > 0) s.cdLeft = Math.max(0, s.cdLeft - dt);
     if (this.overdriveT > 0) this.overdriveT = Math.max(0, this.overdriveT - dt);
     this.fortress.update(dt, this);
