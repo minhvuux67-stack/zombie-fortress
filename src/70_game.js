@@ -21,6 +21,8 @@ class Game {
     this.weather = new WeatherSystem(this);
     this.synergy = new SynergySystem(this);
     this.protocols = new ProtocolSystem(this);
+    this.campaign = new CampaignSystem(this);
+    this.speed = this.state.settings.speed || 1;
     this.overdriveT = 0;
     this.weatherZombieSpeed = 1;
     this.mutationVuln = 1; this.mutationScrap = 1; this.mutationMultiLane = false;
@@ -212,6 +214,10 @@ class Game {
     if (this.runMode === "daily" && this.daily && !this.daily.challengeDone && this.daily.today === dateKey()) {
       this.mods = Object.assign({}, this.daily.challenge.mods);
     }
+    if (this.runMode === "campaign" && this.campaign && this.campaign.current) {
+      this.mods = Object.assign({}, this.campaign.current.mods);
+    }
+    this.speed = this.state.settings.speed || 1;
     // roll run-wide variety, then fold meta + weather into the bonus bundle
     this.mutations.reset();
     this.synergy.reset();
@@ -219,6 +225,7 @@ class Game {
     this.overdriveT = 0;
     if (this.meta) this.meta.recompute();
     this.weather.roll();
+    if (this.mods.weather) this.weather.force(this.mods.weather);
     this.computeBonus();
     const wm = this.weather.mods();
     this.bonus.dmg *= wm.dmg || 1;
@@ -295,6 +302,12 @@ class Game {
     this.waves.prepTimer = PREP_TIME;
     this.setMusic("menu");
     this.save();
+    // campaign victory: beating the mission's target wave clears the mission
+    if (this.runMode === "campaign" && this.campaign && this.campaign.current && n >= this.campaign.current.target) {
+      const res = this.campaign.complete();
+      this.winRun(res);
+      return;
+    }
     // roguelite beat: the lab offers a mutation before the next wave
     if (this.protocols) this.protocols.offer();
   }
@@ -325,6 +338,45 @@ class Game {
     else if (this.waves.wave >= this.state.highestWave) tease = "\u{1F525} That ties your best wave. One more wave and you own the record!";
     else tease = "\u{1F525} You were only " + Math.max(1, this.state.highestWave - this.waves.wave) + " wave(s) from your best. One more try?";
     this.ui.showGameOver({ score, wave: this.waves.wave, kills: this.run.kills, best: this.state.highScore, tease });
+  }
+  /* campaign mission victory - finalise the run, then show the result card */
+  winRun(res) {
+    if (this.screen !== "play") return;
+    this.screen = "won";
+    this.audio.sfx("achievement");
+    this.setMusic("menu");
+    const score = this.run.wavesCleared * 120 + this.run.kills * 2;
+    this.state.highScore = Math.max(this.state.highScore, score);
+    this.state.totalRuns = (this.state.totalRuns || 0) + 1;
+    this.state.totalWins = (this.state.totalWins || 0) + 1;
+    this.state.totalPlayTime += (nowMs() - this.run.startTime) / 1000;
+    this.state.scrap = this.scrap;
+    this.state.food = this.food; this.state.meds = this.meds;
+    this.state.leaderboard.push({ score, wave: this.waves.wave, kills: this.run.kills, date: new Date().toISOString() });
+    this.state.leaderboard.sort((a, b) => b.score - a.score);
+    this.state.leaderboard = this.state.leaderboard.slice(0, 10);
+    if (this.meta) this.meta.finishRun(this.run, true);
+    this.achievements.check();
+    this.save();
+    this._lastMission = res && res.mission ? res.mission.id : null;
+    this.ui.missionResult(res, { score, wave: this.waves.wave, kills: this.run.kills });
+  }
+  /* speed control: cycle 1x -> 2x -> 3x -> 1x */
+  setSpeed(v) {
+    this.speed = [1, 2, 3].includes(v) ? v : 1;
+    this.state.settings.speed = this.speed;
+    if (this.speed >= 3) this.achievements.unlock("speed_max", true);
+    this.save();
+    this.ui.lastToolbarSig = "";
+    this.ui.toast("\u23E9 Speed " + this.speed + "x", "#8fd3ff");
+  }
+  cycleSpeed() { this.setSpeed(this.speed >= 3 ? 1 : this.speed + 1); }
+  nextCampaignMission() {
+    if (!this._lastMission) { this.ui.campaignScreen(); return; }
+    const i = this.campaign.indexOf(this._lastMission);
+    const next = CAMPAIGN_MISSIONS[i + 1];
+    if (next && this.campaign.isUnlocked(next.id)) this.campaign.start(next.id);
+    else this.ui.campaignScreen();
   }
   quitToMenu() {
     if (this.screen === "play") {
@@ -445,6 +497,7 @@ class Game {
     }
     if (this.screen === "play") {
       if (k === "p") { this.paused = !this.paused; this.autoPaused = false; this.paused ? this.ui.pause() : this.ui.closeOverlay(); this.setMusic(this.paused ? "menu" : (this.waves.active ? "battle" : "menu")); }
+      if (k === "t") this.cycleSpeed();
       if (this.paused) return;
       if (k === " ") { e.preventDefault(); this.nextWave(); }
       if (k === "q") this.onSkillCard("airstrike");
@@ -576,6 +629,29 @@ class Game {
     switch (name) {
       case "play": this.startRun("normal"); break;
       case "endless": this.startRun("endless"); break;
+      case "campaign": this.ui.campaignScreen(); break;
+      case "startmission":
+        if (this.campaign.start(data.id)) { this.audio.sfx("click"); this.ui.closeOverlay(); }
+        else { this.audio.sfx("error"); }
+        break;
+      case "nextmission": this.nextCampaignMission(); break;
+      case "replaymission": if (this._lastMission) this.campaign.start(this._lastMission); break;
+      case "speed": this.cycleSpeed(); break;
+      case "pickspec": {
+        const t = this.selectedSlot;
+        if (t && this.towers.includes(t) && !t.dead && t.pickSpec(data.id)) {
+          this.state.stats.specs = (this.state.stats.specs || 0) + 1;
+          if (t.specTier >= 2) this.state.stats.masters = (this.state.stats.masters || 0) + 1;
+          this.audio.sfx("upgrade");
+          this.spawnRing(t.x, t.y, "#8fd3ff", 60);
+          if (this.synergy) this.synergy.recompute();
+          this.refreshTowers();
+          this.achievements.check();
+          this.save();
+          this.ui.towerPanel(t);
+        } else { this.audio.sfx("error"); }
+        break;
+      }
       case "daily": this.ui.dailyScreen(); break;
       case "startdaily": this.startRun("daily"); break;
       case "retry": this.startRun(this.runMode || "normal"); break;
