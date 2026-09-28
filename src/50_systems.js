@@ -115,6 +115,15 @@ class AchievementSystem {
     if (st.dailyChallengeCompleted === dateKey()) this.unlock("daily_done");
     if (st.dailyStreak >= 7) this.unlock("streak_7");
     if (st.gold >= 1000) this.unlock("rich");
+    const cp = st.campaign || { done: [], stars: {} };
+    const done = cp.done || [];
+    if (done.length >= 1) this.unlock("campaign_first");
+    if (CAMPAIGN_MISSIONS.filter((m) => m.chapter === 1).every((m) => done.indexOf(m.id) >= 0)) this.unlock("campaign_ch1");
+    if (done.length >= CAMPAIGN_MISSIONS.length) this.unlock("campaign_all");
+    if (CAMPAIGN_MISSIONS.every((m) => (cp.stars[m.id] || 0) >= 3)) this.unlock("stars_perfect");
+    if (st.stats.specs >= 1) this.unlock("spec_first");
+    if (st.stats.masters >= 1) this.unlock("spec_master");
+    if (st.settings.speed >= 3) this.unlock("speed_max");
   }
 }
 

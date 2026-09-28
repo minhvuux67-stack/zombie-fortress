@@ -39,6 +39,7 @@ class WeatherSystem {
   }
   get fx() { return this.def.fx || null; }
   mods() { return this.def.mod || {}; }
+  force(id) { if (WEATHER_DEFS[id]) this.def = WEATHER_DEFS[id]; return this.def; }
 }
 
 /* adjacency bonuses between neighbouring towers ------------------------- */

@@ -119,6 +119,13 @@ const ACHIEVEMENTS = [
   { id: "colossus_slay", name: "Hive Breaker", icon: "\u{1F41D}", ds: "Fell a Hive Colossus." },
   { id: "overdrive", name: "Redline", icon: "\u{1F680}", ds: "Trigger Overdrive for the first time." },
   { id: "arsenal_v4", name: "Modern Warfare", icon: "\u{1F52C}", ds: "Unlock Mortar, Cryo Coil and Laser Prism." },
+  { id: "campaign_first", name: "Boots on the Ground", icon: "\u{1F5FA}", ds: "Complete your first campaign mission." },
+  { id: "campaign_ch1", name: "Outskirts Secured", icon: "\u{1F3D5}", ds: "Complete every mission in Chapter I." },
+  { id: "campaign_all", name: "Outbreak Ended", icon: "\u{1F30D}", ds: "Complete all 12 campaign missions." },
+  { id: "stars_perfect", name: "Perfectionist", icon: "\u{1F31F}", ds: "Earn 3 stars on every campaign mission." },
+  { id: "spec_first", name: "Specialist", icon: "\u{1F500}", ds: "Choose a tower specialization path." },
+  { id: "spec_master", name: "Master Craftsman", icon: "\u{1F6E0}", ds: "Fully master a tower specialization." },
+  { id: "speed_max", name: "Fast Forward", icon: "\u23E9", ds: "Run the battle at 3x speed." },
 ];
 
 const RANKS = [

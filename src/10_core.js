@@ -20,8 +20,9 @@ const LANES = [180, 300, 420, 540];         // walking lanes (y centres), 4 rows
 const SLOT_ROWS = [120, 240, 360, 480, 600]; // build rows (between lanes + edges)
 const SLOT_COLS = [235, 395, 555, 715, 875, 1035]; // 6 build columns
 const MAX_LEVEL = 5;                        // tower level cap per run
+const SPEC_LEVEL = 3;                       // tower level where a spec path is chosen
 const PREP_TIME = 12;                       // seconds of build time before a wave auto-starts
-const VERSION = "4.0.0";
+const VERSION = "5.0.0";
 const DONATE_URL = "https://ko-fi.com/";
 
 /* ---------------------------------------------------------------------
@@ -95,8 +96,9 @@ function defaultState() {
     dailyChallengeCompleted: "",
     dailyChallengeDate: "",
     leaderboard: [],                   // [{score, wave, kills, date}]
-    settings: { soundOn: true, musicOn: true, difficulty: "normal", lang: "en", draft: true },
+    settings: { soundOn: true, musicOn: true, difficulty: "normal", lang: "en", draft: true, speed: 1 },
     seenTutorial: false,
+    campaign: { done: [], stars: {} },        // { done: [missionId], stars: { missionId: 1..3 } }
     /* ---- v3 meta progression ---- */
     heroProgress: {},                  // { heroId: {level, xp, unlocked} }
     selectedHero: "commander",
@@ -109,7 +111,7 @@ function defaultState() {
     battlePass: { xp: 0, tier: 0, claimed: [], season: 1 },
     prestige: { level: 0, points: 0, mods: [] },
     season: { id: 1, bestRank: 0 },
-    stats: { towerUse: {}, bosses: 0, relicsFound: 0, runsByHero: {}, protocolsPicked: 0, bestDraft: 0, colossusKills: 0, splitterKills: 0, healerKills: 0 },
+    stats: { towerUse: {}, bosses: 0, relicsFound: 0, runsByHero: {}, protocolsPicked: 0, bestDraft: 0, colossusKills: 0, splitterKills: 0, healerKills: 0, specs: 0, masters: 0 },
   };
 }
 
@@ -121,6 +123,7 @@ function normalizeState(data) {
   // English is always the default; only keep Vietnamese when it was chosen in Settings
   if (st.settings.lang !== "vi") st.settings.lang = "en";
   if (typeof st.settings.draft !== "boolean") st.settings.draft = true;
+  if (![1, 2, 3].includes(st.settings.speed)) st.settings.speed = 1;
   const arr = (v, fb) => (Array.isArray(v) ? v : fb);
   st.unlockedTowers = Array.isArray(data && data.unlockedTowers) && data.unlockedTowers.length ? data.unlockedTowers : base.unlockedTowers;
   st.achievements = arr(data && data.achievements, []);
@@ -156,6 +159,9 @@ function normalizeState(data) {
   st.season = Object.assign({}, base.season, (data && data.season) || {});
   st.stats = Object.assign({}, base.stats, (data && data.stats) || {});
   st.stats.towerUse = Object.assign({}, (data && data.stats && data.stats.towerUse) || {});
+  st.campaign = Object.assign({}, base.campaign, (data && data.campaign) || {});
+  st.campaign.done = arr(st.campaign.done, []);
+  st.campaign.stars = (data && data.campaign && data.campaign.stars) || {};
   if (typeof st.selectedHero !== "string") st.selectedHero = "commander";
   return st;
 }
