@@ -25,11 +25,13 @@ class UIManager {
 
   /* ---------------- toasts + tooltips ---------------- */
   toast(msg, color) {
+    const box = this.el.toasts;
+    while (box.children.length >= 5) box.removeChild(box.firstChild);
     const d = document.createElement("div");
     d.className = "toast";
     d.textContent = I18N.tr(msg);
     if (color) d.style.color = color;
-    this.el.toasts.appendChild(d);
+    box.appendChild(d);
     setTimeout(() => { d.style.transition = "opacity .4s"; d.style.opacity = "0"; }, 2600);
     setTimeout(() => d.remove(), 3100);
   }
@@ -213,7 +215,7 @@ class UIManager {
     try { this.game.audio.sfx("achievement"); } catch (e) {}
     for (let i = 0; i < 40; i++) this.game.emitPfx(rand(0, W), rand(80, 260), rand(-60, 60), rand(-20, 90), rand(0.8, 1.6), pick(["#57e08a", "#ffce4a", "#4aa8ff", "#fff3c4"]), rand(3, 7), 0);
   }
-  openOverlay(html) { this.el.overlay.innerHTML = I18N.tr(html); this.el.overlay.classList.add("hidden"); this.el.overlay.firstElementChild && this.el.overlay.firstElementChild.classList.add("ovl"); }
+  openOverlay(html) { this.el.overlay.innerHTML = I18N.tr(html); if (this.el.overlay.firstElementChild) this.el.overlay.firstElementChild.classList.add("ovl"); }
   closeOverlay() { this.el.overlay.innerHTML = ""; }
   setOverlayContent(inner) {
     this.el.overlay.innerHTML = I18N.tr(`<div class="ovl"><div class="box panel">${inner}</div></div>`);
@@ -243,11 +245,11 @@ class UIManager {
     for (const id of TOWER_IDS) {
       const def = TOWER_DEFS[id];
       const owned = st.unlockedTowers.includes(id);
-      cards += `<div class="towercard ${owned ? "" : "locked"}" data-tip="<b>${def.name}</b><br>${def.desc}">
+      cards += `<div class="towercard ${owned ? "" : "locked"}" data-tip="<b>${I18N.tr(def.name)}</b><br>${I18N.tr(def.desc)}">
         <canvas width="58" height="58"></canvas>
-        <div class="grow"><div class="nm">${def.name}</div><div class="ds">${def.desc}</div>
-        <div class="ds">Build cost: <b>${def.cost}</b> scrap</div></div>
-        ${owned ? `<span class="chip" style="color:#57e08a">OWNED</span>`
+        <div class="grow"><div class="nm">${I18N.tr(def.name)}</div><div class="ds">${I18N.tr(def.desc)}</div>
+        <div class="ds">${T("Build cost")}: <b>${def.cost}</b> ${T("scrap")}</div></div>
+        ${owned ? `<span class="chip" style="color:#57e08a">${T("OWNED")}</span>`
           : `<button class="btn sm primary" data-action="unlocktower" data-id="${id}" ${st.gold < def.unlockCost ? "disabled" : ""}>${def.unlockCost} \u{1F4B0}</button>`}
       </div>`;
     }
@@ -264,8 +266,8 @@ class UIManager {
       const rec = st.achievements.find((x) => x.id === a.id);
       cards += `<div class="ac ${rec ? "on" : ""}">
         <div class="ic">${rec ? a.icon : "\u{1F512}"}</div>
-        <div class="grow"><div class="nm">${a.name}</div><div class="ds">${a.ds}</div>
-        ${rec ? `<div class="dt">Unlocked ${new Date(rec.date).toLocaleDateString()}</div>` : ""}</div></div>`;
+        <div class="grow"><div class="nm">${I18N.tr(a.name)}</div><div class="ds">${I18N.tr(a.ds)}</div>
+        ${rec ? `<div class="dt">${T("Unlocked")} ${new Date(rec.date).toLocaleDateString()}</div>` : ""}</div></div>`;
     }
     this.setOverlayContent(`<div class="head"><h2>\u{1F3C6} Achievements</h2><div class="row"><span class="chip"><b>${got}</b> / ${ACHIEVEMENTS.length}</span>
       <button class="btn sm ghost" data-action="close">Back</button></div></div>
@@ -274,14 +276,14 @@ class UIManager {
   leaderboard() {
     const st = this.game.state, lb = st.leaderboard.slice().sort((a, b) => b.score - a.score).slice(0, 10);
     let rows = lb.map((r, i) => `<tr><td>${i + 1}</td><td>${r.date ? new Date(r.date).toLocaleDateString() : "-"}</td>
-      <td><b>${fmt(r.score)}</b></td><td>Wave ${r.wave}</td><td>${fmt(r.kills)}</td></tr>`).join("");
-    if (!rows) rows = `<tr><td colspan="5" class="dim" style="text-align:center;padding:20px">No runs yet \u2014 go survive some waves.</td></tr>`;
-    this.setOverlayContent(`<div class="head"><h2>\u{1F4CA} Leaderboard</h2><button class="btn sm ghost" data-action="close">Back</button></div>
-      <div class="scroll"><table class="lb"><tr><th>#</th><th>Date</th><th>Score</th><th>Best Wave</th><th>Kills</th></tr>${rows}</table>
+      <td><b>${fmt(r.score)}</b></td><td>${T("Wave")} ${r.wave}</td><td>${fmt(r.kills)}</td></tr>`).join("");
+    if (!rows) rows = `<tr><td colspan="5" class="dim" style="text-align:center;padding:20px">${T("No runs yet \u2014 go survive some waves.")}</td></tr>`;
+    this.setOverlayContent(`<div class="head"><h2>\u{1F4CA} ${T("Leaderboard")}</h2><button class="btn sm ghost" data-action="close">${T("Back")}</button></div>
+      <div class="scroll"><table class="lb"><tr><th>#</th><th>${T("Date")}</th><th>${T("Score")}</th><th>${T("Best wave")}</th><th>${T("Kills")}</th></tr>${rows}</table>
       <div class="grid3" style="margin-top:16px">
-        <div class="up center"><div class="k dim">Best wave</div><div style="font-size:26px;font-weight:800">${st.highestWave}</div></div>
-        <div class="up center"><div class="k dim">Total kills</div><div style="font-size:26px;font-weight:800">${fmt(st.totalKills)}</div></div>
-        <div class="up center"><div class="k dim">Time played</div><div style="font-size:26px;font-weight:800">${hhmmss(st.totalPlayTime)}</div></div>
+        <div class="up center"><div class="k dim">${T("Best wave")}</div><div style="font-size:26px;font-weight:800">${st.highestWave}</div></div>
+        <div class="up center"><div class="k dim">${T("Total kills")}</div><div style="font-size:26px;font-weight:800">${fmt(st.totalKills)}</div></div>
+        <div class="up center"><div class="k dim">${T("Time played")}</div><div style="font-size:26px;font-weight:800">${hhmmss(st.totalPlayTime)}</div></div>
       </div></div>`);
   }
   settings() {
@@ -391,7 +393,7 @@ class UIManager {
     this.hideScreens(); this.closeOverlay(); this.showHud(false);
     this.el.over.classList.remove("hidden");
     document.getElementById("over-wave").textContent = T("Wave " + info.wave);
-    document.getElementById("over-sub").textContent = I18N.tr(info.score > info.best ? "A new record falls to the horde." : "The pandemic claimed another bunker.");
+    document.getElementById("over-sub").textContent = I18N.tr(info.record ? "A new record falls to the horde." : "The pandemic claimed another bunker.");
     document.getElementById("over-tease").textContent = I18N.tr(info.tease);
     document.getElementById("over-kv").innerHTML =
       `<div class="c"><div class="v">${fmt(info.score)}</div><div class="k">${T("Score")}</div></div>` +
@@ -408,7 +410,7 @@ class UIManager {
     const g = this.game;
     const upCost = t.upgradeCost(), sell = t.sellValue();
     const maxed = !t.canUpgrade();
-    const stat = (k, v) => `<div class="up center"><div class="k dim">${k}</div><div style="font-size:19px;font-weight:800">${v}</div></div>`;
+    const stat = (k, v) => `<div class="up center"><div class="k dim">${T(k)}</div><div style="font-size:19px;font-weight:800">${v}</div></div>`;
     let stats = "";
     if (t.kind === "block") stats = stat("Wall HP", Math.ceil(t.maxHp));
     else if (t.kind === "heal") stats = stat("Heal / s", t.heal.toFixed(1));
@@ -431,14 +433,14 @@ class UIManager {
         specHtml = `<div class="dim" style="margin-top:14px;font-size:12px">${T("Reach Lv")} ${SPEC_LEVEL} ${T("to choose a specialization.")}</div>`;
       }
     }
-    this.setOverlayContent(`<div class="head"><h2>${t.def.name} \u00b7 Lv ${t.level}${t.spec ? " \u00b7 " + I18N.tr(t.specPath().name) : ""}</h2><button class="btn sm ghost" data-action="close">Back</button></div>
-      <div class="dim" style="margin-bottom:12px">${t.def.desc}</div>
+    this.setOverlayContent(`<div class="head"><h2>${I18N.tr(t.def.name)} \u00b7 Lv ${t.level}${t.spec ? " \u00b7 " + I18N.tr(t.specPath().name) : ""}</h2><button class="btn sm ghost" data-action="close">${T("Back")}</button></div>
+      <div class="dim" style="margin-bottom:12px">${I18N.tr(t.def.desc)}</div>
       <div class="grid3">${stats}</div>
       ${specHtml}
       <div class="row" style="margin-top:16px;gap:10px">
         <button class="btn primary" data-action="upgradetower" ${maxed || g.scrap < upCost ? "disabled" : ""}>
-          ${maxed ? "MAX LEVEL" : `Upgrade \u00b7 ${upCost} scrap`}</button>
-        <button class="btn danger" data-action="selltower">Sell \u00b7 +${sell} scrap</button>
+          ${maxed ? T("MAX LEVEL") : `${T("Upgrade")} \u00b7 ${upCost} ${T("scrap")}`}</button>
+        <button class="btn danger" data-action="selltower">${T("Sell")} \u00b7 +${sell} ${T("scrap")}</button>
       </div>`);
   }
   /* campaign mission victory card */
@@ -451,7 +453,7 @@ class UIManager {
     document.getElementById("msn-stars").innerHTML = [1, 2, 3].map((i) => `<span style="opacity:${i <= res.stars ? 1 : 0.22}">\u2605</span>`).join("");
     const reward = res.got && res.got.length ? res.got.join(", ") : "";
     document.getElementById("msn-reward").textContent = res.first
-      ? (T("First clear rewards: ") + (reward || T("none")))
+      ? (T("First clear rewards") + ": " + (reward || T("none")))
       : T("Already cleared \u2014 replay for score.");
     document.getElementById("msn-kv").innerHTML =
       `<div class="c"><div class="v">${fmt(info.score)}</div><div class="k">${T("Score")}</div></div>` +

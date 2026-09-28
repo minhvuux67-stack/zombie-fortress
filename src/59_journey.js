@@ -31,14 +31,13 @@ class CommanderSystem {
     if (this.c.claimed.indexOf(level) >= 0 || level > this.c.level) return null;
     const r = commanderReward(level);
     const got = grantQuestReward(this.game, r);
-    if (r.relic) this.game.meta.relics.grantRandom();
     this.c.claimed.push(level);
     this.game.audio.sfx("achievement");
     this.game.save();
     return { level, got, r };
   }
   claimAll() {
-    const out = this.pending().slice(0, 20);
+    const out = this.pending();
     for (const l of out) this.claim(l);
     return out.length;
   }
@@ -97,7 +96,7 @@ class BountySystem {
     while (out.length < 3 && pool.length) out.push(pool.splice(Math.floor(Math.random() * pool.length), 1)[0]);
     this.active = out.map((b) => ({ id: b.id, progress: 0, done: false, stat: b.stat, max: !!STAT_MAX[b.stat], target: b.target }));
     this.done = [];
-    if (this.game.ui) this.game.ui.toast("\u{1F3AF} 3 bounties posted for this run \u2014 see the pause menu.", "#8fd3ff");
+    if (this.game.ui) this.game.ui.toast("\u{1F3AF} 3 bounties posted for this run \u2014 watch the tracker on the field.", "#8fd3ff");
   }
   def(id) { return BOUNTIES.find((b) => b.id === id); }
   event(stat, amount) {
@@ -116,6 +115,7 @@ class BountySystem {
     this.done.push(b.id);
     this.game.audio.sfx("achievement");
     this.game.ui.toast("\u{1F3AF} Bounty complete: " + d.name + " (" + got.join(", ") + ")", "#ffce4a");
+    this.game.save();
   }
   all() { return this.active; }
   remaining() { return this.active.filter((b) => !b.done).length; }
@@ -135,7 +135,6 @@ class CollectionSystem {
     const m = COLLECTION_MILESTONES.find((x) => x.id === id);
     this.game.state.collectionClaimed.push(id);
     const got = grantQuestReward(this.game, m.reward);
-    if (m.reward.relic) this.game.meta.relics.grantRandom();
     this.game.audio.sfx("achievement");
     this.game.save();
     return got;
