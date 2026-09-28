@@ -10,6 +10,7 @@ class Tower {
     this.level = 1; this.invested = this.def.cost;
     this.cd = 0; this.angle = 0; this.flash = 0; this.repairDelay = 0;
     this.dead = false; this.built = 0;
+    this.spec = null; this.specTier = 0; this.thorns = 0;
     this.recompute();
     this.hp = this.maxHp;
   }
@@ -59,6 +60,45 @@ class Tower {
       if (b.slow) { this.slow = b.slow; this.slowDur = b.slowDur; }
       this.bulletSpeed = b.bulletSpeed;
     }
+    this.applySpec();
+  }
+  /* path bonus chosen at level SPEC_LEVEL; tier 2 auto-granted at max level */
+  specDef() { const s = TOWER_SPECS[this.id]; return s ? s.paths : null; }
+  specPath() { const p = this.specDef(); return p ? p.find((x) => x.id === this.spec) || null : null; }
+  canSpec() { return !!this.specDef() && !this.spec && this.level >= SPEC_LEVEL; }
+  pickSpec(id) {
+    if (!this.canSpec()) return false;
+    const path = this.specPath0(id);
+    if (!path) return false;
+    this.spec = id; this.specTier = this.level >= MAX_LEVEL ? 2 : 1;
+    this.recompute();
+    return true;
+  }
+  specPath0(id) { const p = this.specDef(); return p ? p.find((x) => x.id === id) || null : null; }
+  specMods() {
+    const path = this.specPath();
+    if (!path) return null;
+    return this.specTier >= 2 ? Object.assign({}, path.mod, path.master.mod) : path.mod;
+  }
+  applySpec() {
+    this.thorns = 0;
+    if (this.spec && this.level >= MAX_LEVEL && this.specTier < 2) this.specTier = 2;
+    const sp = this.specMods();
+    if (!sp) return;
+    const M = (k) => (typeof sp[k] === "number" ? sp[k] : 1);
+    const A = (k) => (typeof sp[k] === "number" ? sp[k] : 0);
+    if (this.dmg != null) this.dmg *= M("dmg");
+    if (this.rate != null) this.rate *= M("rate");
+    if (this.range != null) this.range *= M("range");
+    if (this.aoe != null) this.aoe *= M("aoe");
+    if (this.burn != null) this.burn *= M("burn");
+    if (this.heal != null) this.heal *= M("dmg");
+    if (this.maxHp != null) this.maxHp = Math.round(this.maxHp * M("hp"));
+    if (this.slow != null) this.slow = Math.min(0.85, this.slow + A("slowAdd"));
+    if (this.chain != null) this.chain += A("chainAdd");
+    if (this.pierce != null) this.pierce += A("pierceAdd");
+    this.critAdd = A("crit");
+    this.thorns = A("thornsAdd");
   }
   upgradeCost() { return Math.round(this.def.cost * (0.5 + 0.6 * this.level)); }
   sellValue() { return Math.floor(this.invested * 0.6); }
@@ -127,7 +167,7 @@ class Tower {
     const ang = Math.atan2(target.y - this.y, target.x - this.x);
     const mx = this.x + Math.cos(ang) * 18, my = this.y + Math.sin(ang) * 18 - 22;
     const b = this.def.base;
-    const crit = Math.random() < game.bonus.crit;
+    const crit = Math.random() < game.bonus.crit + (this.critAdd || 0);
     const pf = game.protocolFlags || {};
     const odMul = game.overdriveT > 0 ? 1.25 : 1;
     const round = { burn: pf.burn || 0, slow: pf.slow || 0, slowDur: pf.slowDur || 1.4 };

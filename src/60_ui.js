@@ -11,10 +11,11 @@ class UIManager {
       waveinfo: this.$("hud-waveinfo"), ffill: this.$("ffill"), ftext: this.$("ftext"),
       fbar: this.$("fbar"), toolbar: this.$("toolbar"), skillbar: this.$("skillbar"),
       nextwrap: this.$("nextwrap"), nextcount: this.$("nextcount"), toasts: this.$("toasts"),
-      menu: this.$("screen-menu"), over: this.$("screen-over"), overlay: this.$("overlay"),
+      menu: this.$("screen-menu"), over: this.$("screen-over"), mission: this.$("screen-mission"),
+      overlay: this.$("overlay"),
       tip: this.$("tooltip"), tutorial: this.$("tutorial"), daily: this.$("dailybanner"),
       menustats: this.$("menustats"), btnMusic: this.$("btn-music"), btnSfx: this.$("btn-sfx"),
-      btnEndless: this.$("btn-endless"),
+      btnEndless: this.$("btn-endless"), btnSpeed: this.$("btn-speed"),
     };
     this.lastToolbarSig = "";
     this.lastSkillSig = "";
@@ -70,6 +71,7 @@ class UIManager {
       this.el.nextcount.textContent = T("Auto-starts in " + Math.ceil(wm.prepTimer) + "s  \u00b7  call early for bonus scrap");
     }
     this.syncToolbar(); this.syncSkills();
+    if (this.el.btnSpeed) this.el.btnSpeed.innerHTML = (g.speed || 1) + "&#215;";
   }
   syncToolbar() {
     const g = this.game;
@@ -118,6 +120,7 @@ class UIManager {
   hideScreens() {
     this.el.menu.classList.add("hidden");
     this.el.over.classList.add("hidden");
+    if (this.el.mission) this.el.mission.classList.add("hidden");
   }
   showMenu() {
     this.hideScreens(); this.closeOverlay();
@@ -263,7 +266,10 @@ class UIManager {
         <div class="up" style="margin-top:10px"><div class="nm">Skills</div><div class="ds">Airstrike drops a bomb where you tap. Freeze stops every zombie for 3 seconds. Repair heals the fortress. Overdrive overclocks every tower for 8 seconds. They cost food or meds and share cooldowns.</div></div>
         <div class="up" style="margin-top:10px"><div class="nm">Waves</div><div class="ds">Build time counts down automatically; press Next Wave to start early and earn bonus scrap. Bosses arrive every 5 waves, and a Hive Colossus every 10. Survive wave 20 to unlock Endless Mode.</div></div>
         <div class="up" style="margin-top:10px"><div class="nm">New threats</div><div class="ds">Splitters burst into runners when they die. Menders heal the whole horde \u2014 kill them first. The Hive Colossus slams the ground and hatches crawlers.</div></div>
-        <div class="up" style="margin-top:10px"><div class="nm">Keyboard</div><div class="ds">1-0 pick a tower \u00b7 Q/W/E/R fire skills \u00b7 SPACE starts the next wave \u00b7 P pauses \u00b7 Esc closes panels and deselects.</div></div>
+        <div class="up" style="margin-top:10px"><div class="nm">Campaign</div><div class="ds">Take on 12 handcrafted missions across 3 chapters from the main menu. Each mission adds its own twist. Lose the fortress without a scratch for 3 stars, and the next mission unlocks when you clear one.</div></div>
+        <div class="up" style="margin-top:10px"><div class="nm">Specializations</div><div class="ds">At level 3 a tower can commit to one of two specialization paths, changing how it fights. Max it to level 5 to unlock that path's capstone bonus.</div></div>
+        <div class="up" style="margin-top:10px"><div class="nm">Battle speed</div><div class="ds">Tap the speed button in the top bar (or press T) to run the battle at 1x, 2x or 3x. Speed is remembered between runs.</div></div>
+        <div class="up" style="margin-top:10px"><div class="nm">Keyboard</div><div class="ds">1-0 pick a tower \u00b7 Q/W/E/R fire skills \u00b7 T toggles battle speed \u00b7 SPACE starts the next wave \u00b7 P pauses \u00b7 Esc closes panels and deselects.</div></div>
       </div>`);
   }
   modList(mods) {
@@ -347,13 +353,51 @@ class UIManager {
     if (t.kind === "block") stats = stat("Wall HP", Math.ceil(t.maxHp));
     else if (t.kind === "heal") stats = stat("Heal / s", t.heal.toFixed(1));
     else stats = stat("Damage", t.kind === "flame" ? t.dmg.toFixed(1) + "/tick" : Math.round(t.dmg)) + stat("Range", Math.round(t.range)) + stat("Fire / s", t.rate.toFixed(2));
-    this.setOverlayContent(`<div class="head"><h2>${t.def.name} \u00b7 Lv ${t.level}</h2><button class="btn sm ghost" data-action="close">Back</button></div>
+    // specialization: choose a path at level 3, capstone at max level
+    let specHtml = "";
+    const paths = t.specDef();
+    if (paths) {
+      if (t.spec) {
+        const path = t.specPath();
+        const mastered = t.level >= MAX_LEVEL;
+        specHtml = `<div class="dim" style="margin-top:14px">${T("Specialization")}: <b style="color:#8fd3ff">${I18N.tr(path.name)}</b>` +
+          (mastered ? ` <span style="color:#ffce4a">\u2605 ${I18N.tr(path.master.name)}</span>` : ` <span class="dim">(${T("capstone unlocks at Lv")} ${MAX_LEVEL})</span>`) +
+          `</div><div class="dim" style="font-size:12px">${I18N.tr(mastered ? path.master.ds : path.ds)}</div>`;
+      } else if (t.canSpec()) {
+        specHtml = `<div class="dim" style="margin:14px 0 6px">${T("Choose a specialization path")}</div>` +
+          paths.map((p) => `<button class="btn" style="display:block;width:100%;text-align:left;margin-bottom:8px" data-action="pickspec" data-id="${p.id}">
+            <b>${I18N.tr(p.name)}</b> \u2014 ${I18N.tr(p.ds)}<br><span class="dim" style="font-size:11px">${T("Capstone")}: ${I18N.tr(p.master.name)} \u2014 ${I18N.tr(p.master.ds)}</span></button>`).join("");
+      } else {
+        specHtml = `<div class="dim" style="margin-top:14px;font-size:12px">${T("Reach Lv")} ${SPEC_LEVEL} ${T("to choose a specialization.")}</div>`;
+      }
+    }
+    this.setOverlayContent(`<div class="head"><h2>${t.def.name} \u00b7 Lv ${t.level}${t.spec ? " \u00b7 " + I18N.tr(t.specPath().name) : ""}</h2><button class="btn sm ghost" data-action="close">Back</button></div>
       <div class="dim" style="margin-bottom:12px">${t.def.desc}</div>
       <div class="grid3">${stats}</div>
+      ${specHtml}
       <div class="row" style="margin-top:16px;gap:10px">
         <button class="btn primary" data-action="upgradetower" ${maxed || g.scrap < upCost ? "disabled" : ""}>
           ${maxed ? "MAX LEVEL" : `Upgrade \u00b7 ${upCost} scrap`}</button>
         <button class="btn danger" data-action="selltower">Sell \u00b7 +${sell} scrap</button>
       </div>`);
+  }
+  /* campaign mission victory card */
+  missionResult(res, info) {
+    const g = this.game;
+    this.hideScreens(); this.closeOverlay(); this.showHud(false);
+    this.el.mission.classList.remove("hidden");
+    const m = res.mission;
+    document.getElementById("msn-name").textContent = I18N.tr(m.name) + " \u00b7 " + I18N.tr(this.game.campaign.chapter(m.chapter).name);
+    document.getElementById("msn-stars").innerHTML = [1, 2, 3].map((i) => `<span style="opacity:${i <= res.stars ? 1 : 0.22}">\u2605</span>`).join("");
+    const reward = res.got && res.got.length ? res.got.join(", ") : "";
+    document.getElementById("msn-reward").textContent = res.first
+      ? (T("First clear rewards: ") + (reward || T("none")))
+      : T("Already cleared \u2014 replay for score.");
+    document.getElementById("msn-kv").innerHTML =
+      `<div class="c"><div class="v">${fmt(info.score)}</div><div class="k">${T("Score")}</div></div>` +
+      `<div class="c"><div class="v">${fmt(info.kills)}</div><div class="k">${T("Kills")}</div></div>` +
+      `<div class="c"><div class="v">${g.campaign.doneCount()}/${g.campaign.all().length}</div><div class="k">${T("Missions")}</div></div>` +
+      `<div class="c"><div class="v">${g.campaign.totalStars()}/${g.campaign.maxStars()}</div><div class="k">${T("Stars")}</div></div>`;
+    this.setMusicSafe("menu");
   }
 }
