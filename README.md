@@ -144,3 +144,27 @@ the OGG audio set.
   private-browsing mode still works.
 - 60 FPS target on Chrome / Firefox / Safari; the renderer picks
   `imageSmoothingEnabled = false` for crisp pixel art at any zoom.
+
+## Play the game
+
+- **Itch.io (recommended, one click):** https://minhvudz404.itch.io/zombie-fortress-pandemic-defense
+- **From a clone:** open `index.html` in a browser (it loads `assets/`).
+
+## Note on large files
+
+GitHub's file API caps a single commit file at ~4 MB, so a handful of very large
+source masters and WAV audio masters are not committed through the automation used
+for the first push:
+
+- `assets/audio/master/*.wav` (menu, gameover, gameplay, boss) - lossless audio masters
+- `assets/source/audio/*.wav` - workspace-only theme masters (never loaded by the game)
+- `assets/source/concept/*_poster.png` - HD concept plates (never loaded by the game)
+- `dist/index.min.html` - single-file build (regenerate with `node tools/build_min.js`)
+
+None of these are required to run the game: the runtime audio is the OGG set in
+`assets/audio/{sfx,music}/`, which is fully committed, and `dist/index.min.html` is
+reproducible with `node tools/build_min.js`.
+
+## Language
+
+English is the default. Vietnamese is available in **Settings -> Language**.
