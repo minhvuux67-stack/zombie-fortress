@@ -1,0 +1,753 @@
+/* =====================================================================
+   I18N - English / Vietnamese localisation.
+   Source strings stay in English; I18N.tr() maps them to Vietnamese.
+   tr() is used both at DOM build time (UIManager) and by a DOM walker
+   that catches static markup and anything inserted elsewhere.
+   ===================================================================== */
+
+const LANG_NAME = { en: "English", vi: "Tiếng Việt" };
+
+const I18N_PAIRS = [
+  /* ---- menus / buttons ---- */
+  ["Support the Author", "Ủng hộ tác giả"],
+  ["Daily login reward ready", "Quà đăng nhập hằng ngày đã sẵn sàng"],
+  ["Daily challenge:", "Thử thách hằng ngày:"],
+  ["Daily Challenge complete!", "Hoàn thành Thử thách hằng ngày!"],
+  ["Daily Challenge", "Thử thách hằng ngày"],
+  ["Endless Mode", "Chế độ vô tận"],
+  ["Upgrade Shop", "Cửa hàng nâng cấp"],
+  ["Tower Collection", "Bộ sưu tập trụ"],
+  ["How to Play", "Cách chơi"],
+  ["How to play", "Cách chơi"],
+  ["Battle Pass", "Vé chiến đấu"],
+  ["Leaderboard", "Bảng xếp hạng"],
+  ["Achievements", "Thành tích"],
+  ["Collection", "Bộ sưu tập"],
+  ["Settings", "Cài đặt"],
+  ["Research", "Nghiên cứu"],
+  ["Quests", "Nhiệm vụ"],
+  ["Heroes", "Anh hùng"],
+  ["Relics", "Thánh tích"],
+  ["Codex", "Bách khoa"],
+  ["Prestige", "Chuyển sinh"],
+  ["Season", "Mùa"],
+  ["Camp", "Doanh trại"],
+  ["Support", "Ủng hộ"],
+  ["PLAY", "CHƠI"],
+  ["Resume", "Tiếp tục"],
+  ["Quit to Menu", "Về menu chính"],
+  ["Retry Now", "Chơi lại"],
+  ["Main Menu", "Menu chính"],
+  ["Paused", "Tạm dừng"],
+  ["Back", "Quay lại"],
+  ["Reset everything", "Xoá tất cả"],
+  ["Reset Progress", "Xoá tiến trình"],
+  ["About", "Giới thiệu"],
+  ["Difficulty", "Độ khó"],
+  ["Sound Effects", "Hiệu ứng âm thanh"],
+  ["Language", "Ngôn ngữ"],
+  ["Music", "Nhạc nền"],
+  ["Next Wave", "Đợt kế tiếp"],
+
+  /* ---- settings / help ---- */
+  ["Permanent upgrades bought with gold. They apply to every future run.", "Nâng cấp vĩnh viễn mua bằng vàng. Áp dụng cho mọi lượt chơi sau."],
+  ["Synthesised background music", "Nhạc nền tổng hợp"],
+  ["Shots, explosions, zombies", "Tiếng súng, nổ, zombie"],
+  ["Applies to the next run you start.", "Áp dụng cho lượt chơi kế tiếp."],
+  ["Erase all gold, unlocks, achievements and records. This cannot be undone.", "Xoá toàn bộ vàng, mở khoá, thành tích và kỷ lục. Không thể hoàn tác."],
+  ["Erase all progress? Gold, unlocks, achievements and records will be deleted. This cannot be undone.", "Xoá toàn bộ tiến trình? Vàng, mở khoá, thành tích và kỷ lục sẽ bị xoá. Không thể hoàn tác."],
+  ["free HTML5 game. No ads, no tracking, no downloads.", "game HTML5 miễn phí. Không quảng cáo, không theo dõi, không tải về."],
+  ["Progress is stored only in this browser.", "Tiến trình chỉ lưu trong trình duyệt này."],
+  ["Zombies pour in from the right. They want your fortress on the left. If its HP hits zero, the run ends.", "Zombie tràn vào từ bên phải. Chúng nhắm vào pháo đài của bạn bên trái. Nếu máu về 0, lượt chơi kết thúc."],
+  ["Tap a tower at the bottom, then tap an empty platform on the field. Towers shoot by themselves \u2014 you never aim.", "Chạm một trụ ở dưới, rồi chạm ô trống trên sân. Trụ tự bắn \u2014 bạn không cần ngắm."],
+  ["Scrap drops from kills and pays for towers and upgrades during a run. Gold is awarded at the end of each wave and buys permanent upgrades between runs.", "Sắt vụn rơi từ hạ gục, dùng mua trụ và nâng cấp trong lượt. Vàng nhận cuối mỗi đợt, dùng mua nâng cấp vĩnh viễn giữa các lượt."],
+  ["Tap a built tower on the field to open its panel, then upgrade (up to level 5) or sell it for 60% back.", "Chạm một trụ đã xây trên sân để mở bảng, rồi nâng cấp (tối đa cấp 5) hoặc bán lại thu 60%."],
+  ["Airstrike drops a bomb where you tap. Freeze stops every zombie for 3 seconds. Repair heals the fortress. They cost food or meds and share cooldowns.", "Không kích thả bom tại điểm bạn chạm. Đóng băng dừng mọi zombie trong 3 giây. Sửa chữa hồi máu pháo đài. Chúng tốn thực phẩm hoặc thuốc và dùng chung hồi chiêu."],
+  ["Build time counts down automatically; press Next Wave to start early and earn bonus scrap. Bosses arrive every 5 waves. Survive wave 20 to unlock Endless Mode.", "Thời gian xây tự đếm ngược; bấm Đợt kế tiếp để bắt đầu sớm và nhận thêm sắt vụn. Trùm xuất hiện mỗi 5 đợt. Sống sót đến đợt 20 để mở Chế độ vô tận."],
+  ["1-7 pick a tower \u00b7 Q/W/E fire skills \u00b7 SPACE starts the next wave \u00b7 P pauses \u00b7 Esc closes panels and deselects.", "1-7 chọn trụ \u00b7 Q/W/E dùng kỹ năng \u00b7 SPACE bắt đầu đợt kế \u00b7 P tạm dừng \u00b7 Esc đóng bảng và bỏ chọn."],
+  ["Goal", "Mục tiêu"],
+  ["Build", "Xây"],
+  ["Scrap vs Gold", "Sắt vụn và Vàng"],
+  ["Upgrade / Sell", "Nâng cấp / Bán"],
+  ["Skills", "Kỹ năng"],
+  ["Waves", "Các đợt"],
+  ["Keyboard", "Bàn phím"],
+
+  /* ---- HUD ---- */
+  ["Scrap - earned from zombie kills, used to build and upgrade towers", "Sắt vụn - nhận từ hạ gục zombie, dùng để xây và nâng cấp trụ"],
+  ["Gold - earned at the end of each wave, spent on permanent upgrades", "Vàng - nhận cuối mỗi đợt, dùng mua nâng cấp vĩnh viễn"],
+  ["Food - powers Airstrike and Freeze", "Thực phẩm - dùng cho Không kích và Đóng băng"],
+  ["Meds - powers Repair", "Thuốc - dùng cho Sửa chữa"],
+  ["Pause (P)", "Tạm dừng (P)"],
+  ["Toggle music", "Bật/tắt nhạc"],
+  ["Toggle sound effects", "Bật/tắt hiệu ứng âm thanh"],
+  ["Rotate your device to landscape", "Xoay thiết bị sang ngang"],
+  ["Build phase \u2014 ", "Giai đoạn xây dựng \u2014 "],
+  ["s until next wave", " giây đến đợt kế tiếp"],
+  ["Auto-starts in", "Tự bắt đầu sau"],
+  ["call early for bonus scrap", "gọi sớm để nhận sắt vụn"],
+  ["zombies left", "zombie còn lại"],
+  ["zombie left", "zombie còn lại"],
+  ["incoming", "sắp tới"],
+  ["Get ready", "Chuẩn bị"],
+  ["Tap a slot to build. Towers fire on their own. Survive the waves!", "Chạm ô để xây. Trụ tự bắn. Hãy sống sót qua các đợt!"],
+  ["Fortress", "Pháo đài"],
+
+  /* ---- resources / common labels ---- */
+  ["Best Wave", "Đợt cao nhất"],
+  ["Best wave", "Đợt cao nhất"],
+  ["Best score", "Điểm cao nhất"],
+  ["Total Kills", "Tổng hạ gục"],
+  ["Total kills", "Tổng hạ gục"],
+  ["High Score", "Điểm cao"],
+  ["Time played", "Thời gian chơi"],
+  ["Rank:", "Cấp bậc:"],
+  ["Your rank:", "Cấp bậc của bạn:"],
+  ["Rank", "Cấp bậc"],
+  ["Played", "Đã chơi"],
+  ["Score", "Điểm"],
+  ["Date", "Ngày"],
+  ["Kills", "Hạ gục"],
+  ["Gold", "Vàng"],
+  ["Metal", "Kim loại"],
+  ["Wood", "Gỗ"],
+  ["Research", "Nghiên cứu"],
+  ["Scrap", "Sắt vụn"],
+  ["Food", "Thực phẩm"],
+  ["Meds", "Thuốc"],
+  ["Points", "Điểm"],
+  ["Found", "Đã tìm"],
+  ["Reward:", "Thưởng:"],
+  ["Streak", "Chuỗi"],
+  ["Level", "Cấp"],
+  ["Lv", "Cấp"],
+  ["LV", "Cấp"],
+  ["Tier", "Bậc"],
+  ["MAX LEVEL", "CẤP TỐI ĐA"],
+  ["Upgrade \u00b7 ", "Nâng cấp \u00b7 "],
+  ["Sell \u00b7 +", "Bán \u00b7 +"],
+  ["Build cost:", "Giá xây:"],
+  ["Cost:", "Giá:"],
+  ["HP:", "Máu:"],
+  ["Wall HP", "Máu tường"],
+  ["Heal / s", "Hồi / giây"],
+  ["Fire / s", "Bắn / giây"],
+  ["Damage", "Sát thương"],
+  ["Range", "Tầm bắn"],
+  ["/tick", "/lần"],
+  ["per level", "mỗi cấp"],
+  ["OWNED", "ĐÃ CÓ"],
+  ["Equip", "Trang bị"],
+  ["Unequip", "Tháo"],
+  ["Select", "Chọn"],
+  ["Selected", "Đã chọn"],
+  ["Recruit", "Chiêu mộ"],
+  ["Unlock", "Mở khoá"],
+  ["Claim", "Nhận"],
+  ["Claimed", "Đã nhận"],
+  ["Locked", "Khoá"],
+  ["Completed", "Đã hoàn thành"],
+  ["Start Challenge", "Bắt đầu thử thách"],
+  ["Collect idle materials", "Thu tài nguyên nhàn rỗi"],
+  ["Buildings", "Công trình"],
+  ["Survivors", "Người sống sót"],
+  ["Modifiers", "Hiệu ứng"],
+  ["Requires:", "Yêu cầu:"],
+  ["Upgrade", "Nâng cấp"],
+
+  /* ---- weapons / towers ---- */
+  ["Rapid single-target fire. Cheap, dependable, never wasted.", "Bắn nhanh một mục tiêu. Rẻ, ổn định, không lãng phí."],
+  ["Short range, heavy spread. Shreds tight packs of walkers.", "Tầm ngắn, đạn toả rộng. Xé nát bầy zombie đông."],
+  ["Extreme range, huge single hits, pierces a whole lane.", "Tầm cực xa, sát thương lớn, xuyên cả làn."],
+  ["Torches everything in a cone and leaves them burning.", "Thiêu mọi thứ trong hình nón và để lại lửa cháy."],
+  ["Chain lightning that arcs between zombies and slows them.", "Sét xích lan giữa các zombie và làm chậm chúng."],
+  ["No gun. Zombies nearby stop to smash it instead of your wall.", "Không súng. Zombie gần đó dừng lại đập nó thay vì tường bạn."],
+  ["Patches the fortress wall back together, second by second.", "Hàn gắn lại tường pháo đài từng giây một."],
+  ["Flamethrower", "Súng phun lửa"],
+  ["Barricade", "Chướng ngại"],
+  ["Medic Tent", "Lều y tế"],
+  ["Tesla Coil", "Cuộn Tesla"],
+  ["Shotgun", "Súng săn"],
+  ["Sniper", "Bắn tỉa"],
+  ["Gunner", "Xạ thủ"],
+
+  /* ---- skills ---- */
+  ["Tap the field to call a bombing run (220 damage over a wide area).", "Chạm sân để gọi oanh kích (220 sát thương trên vùng rộng)."],
+  ["Freeze every zombie on screen for 3 seconds.", "Đóng băng mọi zombie trên màn hình trong 3 giây."],
+  ["Restore 35% of the fortress maximum HP.", "Hồi 35% máu tối đa của pháo đài."],
+  ["Strike", "Không kích"],
+  ["Freeze", "Đóng băng"],
+  ["Repair", "Sửa chữa"],
+  ["food", "thực phẩm"],
+  ["meds", "thuốc"],
+  ["cooldown", "hồi chiêu"],
+
+  /* ---- meta upgrade shop ---- */
+  ["+6% tower damage", "+6% sát thương trụ"],
+  ["+4% tower fire rate", "+4% tốc độ bắn trụ"],
+  ["+5% tower range", "+5% tầm bắn trụ"],
+  ["+60 fortress max HP", "+60 máu tối đa pháo đài"],
+  ["+25 starting scrap", "+25 sắt vụn khởi đầu"],
+  ["+7% scrap from kills", "+7% sắt vụn từ hạ gục"],
+  ["+12 starting gold", "+12 vàng khởi đầu"],
+  ["-6% skill cooldown", "-6% hồi chiêu kỹ năng"],
+  ["+0.8 fortress HP/s", "+0.8 máu pháo đài/giây"],
+  ["+3% crit chance (x2 dmg)", "+3% tỉ lệ chí mạng (x2 sát thương)"],
+  ["Trigger Servos", "Servo cò súng"],
+  ["Optic Arrays", "Mảng quang học"],
+  ["Reinforced Walls", "Tường gia cố"],
+  ["Scavenger Crew", "Tổ nhặt nhạnh"],
+  ["Recycling Rig", "Giàn tái chế"],
+  ["War Chest", "Rương chiến tranh"],
+  ["Command Uplink", "Liên kết chỉ huy"],
+  ["Field Medics", "Y tá dã chiến"],
+  ["Weak-Point Scans", "Quét điểm yếu"],
+  ["Ballistics", "Đạn đạo"],
+
+  /* ---- heroes ---- */
+  ["Balanced front-line officer. Extra starting scrap and a sturdier wall.", "Sĩ quan tiền tuyến cân bằng. Thêm sắt vụn khởi đầu và tường chắc hơn."],
+  ["+60 starting scrap, +120 fortress HP.", "+60 sắt vụn khởi đầu, +120 máu pháo đài."],
+  ["Tower specialist. Cheaper builds and faster repairs.", "Chuyên gia trụ. Xây rẻ hơn và sửa nhanh hơn."],
+  ["Towers cost 10% less, +1.5 fortress HP/s.", "Trụ rẻ hơn 10%, +1.5 máu pháo đài/giây."],
+  ["Precision damage dealer with a higher crit chance.", "Gây sát thương chính xác với tỉ lệ chí mạng cao hơn."],
+  ["+12% tower damage, +10% crit chance.", "+12% sát thương trụ, +10% tỉ lệ chí mạng."],
+  ["Aggressive. Skills recharge faster and hit harder.", "Hiếu chiến. Kỹ năng hồi nhanh hơn và mạnh hơn."],
+  ["Skill cooldowns -25%, +6% damage.", "Hồi chiêu kỹ năng -25%, +6% sát thương."],
+  ["Defensive turtle. Massive wall, self-healing, slower start.", "Phòng thủ rùa. Tường khổng lồ, tự hồi máu, khởi đầu chậm."],
+  ["+420 fortress HP and +3 HP/s regen, but 20 less starting scrap.", "+420 máu pháo đài và +3 máu/giây, nhưng ít hơn 20 sắt vụn khởi đầu."],
+  ["Commander", "Chỉ huy"],
+  ["Engineer", "Kỹ sư"],
+  ["Marksman", "Thiện xạ"],
+  ["Warlord", "Lãnh chúa"],
+  ["Guardian", "Hộ vệ"],
+  ["Hero Command", "Bộ chỉ huy anh hùng"],
+  ["Your chosen hero changes every run. Earn hero XP by surviving waves and killing zombies.", "Anh hùng bạn chọn thay đổi mỗi lượt. Nhận XP anh hùng bằng cách sống sót qua các đợt và hạ gục zombie."],
+
+  /* ---- relics ---- */
+  ["Equip up to 3 relics. Slot ", "Trang bị tối đa 3 thánh tích. Ô "],
+  ["Not yet found \u2014 hunt bosses and quests.", "Chưa tìm thấy \u2014 săn trùm và nhiệm vụ."],
+  ["A relic recovered from the horde.", "Thánh tích thu hồi từ bầy đàn."],
+  ["Equip limit is 3 \u2014 unequip one first.", "Giới hạn trang bị là 3 \u2014 hãy tháo bớt một cái."],
+  ["Relic found:", "Tìm thấy thánh tích:"],
+  ["+8% scrap from every kill.", "+8% sắt vụn từ mỗi mạng."],
+  ["+6% tower fire rate.", "+6% tốc độ bắn trụ."],
+  ["+8% tower range.", "+8% tầm bắn trụ."],
+  ["+10% damage, +4% crit.", "+10% sát thương, +4% chí mạng."],
+  ["+2 fortress HP/s.", "+2 máu pháo đài/giây."],
+  ["+20 starting scrap, +10 starting gold.", "+20 sắt vụn khởi đầu, +10 vàng khởi đầu."],
+  ["Skill cooldowns -12%.", "Hồi chiêu kỹ năng -12%."],
+  ["+180 fortress HP.", "+180 máu pháo đài."],
+  ["+18% scrap, +5% crit.", "+18% sắt vụn, +5% chí mạng."],
+  ["+14% fire rate, -10% cooldown.", "+14% tốc độ bắn, -10% hồi chiêu."],
+  ["+16% damage but -8% fortress HP.", "+16% sát thương nhưng -8% máu pháo đài."],
+  ["+400 fortress HP, +3 HP/s.", "+400 máu pháo đài, +3 máu/giây."],
+  ["+22% damage, +20% scrap.", "+22% sát thương, +20% sắt vụn."],
+  ["Chrono Capacitor", "Tụ thời gian"],
+  ["Bulwark Charm", "Bùa thành luỹ"],
+  ["Plague Mask", "Mặt nạ dịch hạch"],
+  ["Necrotic Heart", "Tim hoại tử"],
+  ["Apocalypse Sigil", "Ấn Khải huyền"],
+  ["Reinforced Plate", "Tấm gia cố"],
+  ["Lucky Charm", "Bùa may mắn"],
+  ["Target Scope", "Kính ngắm"],
+  ["Hollow Point", "Đầu đạn rỗng"],
+  ["Medkit Stash", "Kho cứu thương"],
+  ["Iron Scrap", "Sắt vụn"],
+  ["Tesla Core", "Lõi Tesla"],
+  ["Titan Shell", "Mai Titan"],
+  ["Oil Can", "Can dầu"],
+  ["legendary", "huyền thoại"],
+  ["common", "thường"],
+  ["rare", "hiếm"],
+  ["epic", "sử thi"],
+
+  /* ---- research ---- */
+  ["Unlocks the research tree.", "Mở khoá cây nghiên cứu."],
+  ["Research points come from cleared waves and the camp lab. Bonuses are permanent.", "Điểm nghiên cứu nhận từ các đợt đã dọn và phòng lab của doanh trại. Phần thưởng là vĩnh viễn."],
+  ["+5% tower damage.", "+5% sát thương trụ."],
+  ["+10% scrap.", "+10% sắt vụn."],
+  ["+150 fortress HP.", "+150 máu pháo đài."],
+  ["+8% damage.", "+8% sát thương."],
+  ["+7% fire rate.", "+7% tốc độ bắn."],
+  ["+8% range.", "+8% tầm bắn."],
+  ["+15% scrap.", "+15% sắt vụn."],
+  ["+300 fortress HP.", "+300 máu pháo đài."],
+  ["+6% crit.", "+6% chí mạng."],
+  ["-12% cooldowns.", "-12% hồi chiêu."],
+  ["+15% damage, +10% rate.", "+15% sát thương, +10% tốc độ."],
+  ["+60 fortress max HP.", "+60 máu tối đa pháo đài."],
+  ["Command Core", "Lõi chỉ huy"],
+  ["Research Lab", "Phòng thí nghiệm"],
+  ["Ballistics I", "Đạn đạo I"],
+  ["Ballistics II", "Đạn đạo II"],
+  ["Logistics I", "Hậu cần I"],
+  ["Masonry I", "Xây dựng I"],
+  ["Servo Motors", "Động cơ servo"],
+  ["Salvage Rig", "Giàn trục vớt"],
+  ["Field Medbay", "Y xá dã chiến"],
+  ["Fortification", "Công sự"],
+  ["Total Arsenal", "Kho vũ khí toàn diện"],
+
+  /* ---- camp / survivors ---- */
+  ["+4% tower damage per level.", "+4% sát thương trụ mỗi cấp."],
+  ["+1 food per wave per level.", "+1 thực phẩm mỗi đợt mỗi cấp."],
+  ["+1 med per wave per level.", "+1 thuốc mỗi đợt mỗi cấp."],
+  ["+30 fortress HP per level.", "+30 máu pháo đài mỗi cấp."],
+  ["+1 research point every 5 waves per level.", "+1 điểm nghiên cứu mỗi 5 đợt mỗi cấp."],
+  ["+8 starting scrap per level.", "+8 sắt vụn khởi đầu mỗi cấp."],
+  ["Reveals the next wave composition.", "Tiết lộ thành phần đợt kế tiếp."],
+  ["+1 fortress HP/s.", "+1 máu pháo đài/giây."],
+  ["+3% tower damage.", "+3% sát thương trụ."],
+  ["+12% scrap from kills.", "+12% sắt vụn từ hạ gục."],
+  ["+5% fire rate.", "+5% tốc độ bắn."],
+  ["+6% damage.", "+6% sát thương."],
+  ["+200 fortress HP.", "+200 máu pháo đài."],
+  ["Survivor Camp", "Trại sống sót"],
+  ["Ration Farm", "Nông trại khẩu phần"],
+  ["Field Clinic", "Phòng khám dã chiến"],
+  ["Supply Depot", "Kho tiếp vận"],
+  ["Scout Riley", "Trinh sát Riley"],
+  ["Nurse Dana", "Y tá Dana"],
+  ["Gunner Bo", "Xạ thủ Bo"],
+  ["Forager Kai", "Kiếm ăn Kai"],
+  ["Tinker Vi", "Thợ Vi"],
+  ["Sniper Ash", "Bắn tỉa Ash"],
+  ["Pyro Zeke", "Hoả công Zeke"],
+  ["Veteran Mo", "Cựu binh Mo"],
+  ["Workshop", "Xưởng"],
+  ["Barracks", "Doanh trại lính"],
+  ["joined", "đã tham gia"],
+  ["Nothing to collect yet \u2014 come back later.", "Chưa có gì để thu \u2014 quay lại sau."],
+
+  /* ---- quests / battle pass / prestige ---- */
+  ["All story chapters complete.", "Đã hoàn thành mọi chương cốt truyện."],
+  ["in a single run to complete it.", "trong một lượt để hoàn thành."],
+  ["Completed today \u2014 a new challenge arrives at midnight.", "Đã hoàn thành hôm nay \u2014 thử thách mới đến vào nửa đêm."],
+  ["Each day picks a new seeded challenge, the same for every player in the world.", "Mỗi ngày chọn một thử thách ngẫu nhiên cố định, giống nhau cho mọi người chơi."],
+  ["Reset gold, shop upgrades, research and camp levels for permanent perks. Relics, heroes and achievements are kept.", "Đặt lại vàng, nâng cấp cửa hàng, nghiên cứu và cấp doanh trại để nhận đặc quyền vĩnh viễn. Thánh tích, anh hùng và thành tích được giữ lại."],
+  ["Reaching wave 20 again grants ", "Đạt lại đợt 20 sẽ nhận "],
+  ["Prestige now", "Chuyển sinh ngay"],
+  ["Rotate to next season", "Chuyển sang mùa kế tiếp"],
+  ["Seasons rotate manually on this build.", "Các mùa chuyển thủ công trên bản này."],
+  ["Best this season:", "Cao nhất mùa này:"],
+  ["best this season:", "cao nhất mùa này:"],
+  ["Your rank:", "Cấp bậc của bạn:"],
+  ["Season XP", "XP mùa"],
+  ["No modifiers", "Không có hiệu ứng"],
+  ["No runs yet \u2014 go survive some waves.", "Chưa có lượt nào \u2014 hãy sống sót vài đợt đi."],
+  ["Undiscovered \u2014 encounter it in battle.", "Chưa khám phá \u2014 hãy chạm trán trong trận chiến."],
+  ["None", "Không"],
+  ["none", "không"],
+  ["pts", "điểm"],
+  ["Pt", "Điểm"],
+
+  /* ---- ranks / difficulties ---- */
+  ["Nightmare", "Ác mộng"],
+  ["Rookie", "Tân binh"],
+  ["Veteran", "Cựu binh"],
+  ["Legend", "Huyền thoại"],
+  ["Apocalypse", "Khải huyền"],
+  ["Easy", "Dễ"],
+  ["Normal", "Thường"],
+  ["Hard", "Khó"],
+  ["Ace", "Át chủ bài"],
+
+  /* ---- achievements ---- */
+  ["Kill your first zombie.", "Hạ zombie đầu tiên."],
+  ["Kill 100 zombies.", "Hạ 100 zombie."],
+  ["Kill 1,000 zombies.", "Hạ 1.000 zombie."],
+  ["Kill 10,000 zombies.", "Hạ 10.000 zombie."],
+  ["Survive to wave 5.", "Sống sót đến đợt 5."],
+  ["Survive to wave 10.", "Sống sót đến đợt 10."],
+  ["Survive to wave 20 and unlock Endless Mode.", "Sống sót đến đợt 20 và mở khoá Chế độ vô tận."],
+  ["Take down your first boss.", "Hạ trùm đầu tiên."],
+  ["Clear 10 waves without the fortress being hit.", "Dọn 10 đợt mà pháo đài không bị chạm."],
+  ["Unlock every tower.", "Mở khoá mọi trụ."],
+  ["50 kills in a row before the fortress is touched.", "50 mạng liên tiếp trước khi pháo đài bị chạm."],
+  ["Reach the Legend rank.", "Đạt cấp bậc Huyền thoại."],
+  ["Complete a Daily Challenge.", "Hoàn thành một Thử thách hằng ngày."],
+  ["Reach a 7-day login streak.", "Đạt chuỗi đăng nhập 7 ngày."],
+  ["Hold 1,000 gold at once.", "Giữ 1.000 vàng cùng lúc."],
+  ["Reach wave 30.", "Đạt đợt 30."],
+  ["First Blood", "Máu đầu tiên"],
+  ["Cleanup Crew", "Đội dọn dẹp"],
+  ["Exterminator", "Kẻ huỷ diệt"],
+  ["Pandemic Ended", "Đại dịch kết thúc"],
+  ["Holding On", "Cố trụ"],
+  ["Last Commander", "Chỉ huy cuối cùng"],
+  ["Endless Horizon", "Chân trời vô tận"],
+  ["Behemoth Slayer", "Sát thủ Behemoth"],
+  ["Not a Scratch", "Không một vết xước"],
+  ["Full Arsenal", "Đầy đủ vũ khí"],
+  ["Untouchable", "Bất khả chạm"],
+  ["Living Legend", "Huyền thoại sống"],
+  ["Daily Duty", "Nhiệm vụ hằng ngày"],
+  ["Week Survivor", "Sống sót cả tuần"],
+  ["War Profiteer", "Trục lợi chiến tranh"],
+  ["Apocalypse Now", "Khải huyền ngay"],
+
+  /* ---- daily challenges ---- */
+  ["Clear wave 10 using only Gunners and Barricades.", "Dọn đợt 10 chỉ dùng Xạ thủ và Chướng ngại."],
+  ["Zombies move 35% faster. Clear wave 10.", "Zombie di chuyển nhanh hơn 35%. Dọn đợt 10."],
+  ["Start with half scrap and no skills. Clear wave 8.", "Khởi đầu nửa sắt vụn và không kỹ năng. Dọn đợt 8."],
+  ["A boss joins every wave. Clear wave 8.", "Một trùm tham gia mỗi đợt. Dọn đợt 8."],
+  ["The fortress has 50% HP. Clear wave 10.", "Pháo đài chỉ có 50% máu. Dọn đợt 10."],
+  ["Start with 400 scrap but zombies have +50% HP. Clear wave 12.", "Khởi đầu 400 sắt vụn nhưng zombie +50% máu. Dọn đợt 12."],
+  ["Towers cannot be upgraded. Clear wave 8.", "Trụ không thể nâng cấp. Dọn đợt 8."],
+  ["Iron Wall", "Tường sắt"],
+  ["Outbreak Sprint", "Chạy nước rút bùng dịch"],
+  ["Scrap Poverty", "Thiếu thốn sắt vụn"],
+  ["Behemoth Parade", "Diễu hành Behemoth"],
+  ["Paper Walls", "Tường giấy"],
+  ["Armed to the Teeth", "Trang bị tận răng"],
+  ["No Upgrades", "Không nâng cấp"],
+
+  /* ---- zombies ---- */
+  ["Standard infected. Slow and weak, but they never stop coming.", "Xác sống thường. Chậm và yếu, nhưng không bao giờ ngừng kéo đến."],
+  ["Emaciated sprinter. Reaches the wall before your first tower spins up.", "Kẻ chạy gầy gò. Tới tường trước khi trụ đầu tiên kịp khởi động."],
+  ["Bloated host with thick hide. Bring armour-piercing rounds.", "Vật chủ phình to với da dày. Hãy mang đạn xuyên giáp."],
+  ["Ranged attacker. Lobs acid that eats towers and walls.", "Tấn công tầm xa. Ném axit ăn mòn trụ và tường."],
+  ["Calls fresh walkers to the field while it lives.", "Gọi thêm lữ khách mới vào sân khi còn sống."],
+  ["Muscle-bound bruiser that swings a crowbar into your barricades.", "Kẻ vạm vỡ vung xà beng vào chướng ngại của bạn."],
+  ["Legless and low. Standard shots sail right over it.", "Không chân và thấp. Đạn thường bay vọt qua đầu nó."],
+  ["Detonates on death. Keep it away from your firing line.", "Phát nổ khi chết. Giữ nó xa tuyến bắn của bạn."],
+  ["Carries a manhole cover. Frontal shots glance off.", "Mang nắp cống. Đạn bắn trực diện bị bật ra."],
+  ["Apex infected. Roars to enrage the horde and summons reinforcements.", "Xác sống đầu đàn. Gầm lên kích động bầy đàn và triệu hồi tiếp viện."],
+  ["Necro Behemoth", "Quái thú Necro"],
+  ["Crawler", "Kẻ bò"],
+  ["Brute", "Kẻ vạm vỡ"],
+  ["Bomber", "Kẻ đánh bom"],
+  ["Shield", "Kẻ khiên"],
+  ["Runner", "Kẻ chạy"],
+  ["Spitter", "Kẻ phun"],
+  ["Screamer", "Kẻ gào"],
+  ["Walker", "Lữ khách"],
+  ["Tank", "Xe tăng"],
+  ["Boss", "Trùm"],
+  ["boss", "trùm"],
+
+  /* ---- codex categories ---- */
+  ["Bestiary", "Sinh vật"],
+  ["Arsenal", "Kho vũ khí"],
+  ["Weather", "Thời tiết"],
+  ["Mutations", "Đột biến"],
+  ["Synergies", "Cộng hưởng"],
+  ["Command", "Chỉ huy"],
+  ["Fortress Ranks", "Cấp bậc pháo đài"],
+  ["Rookie to Apocalypse - your career score determines your rank.", "Từ Tân binh đến Khải huyền - điểm sự nghiệp quyết định cấp bậc."],
+  ["Battle Record", "Hồ sơ chiến đấu"],
+  ["Runs survive in the archive.", "Các lượt chơi lưu giữ trong kho."],
+  ["The horde has no end.", "Bầy đàn không có hồi kết."],
+
+  /* ---- weather / mutations / synergies ---- */
+  ["Reduces tower range and fire rate while it lasts.", "Giảm tầm bắn và tốc độ bắn của trụ trong thời gian hiệu lực."],
+  ["Thick ash cuts visibility and accuracy.", "Tro dày làm giảm tầm nhìn và độ chính xác."],
+  ["No weather effect.", "Không có hiệu ứng thời tiết."],
+  ["A wave mutation that doubles the count at lower HP.", "Đột biến đợt giúp gấp đôi số lượng với máu thấp hơn."],
+  ["Zombies move faster but take more damage.", "Zombie di chuyển nhanh hơn nhưng nhận nhiều sát thương hơn."],
+  ["Two Gunners side by side gain +15% fire rate.", "Hai Xạ thủ cạnh nhau nhận +15% tốc độ bắn."],
+  ["Flamethrower next to a Tesla adds burn to every arc.", "Súng phun lửa cạnh Tesla thêm hiệu ứng cháy cho mọi tia sét."],
+  ["Acid Rain", "Mưa axit"],
+  ["Ash Fog", "Sương tro"],
+  ["Blood Storm", "Bão máu"],
+  ["Nightfall", "Màn đêm"],
+  ["Horde Surge", "Bùng nổ bầy đàn"],
+  ["Clear Skies", "Trời trong"],
+  ["Endless Swarm", "Bầy vô tận"],
+  ["Elite Guard", "Vệ binh tinh nhuệ"],
+  ["Overwatch Net", "Lưới yểm trợ"],
+  ["Field Hospital", "Bệnh viện dã chiến"],
+  ["Artillery Park", "Bãi pháo"],
+  ["Bunker Line", "Tuyến boong-ke"],
+  ["Frenzy", "Cuồng nộ"],
+  ["Hardened", "Hoá cứng"],
+  ["Bounty", "Tiền thưởng"],
+  ["Crossfire", "Hoả lực chéo"],
+  ["Firestorm", "Bão lửa"],
+  ["Clear", "Trời quang"],
+
+  /* ---- seasons ---- */
+  ["The first season of Pandemic Defense.", "Mùa đầu tiên của Pandemic Defense."],
+  ["Corroded hordes and bounty waves.", "Bầy đàn gỉ sét và các đợt tiền thưởng."],
+  ["Freezing nights and frozen lanes.", "Đêm đóng băng và những làn đường bị đóng băng."],
+  ["The blood moon rises.", "Trăng máu lên cao."],
+  ["Season of Ash", "Mùa Tro tàn"],
+  ["Season of Rust", "Mùa Gỉ sét"],
+  ["Season of Frost", "Mùa Băng giá"],
+  ["Season of Blood", "Mùa Máu"],
+
+  /* ---- story / quest names ---- */
+  ["Chapter I - First Contact", "Chương I - Lần chạm trán đầu tiên"],
+  ["Chapter II - Endless Night", "Chương II - Đêm vô tận"],
+  ["Chapter III - Prestige", "Chương III - Chuyển sinh"],
+  ["Reach wave 5.", "Đạt đợt 5."],
+  ["Reach wave 20.", "Đạt đợt 20."],
+  ["Prestige once.", "Chuyển sinh một lần."],
+  ["Cull the Horde", "Tỉa bầy đàn"],
+  ["Hold the Line", "Giữ tuyến"],
+  ["Fortify", "Củng cố"],
+  ["Untouched", "Bất khả xâm phạm"],
+  ["Apocalypse Run", "Lượt Khải huyền"],
+  ["Pandemic Response", "Ứng phó đại dịch"],
+  ["Behemoth Cull", "Tỉa Behemoth"],
+  ["Kill 300 zombies in one run.", "Hạ 300 zombie trong một lượt."],
+  ["Clear wave 8.", "Dọn đợt 8."],
+  ["Build 12 towers in one run.", "Xây 12 trụ trong một lượt."],
+  ["Reach a 40 kill combo.", "Đạt chuỗi 40 mạng."],
+  ["Clear wave 20 in a single run.", "Dọn đợt 20 trong một lượt."],
+  ["Kill 5,000 zombies this week.", "Hạ 5.000 zombie trong tuần này."],
+  ["Kill 5 bosses this week.", "Hạ 5 trùm trong tuần này."],
+
+  /* ---- prestige perks ---- */
+  ["Veteran Ballistics", "Đạn đạo cựu binh"],
+  ["+5% damage, permanently.", "+5% sát thương, vĩnh viễn."],
+  ["Wartime Economy", "Kinh tế thời chiến"],
+  ["+10% scrap, permanently.", "+10% sắt vụn, vĩnh viễn."],
+  ["Concrete Legacy", "Di sản bê tông"],
+  ["Mass Production", "Sản xuất hàng loạt"],
+  ["Killing Blow", "Đòn kết liễu"],
+  ["Rapid Command", "Chỉ huy nhanh"],
+  ["+5% crit.", "+5% chí mạng."],
+  ["-12% skill cooldowns.", "-12% hồi chiêu kỹ năng."],
+
+  /* ---- dynamic modifiers ---- */
+  ["Towers limited to", "Trụ giới hạn ở"],
+  ["Special skills are disabled", "Kỹ năng đặc biệt bị vô hiệu"],
+  ["Towers cannot be upgraded", "Trụ không thể nâng cấp"],
+  ["Zombies move", "Zombie di chuyển"],
+  ["% faster", "% nhanh hơn"],
+  ["Zombies have +", "Zombie có +"],
+  ["% HP", "% máu"],
+  ["Fortress has", "Pháo đài có"],
+  ["Start with", "Khởi đầu với"],
+  ["% scrap", "% sắt vụn"],
+  ["A boss joins every wave", "Một trùm tham gia mỗi đợt"],
+
+  /* ---- toasts / game over ---- */
+  ["FORTRESS FALLEN", "PHÁO ĐÀI THẤT THỦ"],
+  ["WAVE REACHED", "ĐỢT ĐÃ ĐẠT"],
+  ["The pandemic claimed another bunker.", "Đại dịch lại nuốt chửng một boong-ke."],
+  ["A new record falls to the horde.", "Kỷ lục mới đã thuộc về bầy đàn."],
+  ["A BOSS APPROACHES", "TRÙM ĐANG ĐẾN"],
+  ["Boss down! +", "Hạ trùm! +"],
+  ["Weather:", "Thời tiết:"],
+  ["Wave", "Đợt"],
+  ["cleared  \u00b7  +", "đã dọn  \u00b7  +"],
+  ["gold, +", "vàng, +"],
+  ["scrap, +", "sắt vụn, +"],
+  ["is locked \u2014 unlock it in Collection for", "đang bị khoá \u2014 mở trong Bộ sưu tập với"],
+  ["Daily challenge restricts towers to:", "Thử thách hằng ngày giới hạn trụ ở:"],
+  ["Skills are disabled in today's challenge.", "Kỹ năng bị vô hiệu trong thử thách hôm nay."],
+  ["is on cooldown or you lack", "đang hồi chiêu hoặc bạn thiếu"],
+  ["Pick a tower from the bar below first.", "Hãy chọn một trụ ở thanh bên dưới trước."],
+  ["Not enough scrap (need", "Không đủ sắt vụn (cần"],
+  ["AIRSTRIKE!", "KHÔNG KÍCH!"],
+  ["Everything on the field is frozen!", "Mọi thứ trên sân đều đóng băng!"],
+  ["Fortress repaired", "Pháo đài đã sửa"],
+  ["Thank you for supporting the fortress!", "Cảm ơn bạn đã ủng hộ pháo đài!"],
+  ["Day", "Ngày"],
+  ["reward: +", "thưởng: +"],
+  ["\u2192 Lv", "\u2192 Cấp"],
+  ["unlocked!", "đã mở khoá!"],
+  ["Hero:", "Anh hùng:"],
+  ["recruited!", "đã được chiêu mộ!"],
+  ["Researched", "Đã nghiên cứu"],
+  ["Collected", "Đã thu"],
+  ["joined the fortress!", "đã tham gia pháo đài!"],
+  ["Prestige perk unlocked", "Đã mở đặc quyền chuyển sinh"],
+  ["Reach wave 20 before prestiging.", "Đạt đợt 20 trước khi chuyển sinh."],
+  ["Prestige now? Gold, shop upgrades, research and camp levels reset, but you gain", "Chuyển sinh ngay? Vàng, nâng cấp cửa hàng, nghiên cứu và cấp doanh trại sẽ đặt lại, nhưng bạn nhận"],
+  ["prestige points and permanent perks. Relics, heroes and achievements are kept.", "điểm chuyển sinh và đặc quyền vĩnh viễn. Thánh tích, anh hùng và thành tích được giữ."],
+  ["Prestiged! +", "Đã chuyển sinh! +"],
+  ["prestige points", "điểm chuyển sinh"],
+  ["Season rotated", "Đã chuyển mùa"],
+  ["Quest complete:", "Hoàn thành nhiệm vụ:"],
+  ["Battle Pass tier", "Bậc vé chiến đấu"],
+  ["claimed:", "đã nhận:"],
+  ["reached!", "đã đạt!"],
+  ["reached level", "đạt cấp"],
+  ["Mutation:", "Đột biến:"],
+  ["starts in", "bắt đầu sau"],
+  ["storm", "bão"],
+  ["New personal best! You beat your old score by", "Kỷ lục cá nhân mới! Bạn vượt điểm cũ"],
+  ["points \u2014 go further.", "điểm \u2014 tiến xa hơn nhé."],
+  ["That ties your best wave. One more wave and you own the record!", "Ngang bằng đợt cao nhất. Thêm một đợt nữa là bạn phá kỷ lục!"],
+  ["You were only", "Bạn chỉ còn cách"],
+  ["wave(s) from your best. One more try?", "đợt so với kỷ lục. Thử lại nhé?"],
+  ["one more wave", "thêm một đợt nữa"],
+  ["Loading", "Đang tải"],
+  ["LOADING", "ĐANG TẢI"],
+
+  /* ---- extra dynamic fragments ---- */
+  ["Zombie Fortress: Pandemic Defense", "Pháo đài Zombie: Phòng thủ đại dịch"],
+  ["Zombie Fortress", "Pháo đài Zombie"],
+  ["Interface language", "Ngôn ngữ giao diện"],
+  ["(click to claim)", "(bấm để nhận)"],
+  ["click to claim", "bấm để nhận"],
+  ["done today", "đã xong hôm nay"],
+  ["(click to start", "(bấm để bắt đầu"],
+  ["click to start", "bấm để bắt đầu"],
+  ["s  \u00b7  call early for bonus scrap", " giây  \u00b7  gọi sớm để nhận sắt vụn"],
+  ["Auto-starts in", "Tự bắt đầu sau"],
+  ["Slot", "Ô"],
+  ["used.", "đã dùng."],
+  ["Survive", "Sống sót"],
+  ["Daily login reward", "Quà đăng nhập hằng ngày"],
+  ["Daily", "Hằng ngày"],
+  ["Weekly", "Hằng tuần"],
+  ["Story", "Cốt truyện"],
+  ["streak", "chuỗi"],
+  ["bosses", "trùm"],
+  ["boss", "trùm"],
+  ["zombies", "zombie"],
+  ["wave", "đợt"],
+  ["gold", "vàng"],
+  ["scrap", "sắt vụn"],
+  ["food", "thực phẩm"],
+  ["meds", "thuốc"],
+  ["points", "điểm"],
+  ["damage", "sát thương"],
+  ["range", "tầm bắn"],
+  ["rate", "tốc độ"],
+  ["cooldowns", "hồi chiêu"],
+  ["crit", "chí mạng"],
+  ["Reward", "Thưởng"],
+  ["Rewards", "Thưởng"],
+  ["synergy", "cộng hưởng"],
+  ["Unlock in Collection for", "Mở khoá trong Bộ sưu tập với"],
+  ["(locked)", "(khoá)"],
+  ["wood", "gỗ"],
+  ["metal", "kim loại"],
+  ["material", "vật liệu"],
+  ["research", "nghiên cứu"],
+  ["relic", "thánh tích"],
+  ["XP", "XP"],
+  ["RP", "RP"],
+  ["HP", "máu"],
+
+  /* ---- canvas ---- */
+  ["TAP THE FIELD TO BOMB", "CHẠM VÀO SÂN ĐỂ NÉM BOM"],
+  ["COMBO x", "CHUỖI x"],
+  [" synergy", " cộng hưởng"],
+  ["Daily challenge active \u2014 skills disabled", "Thử thách hằng ngày đang bật \u2014 kỹ năng bị vô hiệu"],
+  ["early", "sớm"],
+];
+
+/* short all-caps states replaced only when the whole node matches */
+const I18N_WHOLE = {
+  "ON": "BẬT", "OFF": "TẮT", "MAXED": "TỐI ĐA", "READY": "SẴN SÀNG",
+  "LOADING 0%": "ĐANG TẢI 0%",
+};
+
+const I18N_TITLE = {
+  en: "Zombie Fortress: Pandemic Defense",
+  vi: "Pháo đài Zombie: Phòng thủ đại dịch",
+};
+
+const I18N = {
+  lang: "en",
+  _exact: null,
+  _list: null,
+  _started: false,
+
+  init(lang) {
+    const list = I18N_PAIRS.slice().sort((a, b) => b[0].length - a[0].length);
+    this._exact = {};
+    this._list = [];
+    for (const [en, vi] of list) {
+      this._exact[en] = vi;
+      const esc = en.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+      this._list.push({ en, vi, re: new RegExp("(?<![A-Za-z])" + esc + "(?![A-Za-z])", "g") });
+    }
+    this.setLang(lang || "en");
+  },
+
+  setLang(lang) {
+    this.lang = lang === "vi" ? "vi" : "en";
+    if (typeof document !== "undefined" && document.getElementById) {
+      const stage = document.getElementById("stage");
+      if (stage) this.walk(stage);
+    }
+    if (typeof document !== "undefined") {
+      document.documentElement.setAttribute("lang", this.lang);
+      document.title = I18N_TITLE[this.lang] || I18N_TITLE.en;
+      const meta = document.querySelector('meta[name="description"]');
+      if (meta) {
+        meta.setAttribute("content", this.lang === "vi"
+          ? "Giữ vững pháo đài cuối cùng. Xây trụ, sống sót qua đại dịch. Game thủ thành sinh tồn HTML5 miễn phí."
+          : "Hold the last fortress. Build towers, survive the pandemic. A free HTML5 tower-defense survival game.");
+      }
+    }
+  },
+
+  /* translate one string (never returns null) */
+  tr(text) {
+    if (this.lang !== "vi" || !text) return text;
+    const s = String(text);
+    if (this._exact[s] !== undefined) return this._exact[s];
+    const whole = I18N_WHOLE[s.trim()];
+    if (whole && s === s.trim()) return whole;
+    let out = s;
+    for (const e of this._list) {
+      if (out.indexOf(e.en) >= 0) out = out.replace(e.re, e.vi);
+    }
+    return out;
+  },
+
+  /* translate + remember original so a language switch can restore */
+  _walkNode(node) {
+    const cur = node.nodeValue;
+    if (cur == null) return;
+    let src = node.__i18nSrc;
+    if (cur !== node.__i18nOut) src = cur;
+    if (src == null || src === "") return;
+    let out = this.tr(src);
+    if (out === src && src === cur) { node.__i18nSrc = src; node.__i18nOut = out; return; }
+    node.__i18nSrc = src;
+    node.__i18nOut = out;
+    if (out !== cur) node.nodeValue = out;
+  },
+
+  _walkAttrs(el) {
+    if (!el.getAttribute) return;
+    for (const a of ["title", "placeholder", "aria-label"]) {
+      const v = el.getAttribute(a);
+      if (!v) continue;
+      const key = "__i18n_" + a + "Src";
+      const outKey = "__i18n_" + a + "Out";
+      let src = el[key];
+      if (v !== el[outKey]) src = v;
+      if (src == null || src === "") continue;
+      const out = this.tr(src);
+      el[key] = src; el[outKey] = out;
+      if (out !== v) el.setAttribute(a, out);
+    }
+  },
+
+  walk(root) {
+    if (!this._list) return;
+    const start = root || document.getElementById("stage") || document.body;
+    if (!start) return;
+    const tw = document.createTreeWalker(start, NodeFilter.SHOW_TEXT, {
+      acceptNode: (n) => {
+        const p = n.parentNode && n.parentNode.nodeName;
+        if (p === "SCRIPT" || p === "STYLE") return NodeFilter.FILTER_REJECT;
+        return n.nodeValue && n.nodeValue.length ? NodeFilter.FILTER_ACCEPT : NodeFilter.FILTER_SKIP;
+      },
+    });
+    let n;
+    while ((n = tw.nextNode())) this._walkNode(n);
+    if (start.querySelectorAll) start.querySelectorAll("[title],[placeholder],[aria-label]").forEach((el) => this._walkAttrs(el));
+    if (start.getAttribute) this._walkAttrs(start);
+  },
+
+  start() {
+    if (this._started) return;
+    this._started = true;
+    const tick = () => this.walk();
+    setTimeout(tick, 60);
+    setInterval(tick, 250);
+  },
+};
+
+function T(s) { return I18N.tr(s); }
