@@ -22,7 +22,7 @@ const SLOT_COLS = [235, 395, 555, 715, 875, 1035]; // 6 build columns
 const MAX_LEVEL = 5;                        // tower level cap per run
 const SPEC_LEVEL = 3;                       // tower level where a spec path is chosen
 const PREP_TIME = 12;                       // seconds of build time before a wave auto-starts
-const VERSION = "5.0.0";
+const VERSION = "6.0.0";
 const DONATE_URL = "https://ko-fi.com/";
 
 /* ---------------------------------------------------------------------
@@ -99,6 +99,11 @@ function defaultState() {
     settings: { soundOn: true, musicOn: true, difficulty: "normal", lang: "en", draft: true, speed: 1 },
     seenTutorial: false,
     campaign: { done: [], stars: {} },        // { done: [missionId], stars: { missionId: 1..3 } }
+    /* ---- v6 commander journey ---- */
+    commander: { level: 1, xp: 0, claimed: [], totalXp: 0 },   // account level, never resets
+    dailyBoard: { date: "", tasks: [], claimed: [], chestClaimed: false, counters: {} },
+    collectionClaimed: [],                // ids of claimed collection milestones
+    starterClaimed: [],                   // ids of claimed getting-started tasks
     /* ---- v3 meta progression ---- */
     heroProgress: {},                  // { heroId: {level, xp, unlocked} }
     selectedHero: "commander",
@@ -111,7 +116,7 @@ function defaultState() {
     battlePass: { xp: 0, tier: 0, claimed: [], season: 1 },
     prestige: { level: 0, points: 0, mods: [] },
     season: { id: 1, bestRank: 0 },
-    stats: { towerUse: {}, bosses: 0, relicsFound: 0, runsByHero: {}, protocolsPicked: 0, bestDraft: 0, colossusKills: 0, splitterKills: 0, healerKills: 0, specs: 0, masters: 0 },
+    stats: { towerUse: {}, bosses: 0, relicsFound: 0, runsByHero: {}, protocolsPicked: 0, bestDraft: 0, colossusKills: 0, splitterKills: 0, healerKills: 0, specs: 0, masters: 0, upgrades: 0, skillsUsed: 0, bountiesClaimed: 0 },
   };
 }
 
@@ -162,6 +167,14 @@ function normalizeState(data) {
   st.campaign = Object.assign({}, base.campaign, (data && data.campaign) || {});
   st.campaign.done = arr(st.campaign.done, []);
   st.campaign.stars = (data && data.campaign && data.campaign.stars) || {};
+  st.commander = Object.assign({}, base.commander, (data && data.commander) || {});
+  st.commander.claimed = arr(st.commander.claimed, []);
+  st.dailyBoard = Object.assign({}, base.dailyBoard, (data && data.dailyBoard) || {});
+  st.dailyBoard.tasks = arr(st.dailyBoard.tasks, []);
+  st.dailyBoard.claimed = arr(st.dailyBoard.claimed, []);
+  st.dailyBoard.counters = (data && data.dailyBoard && data.dailyBoard.counters) || {};
+  st.collectionClaimed = arr(data && data.collectionClaimed, []);
+  st.starterClaimed = arr(data && data.starterClaimed, []);
   if (typeof st.selectedHero !== "string") st.selectedHero = "commander";
   return st;
 }
