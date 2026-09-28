@@ -204,6 +204,7 @@ class Fortress {
   hurt(v, game) {
     this.hp -= v; this.flash = 0.25; this.shake = 0.3;
     game.fortressTouched = true; game.killCombo = 0;
+    game.waveHit = true;
     if (game.run) game.run.fortressHit = true;
     if (this.hp <= 0) { this.hp = 0; game.gameOver(); }
   }

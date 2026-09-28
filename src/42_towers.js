@@ -110,6 +110,7 @@ class Tower {
     if (this.game.scrap < c) return false;
     this.game.spendScrap(c);
     this.invested += c; this.level++;
+    this.game.state.stats.upgrades = (this.game.state.stats.upgrades || 0) + 1;
     this.recompute(); this.hp = this.maxHp;
     this.game.audio.sfx("upgrade");
     this.game.spawnRing(this.x, this.y, this.def.color, 60);
